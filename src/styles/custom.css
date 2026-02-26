@@ -1,0 +1,118 @@
+html {
+  font-size: 18px;
+}
+
+body {
+  font-family: "Poppins", system-ui, sans-serif;
+  line-height: 1.7;
+  letter-spacing: -0.01em;
+}
+
+:root {
+  --sl-content-width: 74rem;
+  --sl-font: "Poppins", system-ui, sans-serif;
+  --sl-font-mono: "JetBrains Mono", monospace;
+}
+
+h1 {
+  font-size: 2.8rem;
+  font-weight: 600;
+  letter-spacing: -1px;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-top: 2rem;
+}
+
+p {
+  font-size: 1.1rem;
+}
+
+:root {
+  --sl-nav-height: 78px;
+}
+
+header,
+.sl-nav-container {
+  height: var(--sl-nav-height);
+}
+
+.site-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.site-title img {
+  height: 48px;
+}
+
+.sl-nav-container a svg {
+  width: 24px;
+  height: 24px;
+}
+
+.sl-search {
+  height: 44px;
+}
+
+.sl-sidebar {
+  font-size: 1rem;
+}
+
+.sl-sidebar a {
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+}
+
+pre {
+  font-size: 0.95rem;
+  border-radius: 12px;
+}
+
+code {
+  font-size: 0.95rem;
+}
+
+.sl-markdown-content img {
+  border-radius: 10px;
+}
+
+:root {
+  --sl-color-accent-low: #1e3a8a;
+  --sl-color-accent: #2563eb;
+  --sl-color-accent-high: #60a5fa;
+
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #e2e5e9;
+  --sl-color-gray-2: #d1d5db;
+  --sl-color-gray-3: #9fa5af;
+  --sl-color-gray-4: #3f4347;
+  --sl-color-gray-5: #2a2c2e;
+  --sl-color-gray-6: #181a1b;
+  --sl-color-black: #111111;
+}
+
+:root[data-theme="light"] {
+  --sl-color-accent-low: #60a5fa;
+  --sl-color-accent-high: #1e3a8a;
+
+  --sl-color-white: #000000;
+  --sl-color-gray-1: #111111;
+  --sl-color-gray-2: #181a1b;
+  --sl-color-gray-3: #2a2c2e;
+  --sl-color-gray-4: #9fa5af;
+  --sl-color-gray-5: #e5e7eb;
+  --sl-color-gray-6: #f3f4f6;
+  --sl-color-gray-7: #f9fafb;
+  --sl-color-black: #ffffff;
+}
