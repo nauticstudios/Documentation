@@ -3,6 +3,9 @@ import starlight from '@astrojs/starlight';
 import nauticLogo from './src/assets/nautic.webp';
 
 export default defineConfig({
+  site: 'https://nauticstudios.github.io',
+  base: '/Documentation/',
+
   integrations: [
     starlight({
       title: 'Nautic Studios',
@@ -33,7 +36,6 @@ export default defineConfig({
             },
           ],
         },
-
         {
           label: 'Plugins',
           collapsed: false,
@@ -66,7 +68,6 @@ export default defineConfig({
             },
           ],
         },
-        
         {
           label: 'Work In Progress',
           collapsed: false,
