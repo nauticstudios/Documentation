@@ -1,0 +1,222 @@
+---
+title: Holograms
+description: Configure countdown and ready holograms for registered chests.
+tableOfContents: true
+---
+
+Displays a floating countdown or READY text above registered chests.
+
+Configured in `config.yml`.
+
+---
+
+## Enable / Disable
+
+```yaml
+hologram:
+  enabled: true
+```
+
+- `true` → holograms active  
+- `false` → disabled globally  
+
+---
+
+## Basic Setup
+
+```yaml
+hologram:
+  enabled: true
+  height-offset: 1.5
+
+  format:
+    ready:
+      - "&a&lREADY"
+      - "&7Click to open!"
+    countdown:
+      - "&eRefill in &f%time%"
+      - "&7(%seconds%s)"
+```
+
+---
+
+## Placeholders
+
+| Placeholder | Output |
+|-------------|--------|
+| `%time%`    | Formatted time (mm:ss or m:ss) |
+| `%seconds%` | Remaining seconds |
+
+---
+
+## Hide When Ready
+
+```yaml
+hide-when-ready: false
+```
+
+- `true` → hologram disappears when ready  
+- `false` → shows READY format  
+
+---
+
+## Only With View Mode
+
+```yaml
+only-with-view: false
+```
+
+- `true` → visible only if a player has `/nchestrefill view` enabled  
+- `false` → always visible  
+
+---
+
+## Time Format
+
+```yaml
+time-format:
+  use-seconds: false
+  format: "mm:ss"
+```
+
+Formats:
+
+- `mm:ss` → 05:30  
+- `m:ss` → 5:30  
+
+If:
+
+```yaml
+use-seconds: true
+```
+
+Output example:
+
+```
+120s
+```
+
+---
+
+## Position
+
+```yaml
+height-offset: 1.5
+```
+
+Controls vertical offset above the chest.
+
+---
+
+## Display Settings
+
+```yaml
+hologram:
+  display:
+```
+
+### Alignment
+
+```yaml
+text-alignment: center
+```
+
+Options:
+- center
+- left
+- right
+
+---
+
+### Shadow
+
+```yaml
+text-shadow: true
+```
+
+- Enables Minecraft text shadow.
+
+---
+
+### See Through
+
+```yaml
+see-through: false
+```
+
+- `true` → visible through blocks  
+- `false` → normal visibility  
+
+---
+
+### Background
+
+```yaml
+background: transparent
+```
+
+Options:
+
+- `transparent`
+- `#RRGGBB`
+- `#AARRGGBB`
+
+Examples:
+
+```yaml
+background: "#000000"
+background: "#88000000"
+```
+
+---
+
+### Line Width
+
+```yaml
+line-width: 300
+```
+
+Controls text wrapping width.
+
+---
+
+### Scale
+
+```yaml
+scale:
+  x: 1.0
+  y: 1.0
+  z: 1.0
+```
+
+Controls hologram size.
+
+---
+
+## Update Interval
+
+```yaml
+update-interval: 20
+```
+
+- 20 ticks = 1 second  
+- Lower = smoother  
+- Higher = better performance  
+
+---
+
+## World Filtering
+
+```yaml
+experimental:
+  world-blacklist:
+    - world_the_end
+
+  world-whitelist: []
+```
+
+Rules:
+
+- If whitelist not empty → only listed worlds allowed  
+- If blacklist not empty → listed worlds ignored  
+- If both empty → all worlds allowed  

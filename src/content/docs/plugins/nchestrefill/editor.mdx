@@ -1,0 +1,120 @@
+---
+title: Editor
+description: Manage loot items and drop chances.
+tableOfContents: true
+---
+
+The Editor manages the default content pool.
+
+Command:
+
+```
+/nchestrefill editor
+```
+
+Permission:
+
+```
+nchestrefill.editor
+```
+
+---
+
+## Interface
+
+- 54 slot inventory
+- 45 item slots per page
+- Page navigation arrows
+- Optional glass filler
+- Fully configurable title and lore
+
+---
+
+## Adding Items
+
+Drag items from your inventory into the editor.
+
+Default chance:
+```
+50%
+```
+
+---
+
+## Editing Item Chance
+
+Left Click an item.
+
+Then type a number in chat:
+
+```
+0 - 100
+```
+
+Type:
+```
+cancel
+```
+to abort.
+
+---
+
+## Cloning Item
+
+Right Click an item.
+
+Copies the original item into your inventory.
+
+---
+
+## Deleting Item
+
+Shift + Right Click.
+
+Removes the item from the content pool.
+
+---
+
+## Pagination
+
+- Previous arrow → slot 47
+- Next arrow → slot 51
+- 45 items per page
+
+---
+
+## Configuration
+
+Located in `menu.yml` under:
+
+```yaml
+editor:
+```
+
+Supports:
+
+- Custom title
+- Custom glass filler
+- Custom item lore
+- Custom arrow buttons
+- Custom sounds
+
+---
+
+## Sounds
+
+```yaml
+editor:
+  sounds:
+    edit:
+    clone:
+    delete:
+    update:
+```
+
+Each sound supports:
+
+- enabled
+- sound
+- volume
+- pitch

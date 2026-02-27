@@ -1,0 +1,144 @@
+---
+title: View Mode
+description: Visualize registered chests using particle beams.
+tableOfContents: true
+---
+
+Displays vertical particle beams above registered chests.
+
+Command:
+
+```
+/nchestrefill view
+```
+
+Permission:
+
+```
+nchestrefill.view
+```
+
+Player-scoped. Only visible to the executor.
+
+---
+
+## Enable / Disable
+
+```yaml
+view:
+  enabled: true
+```
+
+- `true` → command works
+- `false` → feature disabled
+
+---
+
+## Core Settings
+
+```yaml
+view:
+  only-in-same-world: true
+  max-render-distance: 100
+```
+
+### only-in-same-world
+
+- `true` → render only in player world
+- `false` → render across worlds
+
+### max-render-distance
+
+Maximum distance (blocks) to render beams.
+
+Lower = better performance  
+Higher = visible from farther away
+
+---
+
+## Particle Settings
+
+```yaml
+view:
+  particle:
+    enabled: true
+    beam-height: 50
+    beam-spacing: 2
+    cooldown-particle: END_ROD
+    ready-color: RED
+    ready-size: 1.5
+```
+
+---
+
+### beam-height
+
+Height of vertical beam (blocks).
+
+---
+
+### beam-spacing
+
+Vertical spacing between particles.
+
+Lower → denser beam  
+Higher → lighter beam
+
+---
+
+### cooldown-particle
+
+Particle shown while chest is on cooldown.
+
+Any valid Minecraft particle.
+
+Examples:
+- END_ROD
+- FLAME
+- SMOKE_NORMAL
+- CRIT
+
+---
+
+### ready-color
+
+Color used when chest is ready.
+
+---
+
+### ready-size
+
+Particle size when chest is ready.
+
+---
+
+## Behavior
+
+When enabled:
+
+- Beam renders above every registered chest
+- Ready chests use ready-color and ready-size
+- Cooldown chests use cooldown-particle
+
+When disabled:
+
+- All beams stop immediately
+
+---
+
+## Recommended Setup
+
+```yaml
+view:
+  enabled: true
+  only-in-same-world: true
+  max-render-distance: 80
+
+  particle:
+    enabled: true
+    beam-height: 40
+    beam-spacing: 3
+    cooldown-particle: END_ROD
+    ready-color: RED
+    ready-size: 1.2
+```

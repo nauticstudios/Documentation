@@ -1,0 +1,195 @@
+---
+title: Time System
+description: Refill interval and timer configuration.
+tableOfContents: true
+---
+
+Controls how registered chests refill.
+
+Configured in `config.yml`.
+
+---
+
+## Default Refill Time
+
+```yaml
+settings:
+  default-refill-seconds: 300
+```
+
+- Applied when registering a chest
+- Used by `/nchestrefill sync`
+- Value in seconds
+
+Example:
+```
+300 = 5 minutes
+```
+
+---
+
+## Change Refill Time (Runtime)
+
+```
+/nchestrefill settime <seconds>
+```
+
+Permission:
+```
+nchestrefill.settime
+```
+
+Example:
+```
+/nchestrefill settime 600
+```
+
+- Updates interval for all chests
+- Recalculates next refill timestamp
+
+Value must be numeric.
+
+---
+
+## Synchronize Timers
+
+```
+/nchestrefill sync
+```
+
+Permission:
+```
+nchestrefill.sync
+```
+
+- Resets all timers
+- Reapplies `default-refill-seconds`
+- Aligns next refill time
+
+---
+
+## Force Refill
+
+```
+/nchestrefill forcerefill
+```
+
+Permission:
+```
+nchestrefill.forcerefill
+```
+
+- Instantly refills all chests
+- Does not change interval
+
+---
+
+## Refill Check Interval
+
+```yaml
+settings:
+  refill-check-interval: 20
+```
+
+- 20 ticks = 1 second
+- Controls how often refill check runs
+
+Recommended:
+```
+20
+```
+
+---
+
+## Refill Conditions
+
+### Only If Empty
+
+```yaml
+settings:
+  refill-only-if-empty: false
+```
+
+- `true` → refill only if chest empty
+- `false` → always refill
+
+---
+
+### Clear Before Refill
+
+```yaml
+settings:
+  clear-before-refill: true
+```
+
+- `true` → clear inventory before refill
+- `false` → insert without clearing
+
+---
+
+## Broadcast On Refill
+
+```yaml
+settings:
+  broadcast-refill: true
+  broadcast-permission: ""
+```
+
+- Empty permission → send to all
+- Set permission → restrict receivers
+
+Example:
+
+```yaml
+broadcast-message:
+  - "&eChest refilled at &f%world% &7(%x%, %y%, %z%)"
+```
+
+Placeholders:
+
+| Placeholder | Value |
+|-------------|-------|
+| %world% | World name |
+| %x% | X |
+| %y% | Y |
+| %z% | Z |
+
+---
+
+## Hologram Time Format
+
+```yaml
+hologram:
+  time-format:
+    use-seconds: false
+    format: "mm:ss"
+```
+
+Formats:
+- `mm:ss`
+- `m:ss`
+
+If:
+
+```yaml
+use-seconds: true
+```
+
+Displays:
+```
+120s
+```
+
+---
+
+## Processing Limit
+
+```yaml
+performance:
+  max-chests-per-tick: 50
+```
+
+Controls how many chests are processed per tick.
+
+- Lower → smoother
+- Higher → faster bulk processing

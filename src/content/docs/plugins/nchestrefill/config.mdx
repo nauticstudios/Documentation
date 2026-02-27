@@ -1,0 +1,96 @@
+---
+title: Configuration
+description: Main configuration reference.
+tableOfContents: true
+---
+
+Main configuration file:
+
+```
+config.yml
+```
+
+---
+
+## Plugin Settings
+
+```yaml
+plugin:
+  debug: false
+  auto-save-on-refill: true
+  log-refill-errors: true
+```
+
+---
+
+## Refill Settings
+
+```yaml
+settings:
+  default-refill-seconds: 300
+  target-distance: 6
+  clear-before-refill: true
+  refill-only-if-empty: false
+  max-items-per-refill: 27
+  randomize-slot-order: true
+```
+
+---
+
+## Broadcast
+
+```yaml
+settings:
+  broadcast-refill: false
+  broadcast-permission: ""
+  broadcast-message:
+```
+
+Placeholders:
+- %world%
+- %x%
+- %y%
+- %z%
+
+---
+
+## Hologram
+
+```yaml
+hologram:
+  enabled: true
+  height-offset: 1.5
+  update-interval: 20
+```
+
+---
+
+## View Mode
+
+```yaml
+view:
+  enabled: true
+  only-in-same-world: true
+  max-render-distance: 100
+```
+
+---
+
+## Performance
+
+```yaml
+performance:
+  max-chests-per-tick: 50
+  cache-content-items: true
+  async-content-loading: false
+```
+
+---
+
+## Experimental
+
+```yaml
+experimental:
+  world-blacklist: []
+  world-whitelist: []
+```

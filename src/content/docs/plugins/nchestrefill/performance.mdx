@@ -1,0 +1,176 @@
+---
+title: Performance
+description: Performance configuration for NChestRefill.
+tableOfContents: true
+---
+
+Performance settings are located in `config.yml`.
+
+---
+
+## Core Settings
+
+```yaml
+performance:
+  async-content-loading: false
+  cache-content-items: true
+  max-chests-per-tick: 50
+  clear-holograms-on-disable: true
+```
+
+---
+
+## max-chests-per-tick
+
+```yaml
+max-chests-per-tick: 50
+```
+
+Controls how many chests are processed per tick.
+
+- Lower → smoother performance
+- Higher → faster bulk processing
+
+Recommended:
+- Small servers → 50–100
+- Large networks → 30–60
+
+---
+
+## async-content-loading
+
+```yaml
+async-content-loading: false
+```
+
+- `true` → content may load asynchronously
+- `false` → loads on main thread
+
+Use only if handling large content pools.
+
+---
+
+## cache-content-items
+
+```yaml
+cache-content-items: true
+```
+
+- `true` → cache items in memory (faster refills)
+- `false` → load dynamically (lower RAM usage)
+
+Recommended: `true`
+
+---
+
+## clear-holograms-on-disable
+
+```yaml
+clear-holograms-on-disable: true
+```
+
+Removes all holograms when plugin disables.
+
+Prevents leftover display entities.
+
+---
+
+# Task Intervals
+
+```yaml
+settings:
+  refill-check-interval: 20
+
+hologram:
+  update-interval: 20
+```
+
+20 ticks = 1 second.
+
+---
+
+## refill-check-interval
+
+```yaml
+refill-check-interval: 20
+```
+
+Controls how often refill checks run.
+
+- Lower → more responsive
+- Higher → fewer checks
+
+Recommended:
+```
+20
+```
+
+---
+
+## hologram update-interval
+
+```yaml
+update-interval: 20
+```
+
+Controls countdown refresh rate.
+
+- Lower → smoother countdown
+- Higher → better performance
+
+Recommended:
+```
+20–40
+```
+
+---
+
+# View Mode Optimization
+
+```yaml
+view:
+  only-in-same-world: true
+  max-render-distance: 100
+```
+
+---
+
+## only-in-same-world
+
+- `true` → render beams only in player world
+- `false` → render across worlds
+
+Recommended: `true`
+
+---
+
+## max-render-distance
+
+```yaml
+max-render-distance: 100
+```
+
+Controls beam render distance.
+
+- Lower → better performance
+- Higher → visible from farther away
+
+---
+
+# Large Server Example
+
+```yaml
+performance:
+  max-chests-per-tick: 40
+  cache-content-items: true
+
+settings:
+  refill-check-interval: 20
+
+hologram:
+  update-interval: 30
+
+view:
+  only-in-same-world: true
+  max-render-distance: 80
+```
