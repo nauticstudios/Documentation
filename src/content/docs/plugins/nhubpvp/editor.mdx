@@ -1,0 +1,121 @@
+---
+title: Editor Menu
+description: In-game editor system for NHubPvP.
+tableOfContents: false
+---
+
+NHubPvP includes a complete in-game editor that allows modifying core PvP settings without editing configuration files manually.
+
+Open the editor using:
+
+```
+/nhubpvp settings
+```
+
+---
+
+## Editable Settings
+
+The Editor Menu allows:
+
+- Change sword slot position
+- Toggle ability system
+- Toggle instant heal on kill
+- Edit activation countdown
+- Edit deactivation countdown
+- Change armor material
+- Change sword material
+- Edit armor enchantments
+- Edit sword enchantments
+- Toggle shield support
+
+All changes are applied instantly and safely.
+
+---
+
+## Sword Slot
+
+Allows changing the hotbar slot where the PvP sword is enforced.
+
+- Valid slots: 0–8
+- Invalid values are rejected
+- Players are automatically updated after change
+
+---
+
+## Ability Toggle
+
+Enables or disables the right-click ability system.
+
+Changes apply immediately.
+
+---
+
+## Instant Heal Toggle
+
+Enables or disables automatic full heal when a player gets a kill.
+
+When enabled:
+- Health restored to maximum
+- Food restored
+- Fire cleared
+
+---
+
+## Activation & Deactivation Countdown
+
+Allows editing:
+
+- Activation hold time (seconds)
+- Deactivation delay (seconds)
+
+Values must be positive numbers.
+
+---
+
+## Armor Editor
+
+Left click:
+- Open armor material selector
+
+Right click:
+- Open armor enchantment editor
+
+Changing armor material updates:
+
+- Helmet
+- Chestplate
+- Leggings
+- Boots
+
+All players are automatically reset after changes.
+
+---
+
+## Sword Editor
+
+Left click:
+- Open sword material selector
+
+Right click:
+- Open sword enchantment editor
+
+Material must be a valid sword type.
+
+---
+
+## Shield Toggle
+
+Enables or disables shield support when PvP mode is active.
+
+When enabled:
+- Shield is automatically placed in off-hand
+
+---
+
+## Safety System
+
+- Invalid inputs are rejected
+- Players cannot break the editor
+- All changes are safely reloaded
+- No server restart required

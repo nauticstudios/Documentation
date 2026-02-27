@@ -1,0 +1,103 @@
+---
+title: PvP System
+description: PvP activation and combat system behavior.
+tableOfContents: false
+---
+
+NHubPvP uses a controlled activation-based PvP system designed for hub environments.
+
+Players do not automatically enter combat. PvP mode must be activated manually.
+
+---
+
+## Activation Mechanism
+
+PvP activates when:
+
+1. Player holds the configured PvP sword.
+2. Activation countdown begins.
+3. Countdown completes without interruption.
+4. Full kit is applied automatically.
+
+If the player switches away from the sword, a deactivation countdown begins.
+
+When the deactivation timer completes, PvP mode is disabled and armor is removed.
+
+---
+
+## Activation Conditions
+
+PvP mode requires:
+
+- Holding the configured sword
+- Valid countdown completion
+- No interruption during timer
+
+If the player changes slot before countdown finishes, activation is cancelled.
+
+---
+
+## Kit Application
+
+When PvP is active:
+
+- Full configured armor set is applied
+- Sword is enforced in the configured hotbar slot
+- Optional shield is placed in off-hand
+- Armor and sword cannot be dropped or moved
+- Durability loss is prevented
+
+When PvP is disabled:
+
+- Armor is removed
+- Shield is removed
+- Sword remains in enforced slot
+
+---
+
+## Combat Rules
+
+- Only players with PvP mode active can deal damage
+- Players without full PvP kit cannot fight
+- Combat outside PvP mode is blocked
+
+This prevents accidental or uncontrolled damage inside hub areas.
+
+---
+
+## Death Handling
+
+When a player dies:
+
+- Drops are cleared
+- Experience is cleared
+- Statistics are updated
+- Optional instant heal is applied to killer
+- Kit is re-applied after respawn
+
+All processes are handled automatically.
+
+---
+
+## Respawn Handling
+
+On respawn:
+
+- Armor is reset
+- Sword is restored
+- Slot enforcement is re-applied
+- PvP state is validated
+
+No manual intervention is required.
+
+---
+
+## Reset Behavior
+
+When configuration changes or reload occurs:
+
+- All players are safely reset
+- Active countdowns are cleared
+- Kits are reapplied correctly
+
+No server restart is required.

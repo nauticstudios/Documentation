@@ -1,30 +1,29 @@
 ---
 title: AtlasLang
-description: Advanced multilingual engine with PlaceholderAPI, GitHub synchronization and public API support.
+description: Centralized multilingual engine with strict validation, PlaceholderAPI support and GitHub synchronization.
 tableOfContents: true
 ---
 
-AtlasLang is a complete multilingual engine designed to provide centralized language management across plugins and server components.
+AtlasLang is a production-grade multilingual engine designed for centralized language management across plugins and server components.
 
-It allows per-player language selection, structured language files, strict validation, GitHub synchronization and full PlaceholderAPI integration.
+It provides strict validation, structured file handling, database-backed player language storage and full PlaceholderAPI integration.
 
 GitHub Repository:  
 https://github.com/nauticstudios/atlaslang
 
-Public API Source:  
+Public API:  
 https://github.com/nauticstudios/AtlasLang/blob/master/src/main/java/com/github/nautic/api/AtlasAPI.java
 
 ---
 
-## Overview
+# Overview
 
 AtlasLang provides:
 
 - Per-player language storage
 - Locale → folder mapping system
-- Strict language resolution
-- Structured YAML file loading
-- Recursive language folder loading
+- Strict language validation
+- Recursive YAML file loading
 - PlaceholderAPI expansion
 - Public developer API
 - GitHub synchronization
@@ -37,33 +36,31 @@ AtlasLang enforces strict validation to prevent invalid or unregistered language
 
 ---
 
-## Architecture
+# Architecture
 
-AtlasLang is composed of the following core components:
-
-### AtlasLang (Main Plugin)
+## Main Plugin (AtlasLang)
 
 Responsible for:
 
 - Runtime dependency loading
-- Configuration loading
-- Language initialization
-- Command registration
-- PlaceholderAPI expansion registration
-- GitHub sync manager
+- Configuration initialization
+- Language registration
+- Command system
+- Placeholder expansion registration
+- GitHub sync management
 - Database initialization
 
 ---
 
-### LanguageManager
+## LanguageManager
 
 Handles:
 
-- Locale registration
-- Folder mapping
-- Strict language resolution
+- Language registration
+- Locale → folder mapping
 - Default language fallback
-- Reloading system
+- Strict resolution
+- Reload logic
 
 Configuration format:
 
@@ -84,24 +81,23 @@ locale:folder:defaultFile
 
 ---
 
-### FileManager
+## FileManager
 
 Responsible for:
 
-- Recursive YAML loading
-- Language file caching
-- Dynamic file loading
-- File preparation
+- Recursive language folder loading
+- YAML caching
+- Dynamic file resolution
 - Default file generation
 - Cache clearing
 
-All language files are loaded recursively inside:
+Language directory:
 
 ```
 /plugins/AtlasLang/languages/
 ```
 
-Example structure:
+Example:
 
 ```
 languages/
@@ -117,70 +113,61 @@ languages/
 
 ---
 
-### LangHandler
+## LangHandler
 
 Handles:
 
 - Message retrieval
-- List and string resolution
-- Fallback handling
-- System message retrieval
+- String and list resolution
 - Placeholder injection
-- Missing path handling
+- Fallback handling
+- Missing path safety
 
-If a path does not exist, a fallback message is returned instead of crashing.
+If a path is invalid, a safe fallback message is returned.
 
 :::warning
-If a language file is missing or malformed, the system automatically returns a safe fallback message.
+Malformed or missing language files will never crash the server.
 :::
 
 ---
 
-## PlaceholderAPI Integration
+# PlaceholderAPI Integration
 
-AtlasLang registers the following PlaceholderAPI identifier:
+Identifier:
 
 ```
 %alang_...%
 ```
 
-### Format
+Format:
 
 ```
-%alang_(file)_ (path)%
+%alang_(file)_(path)%
 ```
 
-Example:
+Examples:
 
 ```
-%alang_(messages)_ (join_message)%
+%alang_(messages)_(join_message)%
+%alang_(lobby:scoreboard)_(title)%
 ```
 
-Nested folder example:
-
-```
-%alang_(lobby:scoreboard)_ (title)%
-```
-
-### Behavior
+Behavior:
 
 - Resolves player language from database
-- Falls back to default language if invalid
+- Falls back to default if invalid
 - Validates file existence
 - Validates path existence
-- Returns system message if format is invalid
 
 :::tip
-Placeholders must contain the format `(file)_(path)` or they will return an invalid format message.
+Placeholders must follow the format `(file)_(path)` or they will return an invalid format message.
 :::
 
 ---
 
-## Public Developer API
+# Public Developer API
 
-AtlasLang provides a static API for developers.
-
-### Retrieve Messages
+Static API access:
 
 ```java
 AtlasAPI.get(player, "path.to.message");
@@ -188,50 +175,34 @@ AtlasAPI.get(uuid, "path.to.message");
 AtlasAPI.get("english", "path.to.message");
 ```
 
-### Retrieve With Fallback
+With fallback:
 
 ```java
-AtlasAPI.getOrDefault(player, "path.to.message", "Fallback Text");
+AtlasAPI.getOrDefault(player, "path.to.message", "Fallback");
 ```
 
-### Check Path Existence
+Validation:
 
 ```java
 AtlasAPI.has("english", "path.to.message");
-```
-
-### Set Player Language
-
-```java
-AtlasAPI.setLanguage(player, "english");
-```
-
-### Get Player Language
-
-```java
-AtlasAPI.getLanguage(player);
-```
-
-### Validate Language
-
-```java
 AtlasAPI.isLanguageRegistered("english");
 ```
 
-### Get All Registered Languages
+Player language:
 
 ```java
-AtlasAPI.getRegisteredLanguages();
+AtlasAPI.setLanguage(player, "english");
+AtlasAPI.getLanguage(player);
 ```
 
-### Access Internal Managers
+Managers:
 
 ```java
 AtlasAPI.getLanguageManager();
 AtlasAPI.getLangHandler();
 ```
 
-### Addon Messages
+Addon access:
 
 ```java
 AtlasAPI.getAddon(player, "path.to.message");
@@ -239,7 +210,7 @@ AtlasAPI.getAddon(player, "path.to.message");
 
 ---
 
-## Command System
+# Commands
 
 Base command:
 
@@ -247,108 +218,17 @@ Base command:
 /atlaslang
 ```
 
-### Help
-
-```
-/atlaslang help
-```
-
-### List Languages
-
-```
-/atlaslang list
-```
-
-Permission:
-```
-atlaslang.list
-```
-
----
-
-### Show Aliases
-
-```
-/atlaslang aliases
-```
-
-Permission:
-```
-atlaslang.aliases
-```
-
----
-
-### Set Player Language
-
-```
-/atlaslang set <player> <language>
-```
-
-Permission:
-```
-atlaslang.set
-```
-
----
-
-### Reset Player Language
-
-```
-/atlaslang reset <player>
-```
-
-Permission:
-```
-atlaslang.reset
-```
-
----
-
-### Player Info
-
-```
-/atlaslang info <player>
-```
-
-Permission:
-```
-atlaslang.info
-```
-
----
-
-### Reload
-
-```
-/atlaslang reload
-```
-
-Permission:
-```
-atlaslang.reload
-```
-
----
-
-### GitHub Integration
-
-Synchronize:
-
-```
-/atlaslang github sync
-```
-
-Check status:
-
-```
-/atlaslang github status
-```
-
-Permission:
-```
-atlaslang.github
-```
+| Command | Permission |
+|----------|------------|
+| `/atlaslang help` | — |
+| `/atlaslang list` | `atlaslang.list` |
+| `/atlaslang aliases` | `atlaslang.aliases` |
+| `/atlaslang set <player> <language>` | `atlaslang.set` |
+| `/atlaslang reset <player>` | `atlaslang.reset` |
+| `/atlaslang info <player>` | `atlaslang.info` |
+| `/atlaslang reload` | `atlaslang.reload` |
+| `/atlaslang github sync` | `atlaslang.github` |
+| `/atlaslang github status` | `atlaslang.github` |
 
 Full access:
 
@@ -358,11 +238,11 @@ atlaslang.admin
 
 ---
 
-## GitHub Synchronization
+# GitHub Synchronization
 
-AtlasLang supports automatic synchronization from a GitHub repository.
+Supports automatic language sync from a repository.
 
-Example configuration:
+Example:
 
 ```yaml
 github:
@@ -371,7 +251,7 @@ github:
     branch: "main"
 
   authentication:
-    type: "none" # none | token
+    type: "none"
     token: ""
 
   paths:
@@ -385,94 +265,63 @@ github:
     reload-after-sync: true
 ```
 
-Synchronization is executed asynchronously to prevent server lag.
-
-:::note
-GitHub synchronization does not block the main server thread.
-:::
+- Runs asynchronously
+- Does not block the main thread
+- Supports optional token authentication
 
 ---
 
-## Database Integration
+# Database Integration
 
-Player languages are stored using the configured database backend.
-
-On player language resolution:
+Player language storage process:
 
 1. Retrieve stored language
 2. Validate registration
 3. Fallback to default if invalid
 
-Database connection is closed safely on plugin disable.
+Database safely closes on plugin disable.
 
 ---
 
-## Runtime Dependency Loading
+# Runtime Dependency Loading
 
-AtlasLang loads runtime libraries during `onLoad()` using:
+Dependencies are loaded during `onLoad()` from:
 
 - Maven Central
 - CodeMC Repository
 
-Dependencies are relocated and isolated safely.
-
-:::tip
-Runtime dependency loading allows AtlasLang to remain lightweight while supporting advanced features.
-:::
+Libraries are relocated and isolated to prevent conflicts.
 
 ---
 
-## Language Resolution Process
+# Language Resolution Flow
 
-1. Player language is requested.
-2. LanguageManager resolves locale strictly.
-3. Folder is validated.
-4. FileManager ensures file is loaded.
-5. Path is resolved.
-6. Fallback applied if missing.
+1. Player language requested
+2. LanguageManager resolves locale
+3. Folder validated
+4. FileManager loads file
+5. Path resolved
+6. Fallback applied if necessary
 
-This prevents invalid state errors.
+Strict validation prevents invalid states.
 
 ---
 
-## Designed For
-
-AtlasLang is built for:
+# Designed For
 
 - Multi-language networks
-- Scoreboard systems
-- Menu systems
-- Placeholder-based UI
+- Centralized language control
+- Scoreboards
+- GUIs and menus
+- Placeholder-based systems
 - Modular plugin ecosystems
-- Cross-plugin centralized language control
 
 ---
 
-## Stability & Safety
+# Stability Guarantees
 
-:::note
-AtlasLang never throws fatal errors for missing translations.
-:::
-
-:::warning
-Improper placeholder formatting will return a system error message.
-:::
-
-:::tip
-Always reload languages after modifying configuration files.
-:::
-
----
-
-## Summary
-
-AtlasLang is a structured, database-backed, strictly validated multilingual engine with:
-
-- Public API access
-- PlaceholderAPI integration
-- GitHub synchronization
-- Recursive file loading
-- Strict fallback handling
-- Centralized language management
-
-It is designed to function as a core language system across multiple plugins and server modules.
+- No fatal errors for missing translations
+- Strict language validation
+- Safe fallback system
+- Async GitHub sync
+- Runtime-safe reload

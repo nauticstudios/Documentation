@@ -1,0 +1,82 @@
+---
+title: Stats System
+description: Persistent statistics and ranking system.
+tableOfContents: false
+---
+
+NHubPvP includes a built-in persistent statistics system.
+
+The system automatically tracks combat performance and stores data in a database.
+
+---
+
+## Tracked Statistics
+
+The plugin records:
+
+- Kills
+- Deaths
+- All-time kills
+- All-time deaths
+
+Statistics update automatically when a player kills another player in PvP mode.
+
+---
+
+## Kill Handling
+
+When a player gets a kill:
+
+- Killer kills increase
+- Victim deaths increase
+- All-time stats are updated
+- Optional instant heal can be applied
+
+Dropped items and experience are cleared automatically.
+
+---
+
+## Data Persistence
+
+Statistics are saved using a database system.
+
+Supported types:
+
+- H2 (default, file-based)
+- MySQL (recommended for networks)
+
+Data is stored per player using UUID.
+
+All data persists across restarts.
+
+---
+
+## Top Rankings
+
+The system provides global rankings for:
+
+- Top kills
+- Top deaths
+
+Ranking positions are calculated from all-time values.
+
+These rankings are accessible through PlaceholderAPI.
+
+---
+
+## Player Registration
+
+When a player joins:
+
+- A database entry is created automatically if missing
+- Player name is updated if changed
+
+No manual setup is required.
+
+---
+
+## Safety
+
+- Duplicate death handling is prevented
+- Statistics are updated safely
+- Database connections are managed automatically

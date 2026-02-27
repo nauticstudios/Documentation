@@ -1,0 +1,232 @@
+---
+title: Configuration
+description: Complete configuration reference for NHubPvP.
+tableOfContents: false
+---
+
+NHubPvP is fully configurable through multiple YAML files.
+
+Main files:
+
+- `config.yml`
+- `items.yml`
+- `messages.yml`
+- `menu.yml`
+
+---
+
+# config.yml
+
+Controls core behavior and systems.
+
+---
+
+## Database
+
+```yaml
+database:
+  type: H2 # H2 or MYSQL
+
+  mysql:
+    host: localhost
+    port: 3306
+    database: nhubpvp
+    username: root
+    password: password
+```
+
+- `H2` → File-based database (default)
+- `MYSQL` → Recommended for large servers
+
+---
+
+## Kit Settings
+
+```yaml
+kit:
+  sword-slot: 0
+```
+
+Defines the hotbar slot (0–8) where the PvP sword is enforced.
+
+---
+
+## Activation Settings
+
+```yaml
+activation:
+  hold-seconds: 3
+  deactivate-seconds: 3
+```
+
+- `hold-seconds` → Time required holding the sword to activate PvP
+- `deactivate-seconds` → Time required away from sword to deactivate PvP
+
+---
+
+## Ability
+
+```yaml
+ability:
+  enabled: true
+  cooldown: 10
+  damage: 4.0
+  fire-ticks: 60
+  through-blocks: false
+```
+
+- `enabled` → Enables right-click ability
+- `cooldown` → Cooldown in seconds
+- `damage` → Damage dealt
+- `fire-ticks` → Duration of fire effect
+- `through-blocks` → Whether projectile ignores blocks
+
+---
+
+## Shield
+
+```yaml
+shield:
+  enabled: true
+```
+
+If enabled, players receive a shield when PvP mode is active.
+
+---
+
+## Settings
+
+```yaml
+settings:
+  instant-heal-on-kill: true
+```
+
+If enabled, killer receives:
+
+- Full health
+- Full food
+- Fire removal
+
+---
+
+## Sounds
+
+```yaml
+sounds:
+  activation:
+    activating: UI_BUTTON_CLICK
+    activated: ENTITY_PLAYER_LEVELUP
+    deactivating: UI_BUTTON_CLICK
+    deactivated: BLOCK_NOTE_BLOCK_BASS
+```
+
+Controls sounds played during activation and deactivation.
+
+---
+
+# items.yml
+
+Controls PvP equipment.
+
+---
+
+## Sword
+
+```yaml
+items:
+  sword:
+    material: DIAMOND_SWORD
+    amount: 1
+    displayname: "&6PvP Sword"
+    lore:
+      - "&7Hold to activate PvP"
+    custom-model-data: -1
+    hide-attributes: true
+    enchants:
+      - DAMAGE_ALL:1
+```
+
+---
+
+## Armor
+
+```yaml
+  helmet:
+    material: DIAMOND_HELMET
+    enchants: []
+
+  chestplate:
+    material: DIAMOND_CHESTPLATE
+    enchants: []
+
+  leggings:
+    material: DIAMOND_LEGGINGS
+    enchants: []
+
+  boots:
+    material: DIAMOND_BOOTS
+    enchants: []
+```
+
+All armor pieces support:
+
+- Material
+- Enchantments
+- Custom model data
+- Hidden attributes
+
+---
+
+# messages.yml
+
+Controls all plugin messages.
+
+Examples:
+
+```yaml
+messages:
+  reload: "&aConfiguration reloaded."
+  no-permission: "&cYou do not have permission."
+  unknown: "&cUnknown command."
+```
+
+All messages support color formatting.
+
+---
+
+# menu.yml
+
+Controls GUI layout and appearance.
+
+Sections include:
+
+- Editor menu
+- Armor selector
+- Sword selector
+- Enchant menu
+- Shield toggle
+- GUI titles
+- Slot positions
+- Display names
+- Lore
+
+All GUI elements are fully customizable.
+
+---
+
+# Reloading
+
+Use:
+
+```
+/nhubpvp reload
+```
+
+This reloads:
+
+- config.yml
+- items.yml
+- messages.yml
+- menu.yml
+
+All players are safely reset after reload.

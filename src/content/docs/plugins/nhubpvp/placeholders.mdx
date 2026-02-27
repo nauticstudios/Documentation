@@ -1,0 +1,64 @@
+---
+title: Placeholders
+description: PlaceholderAPI integration reference for NHubPvP.
+tableOfContents: false
+---
+
+NHubPvP includes optional support for PlaceholderAPI.
+
+Identifier:
+
+```
+%nhubpvp_...%
+```
+
+---
+
+## Top Kills
+
+| Placeholder | Description |
+|-------------|-------------|
+| `%nhubpvp_top_kills_1_name%` | Player name in position 1 (kills) |
+| `%nhubpvp_top_kills_1_value%` | Kill count in position 1 |
+| `%nhubpvp_top_kills_2_name%` | Player name in position 2 (kills) |
+| `%nhubpvp_top_kills_2_value%` | Kill count in position 2 |
+| `%nhubpvp_top_kills_3_name%` | Player name in position 3 (kills) |
+| `%nhubpvp_top_kills_3_value%` | Kill count in position 3 |
+
+Positions can be replaced with any ranking number.
+
+Format:
+
+```
+%nhubpvp_top_kills_<position>_name%
+%nhubpvp_top_kills_<position>_value%
+```
+
+---
+
+## Top Deaths
+
+| Placeholder | Description |
+|-------------|-------------|
+| `%nhubpvp_top_deaths_1_name%` | Player name in position 1 (deaths) |
+| `%nhubpvp_top_deaths_1_value%` | Death count in position 1 |
+| `%nhubpvp_top_deaths_2_name%` | Player name in position 2 (deaths) |
+| `%nhubpvp_top_deaths_2_value%` | Death count in position 2 |
+| `%nhubpvp_top_deaths_3_name%` | Player name in position 3 (deaths) |
+| `%nhubpvp_top_deaths_3_value%` | Death count in position 3 |
+
+Positions can be replaced with any ranking number.
+
+Format:
+
+```
+%nhubpvp_top_deaths_<position>_name%
+%nhubpvp_top_deaths_<position>_value%
+```
+
+---
+
+## Requirements
+
+- PlaceholderAPI must be installed.
+- Expansion registers automatically when PlaceholderAPI is detected.

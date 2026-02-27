@@ -1,0 +1,69 @@
+---
+title: Ability
+description: Right-click ability system configuration.
+tableOfContents: false
+---
+
+NHubPvP includes a built-in right-click ability that can be used while PvP mode is active.
+
+The ability is fully configurable and can be enabled or disabled from the Editor Menu.
+
+---
+
+## How It Works
+
+- Player must have PvP mode active
+- Player must be holding the configured sword
+- Right-click triggers the ability
+- Cooldown is applied automatically
+
+If the ability is disabled, right-click does nothing.
+
+---
+
+## Effects
+
+When triggered:
+
+- Projectile is launched forward
+- Target player takes damage
+- Fire effect is applied
+- Knockback is applied
+- Visual impact effect is played
+
+The ability only affects players.
+
+---
+
+## Cooldown
+
+- Cooldown duration is configurable
+- Cooldown prevents ability spam
+- Cooldown applies per player
+
+If a player attempts to use the ability during cooldown, it will not activate.
+
+---
+
+## Configuration Options
+
+Ability settings can be configured in the main configuration file:
+
+- Enable / disable ability
+- Cooldown duration
+- Damage
+- Fire ticks duration
+- Block penetration option
+
+Changes apply without requiring a restart.
+
+---
+
+## Editor Integration
+
+From the Editor Menu you can:
+
+- Toggle ability on or off
+- Adjust cooldown values
+
+All changes apply instantly.
