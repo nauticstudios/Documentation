@@ -1,0 +1,189 @@
+---
+title: Buttons
+description: Interactive chat buttons used in broadcast messages.
+tableOfContents: true
+---
+
+Buttons allow you to create **clickable chat components** that players can interact with.
+
+They are commonly used to **open the server store, Discord, or other links** directly from the broadcast message.
+
+Main configuration section:
+
+```yaml
+buttons:
+```
+
+Buttons can be inserted inside broadcast messages using placeholders.
+
+---
+
+## Using Buttons
+
+Buttons are inserted in broadcast messages using:
+
+```
+%buttons%
+```
+
+This placeholder will display **all configured buttons**.
+
+Example:
+
+```yaml
+message:
+  - "<center>&aNew purchase!</center>"
+  - "<empty>"
+  - "%buttons%"
+```
+
+---
+
+## Using a Specific Button
+
+You can also display a **single button**.
+
+Format:
+
+```
+%button_<id>%
+```
+
+Example:
+
+```
+%button_shop%
+```
+
+---
+
+## Centering Buttons
+
+Buttons can be visually centered by adding spaces before them.
+
+```yaml
+buttons:
+  center: 20
+```
+
+This value defines how many spaces are added before the buttons.
+
+---
+
+## Button Configuration
+
+Buttons are defined inside the `list` section.
+
+Example:
+
+```yaml
+buttons:
+  center: 20
+
+  list:
+
+    shop:
+      text: "<gradient:#72FF76:#17EA25>[ Open Shop ]</gradient>"
+      hover: "<gradient:#72FF76:#17EA25>Click to open the store</gradient>"
+      open_url: "https://shop.yourserver.com/"
+
+    discord:
+      text: "<gradient:#72C0FF:#1750EA>[ Join Discord ]</gradient>"
+      hover: "<gradient:#72C0FF:#1750EA>Click to join the community</gradient>"
+      open_url: "https://discord.gg/example"
+```
+
+---
+
+## Button Options
+
+```yaml
+text:
+```
+
+Text displayed in chat.
+
+Supports:
+
+- hex colors
+- gradients
+- formatting
+
+Example:
+
+```
+<gradient:#72FF76:#17EA25>[ Open Shop ]</gradient>
+```
+
+---
+
+```yaml
+hover:
+```
+
+Text shown when the player **hovers the mouse** over the button.
+
+Example:
+
+```
+Click to open the store
+```
+
+---
+
+```yaml
+open_url:
+```
+
+URL opened when the button is clicked.
+
+Example:
+
+```
+https://shop.yourserver.com/
+```
+
+---
+
+## Example Usage
+
+Broadcast message example:
+
+```yaml
+message:
+  - "<center>&aNew purchase!</center>"
+  - "<empty>"
+  - "%button_shop%"
+  - "%button_discord%"
+```
+
+Or display all buttons:
+
+```yaml
+message:
+  - "%buttons%"
+```
+
+---
+
+## Creating Custom Buttons
+
+You can create **unlimited buttons**.
+
+Example:
+
+```yaml
+buttons:
+  list:
+
+    website:
+      text: "&e[ Visit Website ]"
+      hover: "&fClick to open the website"
+      open_url: "https://example.com"
+```
+
+Usage:
+
+```
+%button_website%
+```

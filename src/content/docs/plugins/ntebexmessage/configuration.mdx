@@ -1,0 +1,325 @@
+---
+title: Configuration
+description: Main configuration reference for NTebexMessage.
+tableOfContents: true
+---
+
+Main configuration file:
+
+```
+config.yml
+```
+
+---
+
+## Custom Arguments
+
+Defines the arguments that can be used in broadcast commands.
+
+These arguments become placeholders usable inside templates, titles, messages, actionbars, bossbars and Discord webhooks.
+
+```yaml
+customs-args:
+  - player
+  - package
+  - price
+```
+
+Example console command:
+
+```
+/tebexmessage one player(Senkex) package(VIP Rank) price($10)
+```
+
+Usage inside messages:
+
+```
+{player}
+{package}
+{price}
+```
+
+---
+
+## Separator Symbol
+
+Defines the symbol used when multiple packages are included in a single purchase.
+
+```yaml
+separator-symbol: "&7•"
+```
+
+Example input:
+
+```
+package(VIP;Legend;Key)
+```
+
+Output displayed in messages:
+
+```
+VIP • Legend • Key
+```
+
+---
+
+## Broadcast Templates
+
+Templates define how purchase announcements are displayed.
+
+```yaml
+broadcast:
+  templates:
+```
+
+Each template contains the full broadcast layout including:
+
+- chat message
+- titles
+- sounds
+- actionbars
+- bossbars
+- events
+- buttons
+
+Example template structure:
+
+```yaml
+broadcast:
+  templates:
+    one:
+      events:
+        player-head: true
+        reward-event: true
+        discord-webhook: true
+
+      message:
+        - "<center>&aNew purchase!</center>"
+        - "<center>{player} bought {package}</center>"
+```
+
+The template name is used in the console command.
+
+Example:
+
+```
+/tebexmessage one player(Senkex) package(VIP) price($10)
+```
+
+---
+
+## Message Tags
+
+Special tags can be used inside broadcast messages.
+
+```
+<empty>
+```
+
+Adds a blank line.
+
+```
+<center>text</center>
+```
+
+Centers text in chat.
+
+```
+%buttons%
+```
+
+Displays all configured buttons.
+
+```
+%button_id%
+```
+
+Displays a specific button.
+
+Example:
+
+```
+%button_shop%
+```
+
+---
+
+## Events
+
+Templates can trigger optional features.
+
+```yaml
+events:
+  player-head: true
+  reward-event: true
+  discord-webhook: true
+```
+
+Available events:
+
+- **player-head** → displays the player's head next to the message
+- **reward-event** → starts the reward event
+- **discord-webhook** → sends purchase information to Discord
+
+---
+
+## Title
+
+Displays a title on the player's screen.
+
+```yaml
+title:
+  enabled: true
+  type: GLOBAL
+  up: "{player}"
+  down: "Purchased {package}"
+```
+
+Types:
+
+```
+GLOBAL
+```
+
+Visible to all players.
+
+```
+PLAYER
+```
+
+Visible only to the buyer.
+
+---
+
+## Sound
+
+Plays a sound when the purchase broadcast is sent.
+
+```yaml
+sound:
+  enabled: true
+  type: GLOBAL
+  id: ENTITY_PLAYER_LEVELUP
+```
+
+The `id` must be a valid **Bukkit sound**.
+
+---
+
+## ActionBar
+
+Displays a message above the hotbar.
+
+```yaml
+actionbar:
+  enabled: true
+  message: "{player} purchased {package}"
+```
+
+Actionbars support **single-line messages only**.
+
+---
+
+## BossBar
+
+Displays a bossbar message at the top of the screen.
+
+```yaml
+bossbar:
+  enabled: true
+  text: "Purchased {package}"
+  color: GREEN
+  style: SOLID
+  duration: 5
+  animated: false
+```
+
+Duration is defined in **seconds**.
+
+---
+
+## Buttons
+
+Buttons allow clickable chat components.
+
+```yaml
+buttons:
+  center: 20
+  list:
+```
+
+Example button:
+
+```yaml
+buttons:
+  list:
+    shop:
+      text: "&a[ Open Shop ]"
+      hover: "&fClick to open the store"
+      open_url: "https://shop.example.com"
+```
+
+Usage inside messages:
+
+```
+%buttons%
+```
+
+Or a specific button:
+
+```
+%button_shop%
+```
+
+---
+
+## Reward Event
+
+Reward events allow players to type a word in chat to receive rewards.
+
+```yaml
+reward-event:
+  words:
+    - "gg"
+
+  players-write-word: 30
+
+  ignore-case: true
+```
+
+Players must type one of the configured words to participate.
+
+---
+
+## Reward Commands
+
+Commands executed for players that participated in the reward event.
+
+```yaml
+players-rewards-commands:
+  - "give %player% minecraft:diamond 1"
+```
+
+`%player%` is replaced with the player name.
+
+---
+
+## Final Reward Message
+
+Message broadcasted when the reward event finishes.
+
+```yaml
+final-message:
+  enabled: true
+  message:
+    - "<center>&aReward Event Finished</center>"
+    - "<center>%players_reward_claimed%</center>"
+```
+
+Placeholder:
+
+```
+%players_reward_claimed%
+```
+
+Displays the list of players who received rewards.

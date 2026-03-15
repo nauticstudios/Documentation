@@ -1,0 +1,112 @@
+---
+title: Commands
+description: Complete command reference for NTebexMessage.
+tableOfContents: false
+---
+
+## Commands
+
+| Command | Permission | Description | Default |
+|----------|------------|-------------|----------|
+| `/tebexmessage help` | `tebexmessage.help` | Displays the help menu with available commands | true |
+| `/tebexmessage reload` | `tebexmessage.reload` | Reloads all plugin configuration files | OP |
+| `/tebexmessage args` | `tebexmessage.args` | Shows all configured custom arguments | OP |
+| `/tebexmessage <template> arg(value)` | Console only | Sends a purchase broadcast using a template | Console |
+
+---
+
+## Broadcast Command
+
+The main command used to simulate or send a purchase broadcast.
+
+```
+/tebexmessage <template> arg(value)
+```
+
+This command must be executed **from console**.
+
+The `<template>` value must match a template defined in the configuration.
+
+Example:
+
+```
+/tebexmessage one player(Senkex) package(VIP) price($10)
+```
+
+Explanation:
+
+- `one` → template name  
+- `player(Senkex)` → player who purchased  
+- `package(VIP)` → purchased package  
+- `price($10)` → purchase price  
+
+The broadcast system will parse these arguments and inject them into the template placeholders.
+
+---
+
+## Custom Arguments
+
+Arguments used by the command are defined in the configuration.
+
+Example:
+
+```yaml
+customs-args:
+  - player
+  - package
+  - price
+```
+
+Each argument becomes a placeholder usable inside templates.
+
+Usage inside messages:
+
+```
+{player}
+{package}
+{price}
+```
+
+If an argument is missing or invalid, the command will return an error.
+
+---
+
+## Example Usage
+
+Console command:
+
+```
+/tebexmessage one player(Senkex) package(ASTRO Rank) price($25)
+```
+
+Template used:
+
+```
+one
+```
+
+Placeholders replaced:
+
+```
+{player} → Senkex
+{package} → ASTRO Rank
+{price} → $25
+```
+
+The broadcast will then trigger all configured template features such as:
+
+- chat message
+- title
+- actionbar
+- bossbar
+- sound
+- reward event
+- Discord webhook
+
+---
+
+## Admin Permission
+
+| Permission | Description | Default |
+|------------|-------------|----------|
+| `tebexmessage.admin` | Grants access to all commands and bypasses permission checks | OP |

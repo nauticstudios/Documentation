@@ -1,0 +1,245 @@
+---
+title: Discord Webhook
+description: Send purchase notifications directly to Discord.
+tableOfContents: true
+---
+
+NTebexMessage can send **store purchase notifications** directly to Discord using webhooks.
+
+This allows your community to see **live store activity** without being in-game.
+
+Configuration file:
+
+```
+discord.yml
+```
+
+---
+
+## Enable Webhook
+
+```
+webhook:
+  enabled: true
+```
+
+- `true` → webhook active  
+- `false` → disabled
+
+---
+
+## Webhook URL
+
+```
+url: "INSERT-WEBHOOK-URL"
+```
+
+Paste your Discord webhook URL here.
+
+---
+
+## Webhook Identity
+
+```
+username: "Store Notification"
+avatar-url: "https://i.imgur.com/ip1xV13.png"
+```
+
+- `username` → name of the webhook bot  
+- `avatar-url` → icon displayed in Discord
+
+---
+
+## Multiple Package Symbol
+
+When a purchase contains multiple packages.
+
+Example purchase:
+
+```
+VIP;MVP;ASTRO
+```
+
+Configuration:
+
+```
+symbol: "•"
+```
+
+Result:
+
+```
+VIP • MVP • ASTRO
+```
+
+---
+
+## Word Filter
+
+Removes unwanted words from package names.
+
+Example:
+
+```
+Kit ASTRO
+```
+
+Becomes:
+
+```
+ASTRO
+```
+
+Configuration:
+
+```
+word-does-appear:
+- kit
+- rank
+- package
+```
+
+Filtering is **case-insensitive**.
+
+---
+
+## Word Replace
+
+Replaces words with custom names.
+
+Example:
+
+```
+vip → VIP
+mvp → MVP
+```
+
+Configuration:
+
+```
+word-replace:
+  vip: "VIP"
+  mvp: "MVP"
+  astro: "ASTRO"
+```
+
+---
+
+## Simple Message Content
+
+Basic Discord message format.
+
+```
+content: "Player **{player}** purchased **{package}**"
+```
+
+Supported placeholders:
+
+```
+{player}
+{package}
+{price}
+```
+
+---
+
+## Embed Message
+
+Embeds provide a richer message format.
+
+```
+embed:
+  enabled: true
+```
+
+---
+
+### Embed Title
+
+```
+title: "🛒 New Purchase"
+```
+
+---
+
+### Embed Color
+
+```
+color: "#00FFAA"
+```
+
+Accepts **HEX color values**.
+
+---
+
+### Embed Description
+
+```
+description:
+- "Player **{player}** purchased **{package}**"
+```
+
+---
+
+### Embed Fields
+
+Fields display structured purchase information.
+
+```
+fields:
+
+- name: "Player"
+  value: "{player}"
+  inline: true
+
+- name: "Package"
+  value: "{package}"
+  inline: true
+
+- name: "Price"
+  value: "{price}"
+  inline: true
+```
+
+---
+
+### Embed Author
+
+```
+author:
+  name: "Server Store"
+  url: ""
+  icon: ""
+```
+
+---
+
+### Embed Footer
+
+```
+footer:
+  text: "Powered by Nautic Studios"
+  icon: ""
+```
+
+---
+
+### Embed Image
+
+```
+image: "https://i.imgur.com/ip1xV13.png"
+```
+
+Displays a large image at the bottom of the embed.
+
+---
+
+### Player Thumbnail
+
+```
+thumbnail: "https://mc-heads.net/avatar/{player}"
+```
+
+Displays the player's Minecraft head.
+
+---

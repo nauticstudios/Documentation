@@ -1,0 +1,372 @@
+---
+title: Templates
+description: Broadcast templates define how purchase announcements are displayed.
+tableOfContents: true
+---
+
+Templates control how a purchase is **broadcasted to players**.
+
+They define the layout, sounds, titles, chat messages, buttons and optional events such as reward events or Discord webhooks.
+
+Main configuration file:
+
+```
+config.yml
+```
+
+---
+
+## Custom Arguments
+
+Custom arguments define **placeholders usable inside templates**.
+
+These values are passed when executing the command.
+
+```yaml
+customs-args:
+  - player
+  - package
+  - price
+```
+
+Example console usage:
+
+```
+/tebexmessage one player(Senkex) package(VIP Rank) price($10)
+```
+
+Usage inside messages:
+
+```
+{player}
+{package}
+{price}
+```
+
+Reload configuration:
+
+```
+/tebexmessage reload
+```
+
+---
+
+## Separator Symbol
+
+Used when multiple packages are included in a single purchase.
+
+```yaml
+separator-symbol: "&7•"
+```
+
+Example input:
+
+```
+package(VIP;Legend;Key)
+```
+
+Output:
+
+```
+VIP • Legend • Key
+```
+
+---
+
+## Templates
+
+Templates define **how the purchase announcement is displayed**.
+
+You can create **unlimited templates**.
+
+The template name is used in the command.
+
+Example:
+
+```
+/tebexmessage one player(Senkex) package(VIP) price($10)
+```
+
+Template used:
+
+```
+one
+```
+
+---
+
+## Template Types
+
+Two default templates are commonly used.
+
+- **one** → single package purchase  
+- **multiple** → multiple packages separated with `;`
+
+Example:
+
+```
+package(VIP;Legend;Key)
+```
+
+This will use the **multiple** template layout.
+
+You can create **any number of templates** and customize them with your own events and layouts.
+
+---
+
+## Single Purchase Template
+
+Used when a player purchases **one package**.
+
+```yaml
+broadcast:
+  templates:
+    one:
+      events:
+        player-head: true
+        reward-event: true
+        discord-webhook: true
+
+        title:
+          enabled: true
+          type: GLOBAL
+          up: "&#FFD700{player}"
+          down: "&fPurchased &#38FF35{package} &7({price})"
+
+        sound:
+          enabled: true
+          type: GLOBAL
+          id: ENTITY_PLAYER_LEVELUP
+
+        actionbar:
+          enabled: true
+          message: "&#7CFF5A{player} &fpurchased &#00FFAA{package}"
+
+        bossbar:
+          enabled: false
+          text: "&fPurchased &#38FF35{package} &7({price})"
+          color: GREEN
+          style: SOLID
+          duration: 5
+          animated: false
+
+      message:
+        - "                  &#1BFF20&lGG IN THE CHAT! 🛒"
+        - "<empty>"
+        - "       &#1BFF3D@{player} &fhas purchased &#00FFAA{package}&f!"
+        - "         &fVisit our store &#FCFF1Bstore.server.com"
+        - "<empty>"
+        - "&7&o   (( Thank you for supporting the server ))"
+```
+
+---
+
+## Multiple Purchase Template
+
+Used when **several packages are purchased at once**.
+
+Example:
+
+```
+package(VIP;Legend;Key)
+```
+
+```yaml
+broadcast:
+  templates:
+    multiple:
+      events:
+        player-head: false
+        reward-event: false
+        discord-webhook: true
+
+        title:
+          enabled: true
+          type: GLOBAL
+          up: "&#FFD700{player}"
+          down: "&fPurchased &7({price})"
+
+        sound:
+          enabled: true
+          type: GLOBAL
+          id: ENTITY_PLAYER_LEVELUP
+
+        actionbar:
+          enabled: true
+          message: "&#7CFF5A{player} &fpurchased &#00FFAA{package}"
+
+        bossbar:
+          enabled: true
+          text: "&#00FFAA✨ NEW STORE PURCHASE ✨"
+          color: GREEN
+          style: SOLID
+          duration: 5
+          animated: false
+
+      message:
+        - "<center>&#1BFF3D&lNew purchase 🎉</center>"
+        - "<empty>"
+        - "<center>&#E9FF1B{player} &fjust purchased!</center>"
+        - "<center>&7(List of all purchases)</center>"
+        - "<empty>"
+        - "<center>{package}</center>"
+        - "<empty>"
+        - "%buttons%"
+```
+
+---
+
+## Message Tags
+
+Supported tags inside messages:
+
+```
+<empty>
+```
+
+Adds a blank line.
+
+```
+<center>text</center>
+```
+
+Centers text in chat.
+
+```
+%buttons%
+```
+
+Displays all configured buttons.
+
+```
+%button_id%
+```
+
+Displays a specific button.
+
+Example:
+
+```
+%button_shop%
+```
+
+---
+
+## Events
+
+Templates can trigger optional features.
+
+```yaml
+events:
+  player-head: true
+  reward-event: true
+  discord-webhook: true
+```
+
+Available events:
+
+- **player-head** → shows the buyer head next to the message
+- **reward-event** → starts the reward event
+- **discord-webhook** → sends purchase info to Discord
+
+---
+
+## Title
+
+Displays a title on screen.
+
+```yaml
+title:
+  enabled: true
+  type: GLOBAL
+  up: "&#FFD700{player}"
+  down: "&fPurchased &#38FF35{package} &7({price})"
+```
+
+Types:
+
+```
+GLOBAL
+```
+
+Visible to all players.
+
+```
+PLAYER
+```
+
+Visible only to the buyer.
+
+---
+
+## Sound
+
+Plays a sound when the purchase is announced.
+
+```yaml
+sound:
+  enabled: true
+  type: GLOBAL
+  id: ENTITY_PLAYER_LEVELUP
+```
+
+`id` must be a valid **Bukkit sound**.
+
+---
+
+## ActionBar
+
+Displays a message above the hotbar.
+
+```yaml
+actionbar:
+  enabled: true
+  message: "&#7CFF5A{player} &fpurchased &#00FFAA{package}"
+```
+
+Actionbars **do not support multiple lines**.
+
+---
+
+## BossBar
+
+Displays a bossbar at the top of the screen.
+
+```yaml
+bossbar:
+  enabled: true
+  text: "&fPurchased &#38FF35{package} &7({price})"
+  color: GREEN
+  style: SOLID
+  duration: 5
+  animated: false
+```
+
+Duration is defined in **seconds**.
+
+---
+
+## Creating Custom Templates
+
+You can create your own templates.
+
+Example:
+
+```yaml
+broadcast:
+  templates:
+    legendary:
+      events:
+        reward-event: true
+        discord-webhook: true
+
+      message:
+        - "<center>&6Legendary Purchase!</center>"
+        - "<center>{player} bought {package}</center>"
+```
+
+Command usage:
+
+```
+/tebexmessage legendary player(Senkex) package(ASTRO) price($20)
+```

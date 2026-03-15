@@ -1,0 +1,112 @@
+---
+title: Reward Event
+description: Chat participation event that rewards players who type a valid word.
+tableOfContents: true
+---
+
+Reward events allow players to participate in a **chat challenge** triggered by a broadcast.
+
+Players must type a configured word in chat and the first players who do it will automatically receive rewards executed by console commands.
+
+---
+
+## Enabling the Event
+
+Enable the reward event inside a broadcast template.
+
+```yaml
+events:
+  reward-event: true
+```
+
+When the broadcast runs, the reward event will start automatically.
+
+---
+
+## Words
+
+Defines the words that players must type in chat to participate.
+
+```yaml
+reward-event:
+  words:
+    - gg
+    - hype
+```
+
+Any listed word will count as a valid entry.
+
+---
+
+## Player Limit
+
+Defines how many players can successfully participate and receive rewards.
+
+```yaml
+reward-event:
+  players-write-word: 5
+```
+
+When the limit is reached, the event automatically ends.
+
+---
+
+## Case Handling
+
+Controls if chat messages ignore case differences.
+
+```yaml
+reward-event:
+  ignore-case: true
+```
+
+If enabled, different letter cases will still match the configured words.
+
+---
+
+## Event Timeout
+
+Defines how long the event stays active before automatically ending.
+
+```yaml
+reward-event:
+  cooldown:
+    enabled: true
+    time: 15
+```
+
+Time is defined in seconds.
+
+---
+
+## Rewards
+
+Commands executed for each player who successfully participates.
+
+```yaml
+reward-event:
+  players-rewards-commands:
+    - "give %player% diamond 1"
+    - "eco give %player% 500"
+```
+
+`%player%` will be replaced with the player name.
+
+---
+
+## Final Message
+
+Message broadcasted when the reward event finishes.
+
+```yaml
+reward-event:
+  final-message:
+    enabled: true
+    message:
+      - "<center>&aReward event finished!"
+      - "%players_reward_claimed%"
+```
+
+Placeholders:
+
+- `%players_reward_claimed%` → shows the list of players who received rewards

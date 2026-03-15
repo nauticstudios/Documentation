@@ -1,0 +1,153 @@
+---
+title: Overview
+description: Broadcast system for Tebex purchases.
+tableOfContents: true
+---
+
+NTebexMessage is a broadcast system designed for **Tebex store purchases**.
+
+Instead of simple chat messages, purchases can trigger **titles, actionbars, bossbars and interactive broadcasts**.
+
+Everything is controlled from configuration files, allowing servers to fully customize how store announcements appear in-game.
+
+---
+
+## Core Features
+
+- Custom broadcast templates
+- Multiple purchase formatting
+- Interactive chat buttons
+- Reward event system
+- Discord webhook integration
+- Titles, sounds and bossbars
+- Player head rendering
+
+---
+
+## Broadcast Templates
+
+Broadcasts are handled through **templates**.
+
+Each template controls how the purchase announcement appears in-game.
+
+Example usage:
+
+```
+/tebexmessage one player(Senkex) package(VIP) price($10)
+```
+
+This command executes the template:
+
+```
+one
+```
+
+Templates define:
+
+- Chat message layout
+- Titles and sounds
+- Actionbars and bossbars
+- Buttons and events
+
+---
+
+## Custom Arguments
+
+Arguments allow dynamic values inside broadcasts.
+
+Defined in:
+
+```
+config.yml
+```
+
+Example:
+
+```
+customs-args:
+- player
+- package
+- price
+```
+
+Usage in messages:
+
+```
+{player}
+{package}
+{price}
+```
+
+These values are automatically replaced when the broadcast runs.
+
+---
+
+## Multiple Purchase Support
+
+The plugin detects when multiple packages are purchased.
+
+Example input:
+
+```
+VIP;Legend;Key
+```
+
+Formatted output:
+
+```
+VIP • Legend • Key
+```
+
+The separator symbol can be customized in the configuration.
+
+---
+
+## Interactive Buttons
+
+Broadcast messages can include clickable buttons.
+
+Example usage in a message:
+
+```
+%buttons%
+```
+
+Or a specific button:
+
+```
+%button_shop%
+```
+
+Buttons can open:
+
+- Store links
+- Discord invites
+- Any external URL
+
+---
+
+## Reward Event
+
+A reward event can start automatically after a purchase broadcast.
+
+Players participate by typing a word in chat.
+
+Example:
+
+```
+gg
+```
+
+When the required number of players participate, rewards are executed automatically.
+
+---
+
+## Discord Webhook
+
+Purchase notifications can also be sent to Discord.
+
+Configured in:
+
+```
+discord.yml
+```
