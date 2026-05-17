@@ -16,82 +16,66 @@ export default defineConfig({
         alt: 'Nautic Studios',
       },
 
+      favicon: '/favicon.svg',
+
       customCss: ['./src/styles/custom.css'],
+
+      lastUpdated: false,
+
+      editLink: {
+        baseUrl: 'https://github.com/nauticstudios/Documentation/edit/main/nautic-docs/',
+      },
+
+      pagination: true,
+
+      tableOfContents: false,
+
+      social: [
+        {
+          icon: 'github',
+          label: 'GitHub',
+          href: 'https://github.com/nauticstudios',
+        },
+        {
+          icon: 'discord',
+          label: 'Discord',
+          href: 'https://discord.gg/cdT5g5xsVq',
+        },
+      ],
+
+      components: {
+        Footer: './src/components/Footer.astro',
+      },
 
       sidebar: [
         {
-          label: 'Getting Started',
-          collapsed: false,
+          label: 'Getting started',
           items: [
-            { label: 'Introduction', link: '/welcome/introduction' },
-            {
-              label: 'Features In All Plugins',
-              collapsed: true,
-              items: [
-                { label: 'AtlasLang', link: '/welcome/features/atlaslang' },
-                { label: 'Colors', link: '/welcome/features/colors' },
-                { label: 'Item Builder', link: '/welcome/features/item-builder' },
-                { label: 'Discord Webhook Builder', link: '/welcome/features/discord-webhook-builder' },
-              ],
-            },
+            { label: 'Introduction', link: '/start/introduction/' },
+          ],
+        },
+        {
+          label: 'Common features',
+          items: [
+            { label: 'AtlasLang', link: '/common/atlaslang/' },
+            { label: 'Colors', link: '/common/colors/' },
+            { label: 'Discord webhook builder', link: '/common/discord-webhook-builder/' },
           ],
         },
         {
           label: 'Plugins',
-          collapsed: false,
           items: [
-            {
-              label: 'NHubPvP',
-              collapsed: true,
-              items: [
-                { label: 'Overview', link: '/plugins/nhubpvp/overview' },
-                { label: 'Commands', link: '/plugins/nhubpvp/commands' },
-                { label: 'PvP System', link: '/plugins/nhubpvp/pvp' },
-                { label: 'Ability', link: '/plugins/nhubpvp/ability' },
-                { label: 'Stats System', link: '/plugins/nhubpvp/stats' },
-                { label: 'Placeholders', link: '/plugins/nhubpvp/placeholders' },
-                { label: 'Editor Menu', link: '/plugins/nhubpvp/editor' },
-                { label: 'Configuration', link: '/plugins/nhubpvp/configuration' },
-              ],
-            },
-            {
-              label: 'NChestRefill',
-              collapsed: true,
-              items: [
-                { label: 'Overview', link: '/plugins/nchestrefill/overview' },
-                { label: 'Performance', link: '/plugins/nchestrefill/performance' },
-                { label: 'Commands', link: '/plugins/nchestrefill/commands' },
-                { label: 'Time', link: '/plugins/nchestrefill/time' },
-                { label: 'Editor', link: '/plugins/nchestrefill/editor' },
-                { label: 'View Mode', link: '/plugins/nchestrefill/view' },
-                { label: 'Holograms', link: '/plugins/nchestrefill/holograms' },
-                { label: 'Configuration', link: '/plugins/nchestrefill/config' },
-              ],
-            },
             {
               label: 'NTebexMessage',
-              collapsed: true,
+              collapsed: false,
               items: [
-                { label: 'Overview', link: '/plugins/ntebexmessage/overview' },
-                { label: 'Commands', link: '/plugins/ntebexmessage/commands' },
-                { label: 'Templates', link: '/plugins/ntebexmessage/templates' },
-                { label: 'Buttons', link: '/plugins/ntebexmessage/buttons' },
-                { label: 'Reward Event', link: '/plugins/ntebexmessage/reward' },
-                { label: 'Discord Webhook', link: '/plugins/ntebexmessage/webhook' },
-                { label: 'Configuration', link: '/plugins/ntebexmessage/configuration' },
-              ],
-            },
-          ],
-        },
-        {
-          label: 'Work In Progress',
-          collapsed: false,
-          items: [
-            {
-              label: 'NPlugin',
-              collapsed: true,
-              items: [
-                { label: 'Overview', link: '/plugins/nplugin' },
+                { label: 'Overview', link: '/plugins/ntebexmessage/overview/' },
+                { label: 'Commands', link: '/plugins/ntebexmessage/commands/' },
+                { label: 'Templates', link: '/plugins/ntebexmessage/templates/' },
+                { label: 'Buttons', link: '/plugins/ntebexmessage/buttons/' },
+                { label: 'Reward event', link: '/plugins/ntebexmessage/reward/' },
+                { label: 'Discord webhook', link: '/plugins/ntebexmessage/webhook/' },
+                { label: 'Configuration', link: '/plugins/ntebexmessage/configuration/' },
               ],
             },
           ],

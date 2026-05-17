@@ -1,22 +1,50 @@
 ---
-title: Documentation
-description: Official documentation for Nautic Studios plugins
+title: Nautic Studios Documentation
+description: Official documentation for every Nautic Studios plugin and shared system.
 template: splash
-toc: false
-
 hero:
-  tagline: Official plugin documentation and configuration guides
-
+  tagline: Official documentation for every Nautic Studios plugin and the systems shared across them.
   image:
     file: ../../assets/nautic.webp
-
   actions:
-    - text: Getting Started
-      link: welcome/introduction/
+    - text: Get Started
+      link: /start/introduction/
       icon: open-book
-
+      variant: primary
     - text: Browse Plugins
-      link: plugins/
+      link: /plugins/ntebexmessage/overview/
       icon: right-arrow
       variant: minimal
+    - text: GitHub
+      link: https://github.com/nauticstudios
+      icon: external
+      variant: minimal
 ---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+  <Card title="Getting Started" icon="rocket">
+    Orientation, conventions and support channels.
+
+    [Read the introduction →](/start/introduction/)
+  </Card>
+
+  <Card title="Common Features" icon="setting">
+    Shared systems used across every plugin — languages, colors, item builder and Discord webhook embeds.
+
+    [Browse features →](/common/atlaslang/)
+  </Card>
+
+  <Card title="Plugins" icon="puzzle">
+    Per-plugin documentation: overview, commands, configuration and feature pages.
+
+    [Open NTebexMessage →](/plugins/ntebexmessage/overview/)
+  </Card>
+
+  <Card title="Community" icon="discord">
+    Get help, suggest features or report issues on the official Discord.
+
+    [Join the server →](https://discord.gg/cdT5g5xsVq)
+  </Card>
+</CardGrid>

@@ -1,0 +1,93 @@
+---
+import Default from '@astrojs/starlight/components/Footer.astro';
+import { execSync } from 'node:child_process';
+
+const route = Astro.locals.starlightRoute;
+const entry = route?.entry;
+
+const REPO = 'https://github.com/nauticstudios/Documentation';
+const year = new Date().getFullYear();
+
+type GitInfo = {
+  sha: string;
+  short: string;
+  name: string;
+  email: string;
+  date: string;
+  githubHandle: string | null;
+};
+
+let git: GitInfo | null = null;
+
+if (entry?.filePath) {
+  try {
+    const out = execSync(
+      `git log -1 --format=%H%x1f%an%x1f%ae%x1f%aI -- "${entry.filePath}"`,
+      { encoding: 'utf-8' }
+    ).trim();
+
+    if (out) {
+      const [sha, name, email, iso] = out.split('\x1f');
+
+      let handle: string | null = null;
+      const noreply = email.match(/^(?:\d+\+)?([^@]+)@users\.noreply\.github\.com$/);
+      if (noreply) handle = noreply[1];
+
+      git = {
+        sha,
+        short: sha.slice(0, 7),
+        name,
+        email,
+        date: new Date(iso).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        }),
+        githubHandle: handle,
+      };
+    }
+  } catch {
+    /* not in a git repo or git unavailable — skip silently */
+  }
+}
+
+const avatarUrl = git?.githubHandle
+  ? `https://github.com/${git.githubHandle}.png?size=40`
+  : null;
+const profileUrl = git?.githubHandle
+  ? `https://github.com/${git.githubHandle}`
+  : null;
+---
+
+<Default><slot /></Default>
+
+{git && (
+  <div class="nautic-git-meta">
+    <span>Last updated: {git.date} by</span>
+    {profileUrl ? (
+      <a href={profileUrl} rel="noopener" target="_blank">
+        {avatarUrl && <img src={avatarUrl} alt="" class="avatar" loading="lazy" width="20" height="20" />}
+        {git.name}
+      </a>
+    ) : (
+      <span>{git.name}</span>
+    )}
+    <span>in</span>
+    <a href={`${REPO}/commit/${git.sha}`} rel="noopener" target="_blank">
+      <code>{git.short}</code>
+    </a>
+  </div>
+)}
+
+<footer class="nautic-legal">
+  <p>
+    Copyright © {year} <a href="https://nautic-studios.com">Nautic Studios</a>.
+    Built with <a href="https://starlight.astro.build" rel="noopener" target="_blank">Starlight</a> &amp;
+    <a href="https://astro.build" rel="noopener" target="_blank">Astro</a>.
+  </p>
+  <p class="disclaimer">
+    This website is not an official Minecraft website and is not associated with Mojang Studios or
+    Microsoft. All product and company names are trademarks or registered trademarks of their
+    respective holders. Use of these names does not imply any affiliation or endorsement by them.
+  </p>
+</footer>
