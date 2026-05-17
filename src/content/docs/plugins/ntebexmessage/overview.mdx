@@ -1,153 +1,60 @@
 ---
 title: Overview
-description: Broadcast system for Tebex purchases.
-tableOfContents: false
+description: Broadcast system for Tebex purchases — titles, sounds, bossbars, interactive buttons and Discord webhooks.
 ---
 
-NTebexMessage is a broadcast system designed for **Tebex store purchases**.
+import { Card, CardGrid, LinkCard, Steps } from '@astrojs/starlight/components';
 
-Instead of simple chat messages, purchases can trigger **titles, actionbars, bossbars and interactive broadcasts**.
+**NTebexMessage** turns Tebex store purchases into rich in-game broadcasts. Each purchase can trigger a chat message, title, actionbar, bossbar, sound, interactive buttons, a reward event and a Discord webhook — all driven from configuration files.
 
-Everything is controlled from configuration files, allowing servers to fully customize how store announcements appear in-game.
+## At a glance
 
----
+<CardGrid>
+  <Card title="Templates" icon="document">
+    Multiple broadcast layouts. The console picks one by name when announcing a purchase.
+  </Card>
+  <Card title="Interactive buttons" icon="cursor">
+    Clickable chat components that open store, Discord or any URL.
+  </Card>
+  <Card title="Reward event" icon="rocket">
+    Players type a configured word in chat to receive automatic rewards.
+  </Card>
+  <Card title="Discord webhook" icon="discord">
+    Send embed-rich notifications to a Discord channel on every purchase.
+  </Card>
+</CardGrid>
 
-## Core Features
+## Quick example
 
-- Custom broadcast templates
-- Multiple purchase formatting
-- Interactive chat buttons
-- Reward event system
-- Discord webhook integration
-- Titles, sounds and bossbars
-- Player head rendering
-
----
-
-## Broadcast Templates
-
-Broadcasts are handled through **templates**.
-
-Each template controls how the purchase announcement appears in-game.
-
-Example usage:
+A purchase is announced from console:
 
 ```
 /tebexmessage one player(Senkex) package(VIP) price($10)
 ```
 
-This command executes the template:
+This runs the `one` template defined in `config.yml`, replaces `{player}`, `{package}` and `{price}`, and broadcasts everything the template has enabled — chat lines, title, sound, actionbar, bossbar, buttons and any optional event.
 
-```
-one
-```
+## How it fits together
 
-Templates define:
+<Steps>
+1. The Tebex plugin or a CSP runs `/tebexmessage <template> arg(value) …` from console after a purchase.
 
-- Chat message layout
-- Titles and sounds
-- Actionbars and bossbars
-- Buttons and events
+2. NTebexMessage looks up the template by name in `config.yml`.
 
----
+3. Custom arguments are replaced into placeholders (`{player}`, `{package}`, `{price}` …).
 
-## Custom Arguments
+4. The configured chat message, titles, sounds and bars are dispatched to players.
 
-Arguments allow dynamic values inside broadcasts.
+5. Optional events fire: reward event, Discord webhook, player head display.
+</Steps>
 
-Defined in:
+## Continue reading
 
-```
-config.yml
-```
-
-Example:
-
-```
-customs-args:
-- player
-- package
-- price
-```
-
-Usage in messages:
-
-```
-{player}
-{package}
-{price}
-```
-
-These values are automatically replaced when the broadcast runs.
-
----
-
-## Multiple Purchase Support
-
-The plugin detects when multiple packages are purchased.
-
-Example input:
-
-```
-VIP;Legend;Key
-```
-
-Formatted output:
-
-```
-VIP • Legend • Key
-```
-
-The separator symbol can be customized in the configuration.
-
----
-
-## Interactive Buttons
-
-Broadcast messages can include clickable buttons.
-
-Example usage in a message:
-
-```
-%buttons%
-```
-
-Or a specific button:
-
-```
-%button_shop%
-```
-
-Buttons can open:
-
-- Store links
-- Discord invites
-- Any external URL
-
----
-
-## Reward Event
-
-A reward event can start automatically after a purchase broadcast.
-
-Players participate by typing a word in chat.
-
-Example:
-
-```
-gg
-```
-
-When the required number of players participate, rewards are executed automatically.
-
----
-
-## Discord Webhook
-
-Purchase notifications can also be sent to Discord.
-
-Configured in:
-
-```
-discord.yml
-```
+<CardGrid>
+  <LinkCard title="Commands" href="/plugins/ntebexmessage/commands/" description="Full command reference and arguments." />
+  <LinkCard title="Templates" href="/plugins/ntebexmessage/templates/" description="Template structure, events and message tags." />
+  <LinkCard title="Buttons" href="/plugins/ntebexmessage/buttons/" description="Interactive clickable chat components." />
+  <LinkCard title="Reward event" href="/plugins/ntebexmessage/reward/" description="Chat participation event with automatic rewards." />
+  <LinkCard title="Discord webhook" href="/plugins/ntebexmessage/webhook/" description="Embed-rich Discord notifications." />
+  <LinkCard title="Configuration" href="/plugins/ntebexmessage/configuration/" description="Reference for every key in config.yml." />
+</CardGrid>

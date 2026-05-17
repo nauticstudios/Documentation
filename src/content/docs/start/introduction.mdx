@@ -3,23 +3,39 @@ title: Introduction
 description: Welcome to the official Nautic Studios documentation.
 ---
 
-This site is the official source of documentation for every plugin and shared system developed by Nautic Studios.
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+This site is the official source of documentation for every plugin and shared system developed by **Nautic Studios**. All content is maintained alongside the source code so that what you read here matches what ships.
 
 :::note
-All content here is maintained alongside the source code. If a feature is not documented, treat it as unofficial until this page is updated.
+If a feature is not documented on this site, treat it as unofficial until this page is updated.
 :::
 
 ## What you will find here
 
-- **Common features** — systems used across every plugin, including the multilingual engine, supported color formats and Discord webhook embeds.
-- **Plugins** — full documentation for every released plugin, with overview, commands, configuration and feature pages.
-- **Work in progress** — upcoming plugins that have been announced but are not yet available.
+<CardGrid>
+  <LinkCard
+    title="Common features"
+    description="Systems shared by every plugin: multilingual engine, color formats and Discord embeds."
+    href="/common/atlaslang/"
+  />
+  <LinkCard
+    title="Plugins"
+    description="Full documentation for every released plugin — overview, commands and configuration."
+    href="/plugins/ntebexmessage/overview/"
+  />
+  <LinkCard
+    title="Work in progress"
+    description="Upcoming plugins announced by Nautic Studios that are not yet released."
+    href="/wip/ntags/"
+  />
+</CardGrid>
 
 ## Getting help
 
 If something is unclear or behaves unexpectedly:
 
-1. Read the relevant plugin page.
+1. Read the relevant plugin page on this site.
 2. Compare your configuration against the examples shown on the page.
 3. Ask on the official Discord if the issue persists.
 
@@ -29,5 +45,11 @@ Join the Discord server at [discord.gg/cdT5g5xsVq](https://discord.gg/cdT5g5xsVq
 
 ## Useful links
 
-- GitHub organisation: [github.com/nauticstudios](https://github.com/nauticstudios)
-- Discord server: [discord.gg/cdT5g5xsVq](https://discord.gg/cdT5g5xsVq)
+<CardGrid>
+  <Card title="GitHub" icon="github">
+    All public source code lives at [github.com/nauticstudios](https://github.com/nauticstudios).
+  </Card>
+  <Card title="Discord" icon="discord">
+    Get help, request features and report issues at [discord.gg/cdT5g5xsVq](https://discord.gg/cdT5g5xsVq).
+  </Card>
+</CardGrid>

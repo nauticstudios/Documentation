@@ -1,54 +1,48 @@
 ---
 title: Commands
-description: Complete command reference for NTebexMessage.
-tableOfContents: false
+description: Complete command and permission reference for NTebexMessage.
 ---
 
-## Commands
+## Command reference
 
-| Command | Permission | Description | Default |
-|----------|------------|-------------|----------|
-| `/tebexmessage help` | `tebexmessage.help` | Displays the help menu with available commands | true |
-| `/tebexmessage reload` | `tebexmessage.reload` | Reloads all plugin configuration files | OP |
-| `/tebexmessage args` | `tebexmessage.args` | Shows all configured custom arguments | OP |
-| `/tebexmessage <template> arg(value)` | Console only | Sends a purchase broadcast using a template | Console |
+| Command | Permission | Default | Description |
+| --- | --- | --- | --- |
+| `/tebexmessage help` | `tebexmessage.help` | everyone | Display the help menu. |
+| `/tebexmessage reload` | `tebexmessage.reload` | OP | Reload all configuration files. |
+| `/tebexmessage args` | `tebexmessage.args` | OP | List all configured custom arguments. |
+| `/tebexmessage <template> arg(value)…` | console only | console | Broadcast a purchase using the given template. |
 
----
+Use `tebexmessage.admin` to grant access to every command.
 
-## Broadcast Command
+## Broadcast command
 
-The main command used to simulate or send a purchase broadcast.
+The broadcast command runs only from console.
 
 ```
-/tebexmessage <template> arg(value)
+/tebexmessage <template> arg(value) arg(value) …
 ```
 
-This command must be executed **from console**.
+- `<template>` — name of a template defined in `config.yml`.
+- `arg(value)` — one custom argument per pair, in any order.
 
-The `<template>` value must match a template defined in the configuration.
-
-Example:
+### Example
 
 ```
 /tebexmessage one player(Senkex) package(VIP) price($10)
 ```
 
-Explanation:
+| Argument | Value |
+| --- | --- |
+| Template | `one` |
+| `{player}` | `Senkex` |
+| `{package}` | `VIP` |
+| `{price}` | `$10` |
 
-- `one` → template name  
-- `player(Senkex)` → player who purchased  
-- `package(VIP)` → purchased package  
-- `price($10)` → purchase price  
+The template's chat message, title, sound, actionbar, bossbar, buttons and any enabled event will be triggered.
 
-The broadcast system will parse these arguments and inject them into the template placeholders.
+## Custom arguments
 
----
-
-## Custom Arguments
-
-Arguments used by the command are defined in the configuration.
-
-Example:
+Arguments are declared in `config.yml`:
 
 ```yaml
 customs-args:
@@ -57,9 +51,7 @@ customs-args:
   - price
 ```
 
-Each argument becomes a placeholder usable inside templates.
-
-Usage inside messages:
+Every argument listed here becomes a placeholder that can be used inside templates, messages, titles, actionbars, bossbars and Discord webhooks.
 
 ```
 {player}
@@ -67,46 +59,6 @@ Usage inside messages:
 {price}
 ```
 
-If an argument is missing or invalid, the command will return an error.
-
----
-
-## Example Usage
-
-Console command:
-
-```
-/tebexmessage one player(Senkex) package(ASTRO Rank) price($25)
-```
-
-Template used:
-
-```
-one
-```
-
-Placeholders replaced:
-
-```
-{player} → Senkex
-{package} → ASTRO Rank
-{price} → $25
-```
-
-The broadcast will then trigger all configured template features such as:
-
-- chat message
-- title
-- actionbar
-- bossbar
-- sound
-- reward event
-- Discord webhook
-
----
-
-## Admin Permission
-
-| Permission | Description | Default |
-|------------|-------------|----------|
-| `tebexmessage.admin` | Grants access to all commands and bypasses permission checks | OP |
+:::caution
+If an argument used in the command is not declared in `customs-args`, the command returns an error.
+:::

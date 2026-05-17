@@ -1,12 +1,9 @@
 ---
-title: Discord Webhook
-description: Send purchase notifications directly to Discord.
-tableOfContents: false
+title: Discord webhook
+description: Send purchase notifications to Discord using webhook embeds.
 ---
 
-NTebexMessage can send **store purchase notifications** directly to Discord using webhooks.
-
-This allows your community to see **live store activity** without being in-game.
+NTebexMessage can post a Discord webhook every time a template is broadcasted, so your community sees live store activity without being in-game.
 
 Configuration file:
 
@@ -14,232 +11,131 @@ Configuration file:
 discord.yml
 ```
 
----
+For full embed field reference, see the shared [Discord webhook builder](/common/discord-webhook-builder/) page.
 
-## Enable Webhook
+## Enable
 
-```
+```yaml
 webhook:
   enabled: true
+  url: "INSERT-WEBHOOK-URL"
 ```
 
-- `true` → webhook active  
-- `false` → disabled
+| Field | Description |
+| --- | --- |
+| `enabled` | `true` to send a webhook for every broadcast. |
+| `url` | The Discord webhook URL. |
 
----
+## Bot identity
 
-## Webhook URL
-
-```
-url: "INSERT-WEBHOOK-URL"
-```
-
-Paste your Discord webhook URL here.
-
----
-
-## Webhook Identity
-
-```
+```yaml
 username: "Store Notification"
 avatar-url: "https://i.imgur.com/ip1xV13.png"
 ```
 
-- `username` → name of the webhook bot  
-- `avatar-url` → icon displayed in Discord
+| Field | Description |
+| --- | --- |
+| `username` | Display name of the webhook bot. |
+| `avatar-url` | Image shown as the bot avatar. |
 
----
+## Multi-package separator
 
-## Multiple Package Symbol
+When a purchase contains multiple packages, the separator joins them in the Discord message.
 
-When a purchase contains multiple packages.
-
-Example purchase:
-
-```
-VIP;MVP;ASTRO
-```
-
-Configuration:
-
-```
+```yaml
 symbol: "•"
 ```
 
-Result:
+Input: `VIP;MVP;ASTRO` → output: `VIP • MVP • ASTRO`
 
-```
-VIP • MVP • ASTRO
-```
+## Cleaning package names
 
----
+### Word filter
 
-## Word Filter
+Remove unwanted words from package names before they reach Discord. Case-insensitive.
 
-Removes unwanted words from package names.
-
-Example:
-
-```
-Kit ASTRO
-```
-
-Becomes:
-
-```
-ASTRO
-```
-
-Configuration:
-
-```
+```yaml
 word-does-appear:
-- kit
-- rank
-- package
+  - kit
+  - rank
+  - package
 ```
 
-Filtering is **case-insensitive**.
+Input `Kit ASTRO` becomes `ASTRO`.
 
----
+### Word replace
 
-## Word Replace
+Replace package names with custom display names.
 
-Replaces words with custom names.
-
-Example:
-
-```
-vip → VIP
-mvp → MVP
-```
-
-Configuration:
-
-```
+```yaml
 word-replace:
   vip: "VIP"
   mvp: "MVP"
   astro: "ASTRO"
 ```
 
----
+## Simple content message
 
-## Simple Message Content
+The plain Discord message — useful for mentions.
 
-Basic Discord message format.
-
-```
+```yaml
 content: "Player **{player}** purchased **{package}**"
 ```
 
-Supported placeholders:
+| Placeholder | Replaces with |
+| --- | --- |
+| `{player}` | Buyer name |
+| `{package}` | Purchased package(s) |
+| `{price}` | Purchase price |
 
-```
-{player}
-{package}
-{price}
-```
+## Embed
 
----
+Embeds are configured under `embed:` and follow the [shared embed format](/common/discord-webhook-builder/).
 
-## Embed Message
-
-Embeds provide a richer message format.
-
-```
+```yaml
 embed:
   enabled: true
+
+  title: "🛒 New Purchase"
+
+  color: "#00FFAA"
+
+  description:
+    - "Player **{player}** purchased **{package}**"
+
+  fields:
+
+    - name: "Player"
+      value: "{player}"
+      inline: true
+
+    - name: "Package"
+      value: "{package}"
+      inline: true
+
+    - name: "Price"
+      value: "{price}"
+      inline: true
+
+  author:
+    name: "Server Store"
+    url: ""
+    icon: ""
+
+  footer:
+    text: "Powered by Nautic Studios"
+    icon: ""
+
+  image: "https://i.imgur.com/ip1xV13.png"
+
+  thumbnail: "https://mc-heads.net/avatar/{player}"
 ```
 
----
-
-### Embed Title
-
-```
-title: "🛒 New Purchase"
-```
-
----
-
-### Embed Color
-
-```
-color: "#00FFAA"
-```
-
-Accepts **HEX color values**.
-
----
-
-### Embed Description
-
-```
-description:
-- "Player **{player}** purchased **{package}**"
-```
-
----
-
-### Embed Fields
-
-Fields display structured purchase information.
-
-```
-fields:
-
-- name: "Player"
-  value: "{player}"
-  inline: true
-
-- name: "Package"
-  value: "{package}"
-  inline: true
-
-- name: "Price"
-  value: "{price}"
-  inline: true
-```
-
----
-
-### Embed Author
-
-```
-author:
-  name: "Server Store"
-  url: ""
-  icon: ""
-```
-
----
-
-### Embed Footer
-
-```
-footer:
-  text: "Powered by Nautic Studios"
-  icon: ""
-```
-
----
-
-### Embed Image
-
-```
-image: "https://i.imgur.com/ip1xV13.png"
-```
-
-Displays a large image at the bottom of the embed.
-
----
-
-### Player Thumbnail
-
-```
-thumbnail: "https://mc-heads.net/avatar/{player}"
-```
-
-Displays the player's Minecraft head.
-
----
+| Field | Description |
+| --- | --- |
+| `title` | Title shown at the top of the embed. |
+| `color` | Vertical bar color, HEX. |
+| `description` | List of lines rendered as the embed description. |
+| `fields` | Structured fields shown inside the embed. `inline: true` puts fields side by side. |
+| `image` | Large image at the bottom of the embed. |
+| `thumbnail` | Small image at the top-right. Use `mc-heads.net/avatar/{player}` to show the buyer's head. |

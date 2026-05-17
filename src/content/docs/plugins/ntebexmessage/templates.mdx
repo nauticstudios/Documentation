@@ -1,26 +1,17 @@
 ---
 title: Templates
 description: Broadcast templates define how purchase announcements are displayed.
-tableOfContents: false
 ---
 
-Templates control how a purchase is **broadcasted to players**.
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-They define the layout, sounds, titles, chat messages, buttons and optional events such as reward events or Discord webhooks.
+Templates control how a purchase is broadcasted to players. Each template can define a chat message, title, sound, actionbar, bossbar, buttons and optional events.
 
-Main configuration file:
+All templates live in `config.yml` under `broadcast.templates`. Any number of templates can be defined — the console command picks one by name.
 
-```
-config.yml
-```
+## Custom arguments
 
----
-
-## Custom Arguments
-
-Custom arguments define **placeholders usable inside templates**.
-
-These values are passed when executing the command.
+Arguments declared in `customs-args` become placeholders for use inside the template.
 
 ```yaml
 customs-args:
@@ -29,94 +20,61 @@ customs-args:
   - price
 ```
 
-Example console usage:
+Inside any template string:
 
 ```
-/tebexmessage one player(Senkex) package(VIP Rank) price($10)
+{player}  {package}  {price}
 ```
 
-Usage inside messages:
+## Separator symbol
 
-```
-{player}
-{package}
-{price}
-```
-
-Reload configuration:
-
-```
-/tebexmessage reload
-```
-
----
-
-## Separator Symbol
-
-Used when multiple packages are included in a single purchase.
+When a purchase includes multiple packages, the separator joins them in the displayed text.
 
 ```yaml
 separator-symbol: "&7•"
 ```
 
-Example input:
+Input from the command:
 
 ```
 package(VIP;Legend;Key)
 ```
 
-Output:
+Displayed output:
 
 ```
 VIP • Legend • Key
 ```
 
----
+## Template structure
 
-## Templates
+Every template follows the same structure:
 
-Templates define **how the purchase announcement is displayed**.
-
-You can create **unlimited templates**.
-
-The template name is used in the command.
-
-Example:
-
-```
-/tebexmessage one player(Senkex) package(VIP) price($10)
-```
-
-Template used:
-
-```
-one
+```yaml
+broadcast:
+  templates:
+    <name>:
+      events:    { player-head, reward-event, discord-webhook }
+      title:     { enabled, type, up, down }
+      sound:     { enabled, type, id }
+      actionbar: { enabled, message }
+      bossbar:   { enabled, text, color, style, duration, animated }
+      message:
+        - "<chat line 1>"
+        - "<chat line 2>"
 ```
 
----
+Default templates shipped with the plugin:
 
-## Template Types
+- **one** — used for single-package purchases.
+- **multiple** — used when several packages were purchased at once.
 
-Two default templates are commonly used.
+You can create as many additional templates as you like and pick the one to use in the console command.
 
-- **one** → single package purchase  
-- **multiple** → multiple packages separated with `;`
+## Examples
 
-Example:
-
-```
-package(VIP;Legend;Key)
-```
-
-This will use the **multiple** template layout.
-
-You can create **any number of templates** and customize them with your own events and layouts.
-
----
-
-## Single Purchase Template
-
-Used when a player purchases **one package**.
+<Tabs>
+<TabItem label="Single purchase">
 
 ```yaml
 broadcast:
@@ -144,11 +102,6 @@ broadcast:
 
         bossbar:
           enabled: false
-          text: "&fPurchased &#38FF35{package} &7({price})"
-          color: GREEN
-          style: SOLID
-          duration: 5
-          animated: false
 
       message:
         - "                  &#1BFF20&lGG IN THE CHAT! 🛒"
@@ -159,17 +112,8 @@ broadcast:
         - "&7&o   (( Thank you for supporting the server ))"
 ```
 
----
-
-## Multiple Purchase Template
-
-Used when **several packages are purchased at once**.
-
-Example:
-
-```
-package(VIP;Legend;Key)
-```
+</TabItem>
+<TabItem label="Multiple purchase">
 
 ```yaml
 broadcast:
@@ -214,47 +158,23 @@ broadcast:
         - "%buttons%"
 ```
 
----
+</TabItem>
+</Tabs>
 
-## Message Tags
+## Message tags
 
-Supported tags inside messages:
+Special tags can be used inside any line of `message`.
 
-```
-<empty>
-```
-
-Adds a blank line.
-
-```
-<center>text</center>
-```
-
-Centers text in chat.
-
-```
-%buttons%
-```
-
-Displays all configured buttons.
-
-```
-%button_id%
-```
-
-Displays a specific button.
-
-Example:
-
-```
-%button_shop%
-```
-
----
+| Tag | Description |
+| --- | --- |
+| `<empty>` | Insert a blank line. |
+| `<center>text</center>` | Center the text in chat. |
+| `%buttons%` | Render every configured button. |
+| `%button_<id>%` | Render a single button by id. |
 
 ## Events
 
-Templates can trigger optional features.
+Toggle optional features for the template.
 
 ```yaml
 events:
@@ -263,17 +183,13 @@ events:
   discord-webhook: true
 ```
 
-Available events:
-
-- **player-head** → shows the buyer head next to the message
-- **reward-event** → starts the reward event
-- **discord-webhook** → sends purchase info to Discord
-
----
+| Key | Behavior |
+| --- | --- |
+| `player-head` | Render the buyer's head next to the chat message. |
+| `reward-event` | Start the chat reward event after the broadcast. |
+| `discord-webhook` | Send the purchase to the configured Discord webhook. |
 
 ## Title
-
-Displays a title on screen.
 
 ```yaml
 title:
@@ -283,25 +199,12 @@ title:
   down: "&fPurchased &#38FF35{package} &7({price})"
 ```
 
-Types:
-
-```
-GLOBAL
-```
-
-Visible to all players.
-
-```
-PLAYER
-```
-
-Visible only to the buyer.
-
----
+| Type | Visible to |
+| --- | --- |
+| `GLOBAL` | Every online player. |
+| `PLAYER` | Only the buyer. |
 
 ## Sound
-
-Plays a sound when the purchase is announced.
 
 ```yaml
 sound:
@@ -310,13 +213,9 @@ sound:
   id: ENTITY_PLAYER_LEVELUP
 ```
 
-`id` must be a valid **Bukkit sound**.
-
----
+`id` must be a valid Bukkit sound. `type` follows the same `GLOBAL` / `PLAYER` rule as titles.
 
 ## ActionBar
-
-Displays a message above the hotbar.
 
 ```yaml
 actionbar:
@@ -324,13 +223,11 @@ actionbar:
   message: "&#7CFF5A{player} &fpurchased &#00FFAA{package}"
 ```
 
-Actionbars **do not support multiple lines**.
-
----
+:::note
+ActionBars only support a single line.
+:::
 
 ## BossBar
-
-Displays a bossbar at the top of the screen.
 
 ```yaml
 bossbar:
@@ -342,31 +239,10 @@ bossbar:
   animated: false
 ```
 
-Duration is defined in **seconds**.
+`duration` is in seconds.
 
----
-
-## Creating Custom Templates
-
-You can create your own templates.
-
-Example:
-
-```yaml
-broadcast:
-  templates:
-    legendary:
-      events:
-        reward-event: true
-        discord-webhook: true
-
-      message:
-        - "<center>&6Legendary Purchase!</center>"
-        - "<center>{player} bought {package}</center>"
-```
-
-Command usage:
-
-```
-/tebexmessage legendary player(Senkex) package(ASTRO) price($20)
-```
+| Field | Accepted values |
+| --- | --- |
+| `color` | `PINK`, `BLUE`, `RED`, `GREEN`, `YELLOW`, `PURPLE`, `WHITE` |
+| `style` | `SOLID`, `SEGMENTED_6`, `SEGMENTED_10`, `SEGMENTED_12`, `SEGMENTED_20` |
+| `animated` | `true` to gradually empty the bar over `duration`, `false` for a static bar. |

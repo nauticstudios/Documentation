@@ -231,8 +231,8 @@ site-search button:hover {
 }
 
 .sl-markdown-content {
-  font-size: 1.0625rem;
-  line-height: 1.7;
+  font-size: 1.125rem;
+  line-height: 1.72;
 }
 
 .sl-markdown-content h1,
@@ -271,7 +271,7 @@ site-search button:hover {
 
 .sl-markdown-content p,
 .sl-markdown-content li {
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   color: var(--sl-color-gray-1);
 }
 
@@ -314,13 +314,18 @@ site-search button:hover {
 }
 
 .sl-markdown-content table {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   border: 1px solid var(--sl-color-hairline);
   border-radius: 8px;
   overflow: hidden;
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
+  background: var(--sl-color-bg-nav);
+}
+
+.sl-markdown-content thead {
+  background: var(--sl-color-hairline-shade);
 }
 
 .sl-markdown-content th {
@@ -330,9 +335,17 @@ site-search button:hover {
   color: var(--sl-color-white);
 }
 
+.sl-markdown-content tbody tr {
+  background: var(--sl-color-bg-nav);
+}
+
+.sl-markdown-content tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--sl-color-bg-nav) 60%, var(--sl-color-bg-inline-code));
+}
+
 .sl-markdown-content th,
 .sl-markdown-content td {
-  padding: 0.6rem 0.9rem;
+  padding: 0.65rem 0.95rem;
   border-bottom: 1px solid var(--sl-color-hairline);
   vertical-align: top;
 }
@@ -341,10 +354,20 @@ site-search button:hover {
   border-bottom: none;
 }
 
+.sl-markdown-content table code {
+  white-space: nowrap;
+}
+
 .sl-markdown-content .starlight-aside {
   border-radius: 8px;
   border-left-width: 3px;
   padding: 0.9rem 1rem;
+  background-color: var(--sl-color-bg-nav);
+}
+
+.expressive-code {
+  background: var(--sl-color-bg-inline-code);
+  border-radius: 8px;
 }
 
 .sl-markdown-content img,
@@ -411,6 +434,21 @@ site-search button:hover {
   border-radius: 50%;
   border: 1px solid var(--sl-color-hairline);
   vertical-align: middle;
+}
+
+.nautic-git-meta .author-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.nautic-git-meta .gh-icon {
+  color: var(--sl-color-gray-2);
+  flex-shrink: 0;
+}
+
+.nautic-git-meta .author-name {
+  font-weight: 500;
 }
 
 .nautic-git-meta code {

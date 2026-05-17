@@ -1,80 +1,37 @@
 ---
 title: Buttons
-description: Interactive chat buttons used in broadcast messages.
-tableOfContents: false
+description: Interactive clickable chat components inside broadcast messages.
 ---
 
-Buttons allow you to create **clickable chat components** that players can interact with.
+Buttons are clickable chat components used inside broadcast messages. They are typically used to open the store, a Discord invite or any external URL.
 
-They are commonly used to **open the server store, Discord, or other links** directly from the broadcast message.
+## Using buttons in a message
 
-Main configuration section:
-
-```yaml
-buttons:
-```
-
-Buttons can be inserted inside broadcast messages using placeholders.
-
----
-
-## Using Buttons
-
-Buttons are inserted in broadcast messages using:
-
-```
-%buttons%
-```
-
-This placeholder will display **all configured buttons**.
-
-Example:
+| Placeholder | Renders |
+| --- | --- |
+| `%buttons%` | All configured buttons. |
+| `%button_<id>%` | A single button by id. |
 
 ```yaml
 message:
   - "<center>&aNew purchase!</center>"
   - "<empty>"
-  - "%buttons%"
+  - "%button_shop%"
+  - "%button_discord%"
 ```
 
----
+## Centering buttons
 
-## Using a Specific Button
-
-You can also display a **single button**.
-
-Format:
-
-```
-%button_<id>%
-```
-
-Example:
-
-```
-%button_shop%
-```
-
----
-
-## Centering Buttons
-
-Buttons can be visually centered by adding spaces before them.
+`center` defines how many leading spaces are added before the buttons line.
 
 ```yaml
 buttons:
   center: 20
 ```
 
-This value defines how many spaces are added before the buttons.
+## Defining buttons
 
----
-
-## Button Configuration
-
-Buttons are defined inside the `list` section.
-
-Example:
+Buttons live in `buttons.list` and are keyed by id. The id is what `%button_<id>%` references.
 
 ```yaml
 buttons:
@@ -93,96 +50,28 @@ buttons:
       open_url: "https://discord.gg/example"
 ```
 
----
+## Button fields
 
-## Button Options
+| Field | Description |
+| --- | --- |
+| `text` | The text displayed in chat. Supports HEX, MiniMessage gradients and formatting. |
+| `hover` | Tooltip shown when the player hovers the button. |
+| `open_url` | URL opened when the player clicks the button. |
 
-```yaml
-text:
-```
+You can define as many buttons as you need — there is no built-in limit.
 
-Text displayed in chat.
-
-Supports:
-
-- hex colors
-- gradients
-- formatting
-
-Example:
-
-```
-<gradient:#72FF76:#17EA25>[ Open Shop ]</gradient>
-```
-
----
-
-```yaml
-hover:
-```
-
-Text shown when the player **hovers the mouse** over the button.
-
-Example:
-
-```
-Click to open the store
-```
-
----
-
-```yaml
-open_url:
-```
-
-URL opened when the button is clicked.
-
-Example:
-
-```
-https://shop.yourserver.com/
-```
-
----
-
-## Example Usage
-
-Broadcast message example:
-
-```yaml
-message:
-  - "<center>&aNew purchase!</center>"
-  - "<empty>"
-  - "%button_shop%"
-  - "%button_discord%"
-```
-
-Or display all buttons:
-
-```yaml
-message:
-  - "%buttons%"
-```
-
----
-
-## Creating Custom Buttons
-
-You can create **unlimited buttons**.
-
-Example:
+## Creating a custom button
 
 ```yaml
 buttons:
   list:
-
     website:
       text: "&e[ Visit Website ]"
       hover: "&fClick to open the website"
       open_url: "https://example.com"
 ```
 
-Usage:
+Reference it from any template message:
 
 ```
 %button_website%
