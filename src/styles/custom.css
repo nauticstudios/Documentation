@@ -2,8 +2,9 @@
   --sl-font: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --sl-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --sl-content-width: 56rem;
+  --sl-content-width: 60rem;
   --sl-sidebar-width: 19rem;
+  --sl-text-base: 1.0625rem;
 
   --nautic-blue: #2563eb;
   --nautic-blue-bright: #3b82f6;
@@ -230,7 +231,8 @@ site-search button:hover {
 }
 
 .sl-markdown-content {
-  font-size: 1rem;
+  font-size: 1.0625rem;
+  line-height: 1.7;
 }
 
 .sl-markdown-content h1,
@@ -242,13 +244,13 @@ site-search button:hover {
 }
 
 .sl-markdown-content h1 {
-  font-size: 2.25rem;
+  font-size: 2.5rem;
   margin-bottom: 1.25rem;
   color: var(--sl-color-white);
 }
 
 .sl-markdown-content h2 {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   margin-top: 2.75rem;
   margin-bottom: 0.75rem;
   padding-top: 1.5rem;
@@ -262,14 +264,14 @@ site-search button:hover {
 }
 
 .sl-markdown-content h3 {
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   margin-top: 1.75rem;
   color: var(--sl-color-white);
 }
 
 .sl-markdown-content p,
 .sl-markdown-content li {
-  font-size: 1rem;
+  font-size: 1.0625rem;
   color: var(--sl-color-gray-1);
 }
 

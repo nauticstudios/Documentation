@@ -1,68 +1,24 @@
 ---
 title: AtlasLang
-description: Centralized multilingual engine with strict validation, PlaceholderAPI support and GitHub synchronization.
-tableOfContents: false
+description: Multilingual engine shared by every Nautic Studios plugin.
 ---
 
-AtlasLang is a production-grade multilingual engine designed for centralized language management across plugins and server components.
+AtlasLang is the multilingual engine used internally by every Nautic Studios plugin. It stores each player's language in a database, loads YAML message files per language, and exposes a strict PlaceholderAPI integration and a public developer API.
 
-It provides strict validation, structured file handling, database-backed player language storage and full PlaceholderAPI integration.
+GitHub: [github.com/nauticstudios/atlaslang](https://github.com/nauticstudios/atlaslang)
 
-GitHub Repository:  
-https://github.com/nauticstudios/atlaslang
+## Features
 
-Public API:  
-https://github.com/nauticstudios/AtlasLang/blob/master/src/main/java/com/github/nautic/api/AtlasAPI.java
-
----
-
-# Overview
-
-AtlasLang provides:
-
-- Per-player language storage
-- Locale → folder mapping system
-- Strict language validation
-- Recursive YAML file loading
+- Per-player language stored in the database
+- Recursive YAML loading per language folder
+- Strict language validation with safe fallbacks
 - PlaceholderAPI expansion
 - Public developer API
-- GitHub synchronization
-- Database persistence
-- Runtime dependency loading
+- Optional GitHub synchronization
 
-:::note
-AtlasLang enforces strict validation to prevent invalid or unregistered languages from being used.
-:::
+## Configuration
 
----
-
-# Architecture
-
-## Main Plugin (AtlasLang)
-
-Responsible for:
-
-- Runtime dependency loading
-- Configuration initialization
-- Language registration
-- Command system
-- Placeholder expansion registration
-- GitHub sync management
-- Database initialization
-
----
-
-## LanguageManager
-
-Handles:
-
-- Language registration
-- Locale → folder mapping
-- Default language fallback
-- Strict resolution
-- Reload logic
-
-Configuration format:
+Languages are declared in the main configuration file. The format is `locale:folder:defaultFile`.
 
 ```yaml
 default: english
@@ -73,73 +29,27 @@ register:
     - es:spanish:messages.yml
 ```
 
-Format:
+Each entry must point to an existing folder under `/plugins/AtlasLang/languages/`. The default file is created automatically if it does not exist.
 
-```
-locale:folder:defaultFile
-```
-
----
-
-## FileManager
-
-Responsible for:
-
-- Recursive language folder loading
-- YAML caching
-- Dynamic file resolution
-- Default file generation
-- Cache clearing
-
-Language directory:
-
-```
-/plugins/AtlasLang/languages/
-```
-
-Example:
+Folder layout:
 
 ```
 languages/
  ├── english/
  │   ├── messages.yml
- │   ├── scoreboard.yml
- │   └── system.yml
+ │   └── scoreboard.yml
  └── spanish/
      ├── messages.yml
-     ├── scoreboard.yml
-     └── system.yml
+     └── scoreboard.yml
 ```
 
----
-
-## LangHandler
-
-Handles:
-
-- Message retrieval
-- String and list resolution
-- Placeholder injection
-- Fallback handling
-- Missing path safety
-
-If a path is invalid, a safe fallback message is returned.
-
-:::warning
-Malformed or missing language files will never crash the server.
+:::caution
+Malformed or missing language files will never crash the server. A safe fallback message is returned instead.
 :::
 
----
+## Placeholders
 
-# PlaceholderAPI Integration
-
-Identifier:
-
-```
-%alang_...%
-```
-
-Format:
+AtlasLang registers the `alang` PlaceholderAPI identifier.
 
 ```
 %alang_(file)_(path)%
@@ -152,74 +62,18 @@ Examples:
 %alang_(lobby:scoreboard)_(title)%
 ```
 
-Behavior:
+Resolution always uses the language stored for the player. If the player has no language set, the default is used. Invalid file or path keys return a safe error string.
 
-- Resolves player language from database
-- Falls back to default if invalid
-- Validates file existence
-- Validates path existence
-
-:::tip
-Placeholders must follow the format `(file)_(path)` or they will return an invalid format message.
+:::note
+Placeholders that do not follow the `(file)_(path)` format will return an invalid-format message.
 :::
 
----
+## Commands
 
-# Public Developer API
-
-Static API access:
-
-```java
-AtlasAPI.get(player, "path.to.message");
-AtlasAPI.get(uuid, "path.to.message");
-AtlasAPI.get("english", "path.to.message");
-```
-
-With fallback:
-
-```java
-AtlasAPI.getOrDefault(player, "path.to.message", "Fallback");
-```
-
-Validation:
-
-```java
-AtlasAPI.has("english", "path.to.message");
-AtlasAPI.isLanguageRegistered("english");
-```
-
-Player language:
-
-```java
-AtlasAPI.setLanguage(player, "english");
-AtlasAPI.getLanguage(player);
-```
-
-Managers:
-
-```java
-AtlasAPI.getLanguageManager();
-AtlasAPI.getLangHandler();
-```
-
-Addon access:
-
-```java
-AtlasAPI.getAddon(player, "path.to.message");
-```
-
----
-
-# Commands
-
-Base command:
-
-```
-/atlaslang
-```
+Base command: `/atlaslang`
 
 | Command | Permission |
-|----------|------------|
+| --- | --- |
 | `/atlaslang help` | — |
 | `/atlaslang list` | `atlaslang.list` |
 | `/atlaslang aliases` | `atlaslang.aliases` |
@@ -230,19 +84,26 @@ Base command:
 | `/atlaslang github sync` | `atlaslang.github` |
 | `/atlaslang github status` | `atlaslang.github` |
 
-Full access:
+Use `atlaslang.admin` to grant access to every command.
 
+## Developer API
+
+The public API is accessed through static methods on `AtlasAPI`.
+
+```java
+AtlasAPI.get(player, "path.to.message");
+AtlasAPI.getOrDefault(player, "path.to.message", "Fallback");
+AtlasAPI.setLanguage(player, "english");
+AtlasAPI.getLanguage(player);
+AtlasAPI.has("english", "path.to.message");
+AtlasAPI.isLanguageRegistered("english");
 ```
-atlaslang.admin
-```
 
----
+Source: [AtlasAPI.java](https://github.com/nauticstudios/AtlasLang/blob/master/src/main/java/com/github/nautic/api/AtlasAPI.java)
 
-# GitHub Synchronization
+## GitHub synchronization
 
-Supports automatic language sync from a repository.
-
-Example:
+Language files can be synced from a remote repository at runtime. Sync runs asynchronously and never blocks the main thread.
 
 ```yaml
 github:
@@ -265,63 +126,4 @@ github:
     reload-after-sync: true
 ```
 
-- Runs asynchronously
-- Does not block the main thread
-- Supports optional token authentication
-
----
-
-# Database Integration
-
-Player language storage process:
-
-1. Retrieve stored language
-2. Validate registration
-3. Fallback to default if invalid
-
-Database safely closes on plugin disable.
-
----
-
-# Runtime Dependency Loading
-
-Dependencies are loaded during `onLoad()` from:
-
-- Maven Central
-- CodeMC Repository
-
-Libraries are relocated and isolated to prevent conflicts.
-
----
-
-# Language Resolution Flow
-
-1. Player language requested
-2. LanguageManager resolves locale
-3. Folder validated
-4. FileManager loads file
-5. Path resolved
-6. Fallback applied if necessary
-
-Strict validation prevents invalid states.
-
----
-
-# Designed For
-
-- Multi-language networks
-- Centralized language control
-- Scoreboards
-- GUIs and menus
-- Placeholder-based systems
-- Modular plugin ecosystems
-
----
-
-# Stability Guarantees
-
-- No fatal errors for missing translations
-- Strict language validation
-- Safe fallback system
-- Async GitHub sync
-- Runtime-safe reload
+Optional token authentication is supported for private repositories.

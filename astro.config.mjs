@@ -80,6 +80,14 @@ export default defineConfig({
             },
           ],
         },
+        {
+          label: 'Work in progress',
+          items: [
+            { label: 'NTags', link: '/wip/ntags/', badge: 'Experimental' },
+            { label: 'NClans', link: '/wip/nclans/', badge: 'Experimental' },
+            { label: 'NCrates', link: '/wip/ncrates/', badge: 'Experimental' },
+          ],
+        },
       ],
     }),
   ],

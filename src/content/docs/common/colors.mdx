@@ -1,91 +1,46 @@
 ---
 title: Colors
-description: Supported color and text formatting systems.
-tableOfContents: false
+description: Supported color and text formatting formats across all Nautic Studios plugins.
 ---
 
-## Overview
+Every Nautic Studios plugin supports the same set of color and text formatting systems. **MiniMessage is the recommended format** — it is the most expressive and works in every module.
 
-This page describes the supported color formats and text styling systems available in the plugins.
+## Supported formats
 
-For best compatibility and consistency, it is recommended to use the MiniMessage format.
+| Name | Example | Generator |
+| --- | --- | --- |
+| MiniMessage | `<red>Text</red>` | [MiniMessage Web UI](https://webui.advntr.dev/) |
+| HEX | `&#RRGGBB` | [HEX Generator](https://birdflop.com/resources/rgb/) |
+| Legacy | `&x&R&R&G&G&B&B` | [Legacy Converter](https://birdflop.com/resources/rgb/) |
 
----
+## MiniMessage
 
-## Supported Color Formats
+Use MiniMessage for all new configurations. It supports named colors, HEX values, gradients, bold, italic, underline and strikethrough.
 
-| Name         | Format Example            | Generator |
-|--------------|--------------------------|-----------|
-| MiniMessage  | `<red>Text</red>`        | [MiniMessage Web UI](https://webui.advntr.dev/) |
-| HEX          | `&#RRGGBB`               | [HEX Generator](https://birdflop.com/resources/rgb/) |
-| Legacy       | `&x&R&R&G&G&B&B`         | [Legacy Converter](https://birdflop.com/resources/rgb/) |
-
----
-
-## MiniMessage (Recommended)
-
-MiniMessage is the preferred formatting system.
-
-It supports:
-
-- Named colors  
-- HEX colors  
-- Gradients  
-- Bold, italic, underline and strikethrough  
-
-Example:
-
-```text
+```
 <gradient:#00FFAA:#00AAFF><bold>Example Text</bold></gradient>
 ```
 
 :::note
-Only color and basic text formatting are guaranteed to work across all modules.
-Advanced features such as click events or custom fonts may not be supported in every context.
+Only color and basic text formatting are guaranteed in every module. Advanced features such as click events or custom fonts may not be supported everywhere.
 :::
 
----
+## HEX
 
-## HEX Format
+Modern hex colors use the `&#RRGGBB` format:
 
-HEX colors use the following format:
-
-```text
-&#RRGGBB
 ```
-
-Example:
-
-```text
 &#00FFAAExample Text
 ```
 
-This format is supported in modern Minecraft versions.
+## Legacy
 
----
+Legacy formatting is kept for backwards compatibility:
 
-## Legacy Format
-
-Legacy formatting uses the extended color syntax:
-
-```text
-&x&R&R&G&G&B&B
 ```
-
-Example:
-
-```text
 &x&0&0&F&F&A&AExample
 ```
 
 :::caution
-The legacy format is maintained for backward compatibility and is not recommended for new configurations.
+The legacy format is not recommended for new configurations. Use MiniMessage instead.
 :::
-
----
-
-## Best Practices
-
-- Use MiniMessage whenever possible.
-- Avoid mixing different formatting systems in the same message.
-- Keep formatting consistent for better readability and maintainability.

@@ -1,18 +1,15 @@
 ---
-title: Discord Webhook Builder
-description: Configuration reference for Discord webhook messages.
-tableOfContents: false
+title: Discord webhook builder
+description: Reference for the shared Discord embed message format.
 ---
+
+This page documents the shared Discord webhook embed format used across Nautic Studios plugins. The exact fields available depend on the plugin, but the schema is consistent.
 
 :::caution
-Some embed features may not be supported in all plugins.
+Some embed features may not be supported by every plugin. Check the plugin's own documentation for the fields it accepts.
 :::
 
-This page documents the available webhook configuration options and how to structure embed messages properly.
-
----
-
-## Basic Example
+## Basic example
 
 ```yaml
 content: "Get ready!"
@@ -28,54 +25,41 @@ fields:
     value: "100"
 ```
 
----
-
 ## Content
 
-The `content` field sends a regular Discord message.
+The `content` field sends a plain Discord message. It is the **only field that supports working mentions**.
 
-It is the **only field that supports working mentions**, such as:
-
-- Role mention: `<@&1234567890123456789>`
-- User mention: `<@1234567890123456789>`
-- Channel mention: `<#1234567890123456789>`
-
-Example:
+| Mention type | Format |
+| --- | --- |
+| Role | `<@&1234567890123456789>` |
+| User | `<@1234567890123456789>` |
+| Channel | `<#1234567890123456789>` |
 
 ```yaml
-content: "Content Field"
+content: "Content field"
 ```
 
----
+## Embed fields
 
-## Embed Structure
-
-### Title (Required)
+### Title
 
 ```yaml
 title:
   text: "Title text"
-  icon: "" # optional
+  icon: ""           # optional
 ```
 
-- `text` → Main embed title  
-- `icon` → Optional icon displayed next to the title  
+`text` is required. `icon` is optional and is displayed next to the title.
 
----
-
-### Color (Optional)
+### Color
 
 ```yaml
 color: "#RRGGBB"
 ```
 
-Defines the vertical color bar displayed on the left side of the embed.
+Defines the vertical bar on the left side of the embed. Must be a valid HEX color.
 
-Must be a valid HEX color.
-
----
-
-### Description (Optional)
+### Description
 
 ```yaml
 description: "Description text"
@@ -83,9 +67,7 @@ description: "Description text"
 
 Used for extended information inside the embed body.
 
----
-
-### Fields (Optional)
+### Fields
 
 Multiple fields can be defined using indexed keys.
 
@@ -97,48 +79,43 @@ fields:
     inline: true
 
   "2":
-    name: "Another Field"
-    value: "Another Value"
+    name: "Another field"
+    value: "Another value"
     inline: false
 ```
 
-Field properties:
+| Property | Description |
+| --- | --- |
+| `name` | Field title — required |
+| `value` | Field content |
+| `inline` | If `true`, fields appear side by side |
 
-- `name` → Field title (required)
-- `value` → Field content
-- `inline` → If true, fields appear side by side
-
----
-
-### Author (Optional)
+### Author
 
 ```yaml
 author:
-  name: "Author Text"
+  name: "Author text"
   icon-url: "https://example.com/icon.png"
   url: "https://example.com"
 ```
 
-- `name` → Author name (required if section is used)
-- `icon-url` → Optional author avatar
-- `url` → Optional clickable link
+| Property | Description |
+| --- | --- |
+| `name` | Author name — required if the section is used |
+| `icon-url` | Optional author avatar |
+| `url` | Optional clickable link |
 
----
-
-### Footer (Optional)
+### Footer
 
 ```yaml
 footer:
-  text: "Footer Text"
+  text: "Footer text"
   icon: "https://example.com/footer.png"
 ```
 
-- `text` → Footer message
-- `icon` → Optional footer image
+`text` is the footer message. `icon` is optional.
 
----
-
-### Image (Optional)
+### Image
 
 ```yaml
 image-url: "https://example.com/image.png"
@@ -146,9 +123,7 @@ image-url: "https://example.com/image.png"
 
 Displays a large image inside the embed.
 
----
-
-### Thumbnail (Optional)
+### Thumbnail
 
 ```yaml
 thumbnail-url: "https://example.com/thumbnail.png"
