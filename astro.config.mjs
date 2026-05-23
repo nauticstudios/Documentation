@@ -57,9 +57,28 @@ export default defineConfig({
         {
           label: 'Common features',
           items: [
-            { label: 'AtlasLang', link: '/common/atlaslang/' },
-            { label: 'Colors', link: '/common/colors/' },
+            { label: 'Colors Utils', link: '/common/colors/' },
             { label: 'Discord webhook builder', link: '/common/discord-webhook-builder/' },
+          ],
+        },
+        {
+          label: 'Libraries',
+          items: [
+            {
+              label: 'HeadRender',
+              link: '/libraries/headrender/',
+              badge: { text: 'Library', variant: 'note' },
+            },
+          ],
+        },
+        {
+          label: 'API',
+          items: [
+            {
+              label: 'AtlasLang',
+              link: '/api/atlaslang/',
+              badge: { text: 'API', variant: 'caution' },
+            },
           ],
         },
         {
@@ -83,9 +102,9 @@ export default defineConfig({
         {
           label: 'Work in progress',
           items: [
-            { label: 'NTags', link: '/wip/ntags/', badge: 'Experimental' },
-            { label: 'NClans', link: '/wip/nclans/', badge: 'Experimental' },
-            { label: 'NCrates', link: '/wip/ncrates/', badge: 'Experimental' },
+            { label: 'NTags', link: '/wip/ntags/', badge: { text: 'Experimental', variant: 'danger' } },
+            { label: 'NClans', link: '/wip/nclans/', badge: { text: 'Experimental', variant: 'danger' } },
+            { label: 'NCrates', link: '/wip/ncrates/', badge: { text: 'Experimental', variant: 'danger' } },
           ],
         },
       ],

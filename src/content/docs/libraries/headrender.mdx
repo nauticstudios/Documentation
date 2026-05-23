@@ -1,0 +1,65 @@
+---
+title: HeadRender
+description: Lightweight library to render Minecraft player heads as map images, GUI textures and chat previews.
+---
+
+HeadRender is a lightweight Java library that renders Minecraft player skins as in‑game textures. It can project a head onto a map, build GUI item icons from a UUID or skin URL, and cache results to avoid repeated Mojang lookups.
+
+GitHub: [github.com/senkex/HeadRender](https://github.com/senkex/HeadRender)
+
+## Features
+
+- Render any player head from name, UUID or skin URL
+- Async fetch with safe fallbacks (never blocks the main thread)
+- In‑memory cache with configurable TTL
+- Output to `MapCanvas`, `BufferedImage` or base64 textures
+- Drop‑in helpers for GUI items and chat hover previews
+
+## Installation
+
+Add the dependency to your build file. The library is published on JitPack.
+
+```kotlin
+repositories {
+    maven("https://jitpack.io")
+}
+
+dependencies {
+    implementation("com.github.senkex:HeadRender:main-SNAPSHOT")
+}
+```
+
+## Quick start
+
+```java
+HeadRender.of("Senkex").thenAccept(head -> {
+    ItemStack icon = head.asItem();
+    player.getInventory().addItem(icon);
+});
+```
+
+```java
+HeadRender.of(uuid)
+    .size(64)
+    .async()
+    .thenAccept(head -> head.renderTo(mapCanvas, 0, 0));
+```
+
+:::note
+All network calls are asynchronous. The returned `CompletableFuture` resolves on the calling thread of `thenAccept` — use `Bukkit.getScheduler()` if you need to touch the world.
+:::
+
+## API surface
+
+| Method | Returns | Description |
+| --- | --- | --- |
+| `HeadRender.of(name)` | `CompletableFuture<Head>` | Resolve by player name (Mojang) |
+| `HeadRender.of(uuid)` | `CompletableFuture<Head>` | Resolve by UUID |
+| `HeadRender.fromUrl(url)` | `CompletableFuture<Head>` | Resolve from a raw skin URL |
+| `Head#asItem()` | `ItemStack` | Build a player head item |
+| `Head#renderTo(canvas, x, y)` | `void` | Draw onto a map canvas |
+| `Head#toImage()` | `BufferedImage` | Return the raw image |
+
+## License
+
+MIT — see the repository for full license text.

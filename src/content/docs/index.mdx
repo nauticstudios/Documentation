@@ -1,6 +1,6 @@
 ---
 title: Nautic Studios Documentation
-description: Official documentation for every Nautic Studios plugin and shared system.
+description: Official documentation for every Nautic Studios plugin, library and API.
 template: splash
 hero:
   tagline: Official documentation for every Nautic Studios plugin and the systems shared across them.
@@ -21,30 +21,101 @@ hero:
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import ProjectCard from '../../components/ProjectCard.astro';
 
-<CardGrid stagger>
-  <Card title="Getting Started" icon="rocket">
-    Orientation, conventions and support channels.
+<section class="projects-section">
+  <header class="projects-header">
+    <h2>Projects & repositories</h2>
+    <p>Plugins, libraries and APIs maintained by Nautic Studios. Click through to docs or source.</p>
+  </header>
 
-    [Read the introduction →](/start/introduction/)
-  </Card>
+  <div class="projects-grid">
+    <ProjectCard
+      name="NTebexMessage"
+      title="NTebexMessage"
+      description="Customizable Tebex purchase messages with templates, buttons, rewards events and Discord webhook embeds."
+      accent="#3b82f6"
+      tags={[
+        { label: 'Plugin', variant: 'plugin' },
+        { label: 'Premium', variant: 'premium' },
+      ]}
+      links={[
+        { label: 'Docs', href: '/plugins/ntebexmessage/overview/', icon: 'docs' },
+        { label: 'GitHub', href: 'https://github.com/nauticstudios', icon: 'github' },
+      ]}
+    />
 
-  <Card title="Common Features" icon="setting">
-    Shared systems used across every plugin — languages, colors, item builder and Discord webhook embeds.
+    <ProjectCard
+      name="AtlasLang"
+      title="AtlasLang"
+      description="Multilingual engine and developer API. Per-player languages, recursive YAML loading, PlaceholderAPI integration and GitHub sync."
+      accent="#f59e0b"
+      tags={[
+        { label: 'API', variant: 'api' },
+        { label: 'Free', variant: 'free' },
+      ]}
+      links={[
+        { label: 'Docs', href: '/api/atlaslang/', icon: 'docs' },
+        { label: 'GitHub', href: 'https://github.com/nauticstudios/AtlasLang', icon: 'github' },
+      ]}
+    />
 
-    [Browse features →](/common/atlaslang/)
-  </Card>
+    <ProjectCard
+      name="HeadRender"
+      title="HeadRender"
+      description="Lightweight Java library to render Minecraft player skins as map images, GUI item textures and chat hover previews."
+      accent="#60a5fa"
+      tags={[
+        { label: 'Library', variant: 'library' },
+        { label: 'Free', variant: 'free' },
+      ]}
+      links={[
+        { label: 'Docs', href: '/libraries/headrender/', icon: 'docs' },
+        { label: 'GitHub', href: 'https://github.com/senkex/HeadRender', icon: 'github' },
+        { label: 'JitPack', href: 'https://jitpack.io/#senkex/HeadRender', icon: 'jitpack' },
+      ]}
+    />
 
-  <Card title="Plugins" icon="puzzle">
-    Per-plugin documentation: overview, commands, configuration and feature pages.
+    <ProjectCard
+      name="NTags"
+      title="NTags"
+      description="Lightweight tag/prefix system with GUI editor and per-player permissions."
+      accent="#f43f5e"
+      tags={[
+        { label: 'Experimental', variant: 'experimental' },
+        { label: 'Plugin', variant: 'plugin' },
+      ]}
+      links={[
+        { label: 'Preview', href: '/wip/ntags/', icon: 'docs' },
+      ]}
+    />
 
-    [Open NTebexMessage →](/plugins/ntebexmessage/overview/)
-  </Card>
+    <ProjectCard
+      name="NClans"
+      title="NClans"
+      description="Clan management with claims, alliances, scoreboard and Discord integration."
+      accent="#f43f5e"
+      tags={[
+        { label: 'Experimental', variant: 'experimental' },
+        { label: 'Plugin', variant: 'plugin' },
+      ]}
+      links={[
+        { label: 'Preview', href: '/wip/nclans/', icon: 'docs' },
+      ]}
+    />
 
-  <Card title="Community" icon="discord">
-    Get help, suggest features or report issues on the official Discord.
-
-    [Join the server →](https://discord.gg/cdT5g5xsVq)
-  </Card>
-</CardGrid>
+    <ProjectCard
+      name="NCrates"
+      title="NCrates"
+      description="Crate system with animated openings, reward tiers and key management."
+      accent="#f43f5e"
+      tags={[
+        { label: 'Experimental', variant: 'experimental' },
+        { label: 'Plugin', variant: 'plugin' },
+      ]}
+      links={[
+        { label: 'Preview', href: '/wip/ncrates/', icon: 'docs' },
+      ]}
+    />
+  </div>
+</section>
