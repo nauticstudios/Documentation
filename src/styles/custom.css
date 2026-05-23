@@ -3,7 +3,7 @@
   --sl-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --sl-content-width: 60rem;
-  --sl-sidebar-width: 21rem;
+  --sl-sidebar-width: 19rem;
   --sl-text-base: 1.0625rem;
 
   --nautic-blue: #2563eb;
@@ -136,16 +136,16 @@ site-search button:hover {
 
 .sidebar-content > ul > li > details > summary,
 .sidebar-content > ul > li > .large {
-  font-size: 0.95rem !important;
+  font-size: 1.05rem !important;
   font-weight: 600 !important;
   color: var(--sl-color-white) !important;
   text-transform: none !important;
   letter-spacing: -0.01em;
-  padding: 0.45rem 0.6rem;
+  padding: 0.5rem 0.6rem;
 }
 
 .sidebar-content ul ul > li > details > summary {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--sl-color-white);
   text-transform: none;
@@ -153,8 +153,8 @@ site-search button:hover {
 }
 
 .sidebar-content a {
-  font-size: 0.88rem;
-  padding: 0.3rem 0.65rem;
+  font-size: 0.98rem;
+  padding: 0.35rem 0.65rem;
   border-radius: 6px;
   color: var(--sl-color-gray-2);
   border-left: none;
