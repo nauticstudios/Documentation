@@ -1,14 +1,22 @@
+@import url('https://rsms.me/inter/inter.css');
+
 :root {
-  --sl-font: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --sl-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sl-font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --sl-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --sl-content-width: 60rem;
   --sl-sidebar-width: 19rem;
-  --sl-text-base: 1.0625rem;
+  --sl-text-base: 1rem;
 
   --nautic-blue: #2563eb;
   --nautic-blue-bright: #3b82f6;
   --nautic-blue-soft: #60a5fa;
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    --sl-font: 'InterVariable', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
 }
 
 html {
@@ -18,9 +26,11 @@ html {
 
 body {
   font-family: var(--sl-font);
-  line-height: 1.65;
-  letter-spacing: -0.005em;
+  line-height: 1.6;
+  letter-spacing: -0.003em;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
 }
 
 :root,
@@ -131,34 +141,48 @@ site-search button:hover {
 }
 
 .sidebar-content {
-  padding-top: 1.25rem;
+  padding: 1.25rem 0.5rem 1.25rem 0.75rem;
+}
+
+.sidebar-content > ul {
+  padding-left: 0;
+}
+
+.sidebar-content > ul > li {
+  margin-top: 1.1rem;
+}
+
+.sidebar-content > ul > li:first-child {
+  margin-top: 0;
 }
 
 .sidebar-content > ul > li > details > summary,
 .sidebar-content > ul > li > .large {
-  font-size: 1.05rem !important;
-  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
   color: var(--sl-color-white) !important;
   text-transform: none !important;
-  letter-spacing: -0.01em;
-  padding: 0.5rem 0.6rem;
+  letter-spacing: -0.005em;
+  padding: 0.25rem 0.5rem;
 }
 
 .sidebar-content ul ul > li > details > summary {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--sl-color-white);
   text-transform: none;
   letter-spacing: -0.005em;
+  padding: 0.3rem 0.55rem;
 }
 
 .sidebar-content a {
-  font-size: 0.98rem;
-  padding: 0.35rem 0.65rem;
-  border-radius: 6px;
+  font-size: 0.88rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
   color: var(--sl-color-gray-2);
   border-left: none;
   font-weight: 400;
+  letter-spacing: -0.002em;
   transition: background-color 0.12s ease, color 0.12s ease;
 }
 
@@ -178,10 +202,18 @@ site-search button:hover {
   color: var(--sl-color-accent-high);
 }
 
+/* nested list: single subtle vertical guide, tight indent (Paper-style) */
 .sidebar-content ul ul {
   border-left: 1px solid var(--sl-color-hairline);
   margin-left: 0.55rem;
-  padding-left: 0.45rem;
+  padding-left: 0.5rem;
+}
+
+/* second-level nesting should NOT double the line — collapse it */
+.sidebar-content ul ul ul {
+  border-left: none;
+  margin-left: 0;
+  padding-left: 0.5rem;
 }
 
 .sidebar-content .badge {
@@ -237,8 +269,8 @@ site-search button:hover {
 }
 
 .sl-markdown-content {
-  font-size: 1.125rem;
-  line-height: 1.72;
+  font-size: 1rem;
+  line-height: 1.65;
 }
 
 .sl-markdown-content h1,
@@ -250,16 +282,16 @@ site-search button:hover {
 }
 
 .sl-markdown-content h1 {
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   margin-bottom: 1.25rem;
   color: var(--sl-color-white);
 }
 
 .sl-markdown-content h2 {
-  font-size: 1.8rem;
-  margin-top: 2.75rem;
+  font-size: 1.6rem;
+  margin-top: 2.5rem;
   margin-bottom: 0.75rem;
-  padding-top: 1.5rem;
+  padding-top: 1.4rem;
   border-top: 1px solid var(--sl-color-hairline);
   color: var(--sl-color-white);
 }
@@ -270,14 +302,14 @@ site-search button:hover {
 }
 
 .sl-markdown-content h3 {
-  font-size: 1.35rem;
-  margin-top: 1.75rem;
+  font-size: 1.2rem;
+  margin-top: 1.6rem;
   color: var(--sl-color-white);
 }
 
 .sl-markdown-content p,
 .sl-markdown-content li {
-  font-size: 1.125rem;
+  font-size: 1rem;
   color: var(--sl-color-gray-1);
 }
 
