@@ -280,7 +280,7 @@ site-search button:hover {
 
 @media (min-width: 50rem) {
   :root {
-    --sl-content-pad-x: 4rem;
+    --sl-content-pad-x: 8rem;
   }
 }
 
