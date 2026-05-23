@@ -51,23 +51,23 @@ body {
   --sl-color-hairline: var(--sl-color-gray-6);
   --sl-color-hairline-shade: #111111;
 
-  /* Aside hues (Paper-style HSL) */
+  /* Aside hues (Paper-style HSL — slightly more saturated to read solid, not pastel) */
   --sl-hue-orange: 41;
-  --sl-color-orange-low: hsl(var(--sl-hue-orange), 39%, 22%);
-  --sl-color-orange: hsl(var(--sl-hue-orange), 82%, 63%);
-  --sl-color-orange-high: hsl(var(--sl-hue-orange), 82%, 87%);
+  --sl-color-orange-low: hsl(var(--sl-hue-orange), 55%, 22%);
+  --sl-color-orange: hsl(var(--sl-hue-orange), 90%, 60%);
+  --sl-color-orange-high: hsl(var(--sl-hue-orange), 90%, 85%);
   --sl-hue-blue: 234;
-  --sl-color-blue-low: hsl(var(--sl-hue-blue), 54%, 20%);
-  --sl-color-blue: hsl(var(--sl-hue-blue), 100%, 60%);
-  --sl-color-blue-high: hsl(var(--sl-hue-blue), 100%, 87%);
+  --sl-color-blue-low: hsl(var(--sl-hue-blue), 60%, 22%);
+  --sl-color-blue: hsl(var(--sl-hue-blue), 100%, 65%);
+  --sl-color-blue-high: hsl(var(--sl-hue-blue), 100%, 85%);
   --sl-hue-purple: 281;
-  --sl-color-purple-low: hsl(var(--sl-hue-purple), 39%, 22%);
-  --sl-color-purple: hsl(var(--sl-hue-purple), 82%, 63%);
-  --sl-color-purple-high: hsl(var(--sl-hue-purple), 82%, 89%);
+  --sl-color-purple-low: hsl(var(--sl-hue-purple), 55%, 22%);
+  --sl-color-purple: hsl(var(--sl-hue-purple), 90%, 65%);
+  --sl-color-purple-high: hsl(var(--sl-hue-purple), 90%, 88%);
   --sl-hue-red: 339;
-  --sl-color-red-low: hsl(var(--sl-hue-red), 39%, 22%);
-  --sl-color-red: hsl(var(--sl-hue-red), 82%, 63%);
-  --sl-color-red-high: hsl(var(--sl-hue-red), 82%, 87%);
+  --sl-color-red-low: hsl(var(--sl-hue-red), 55%, 24%);
+  --sl-color-red: hsl(var(--sl-hue-red), 90%, 62%);
+  --sl-color-red-high: hsl(var(--sl-hue-red), 90%, 87%);
 }
 
 :root[data-theme="dark"] body,
@@ -450,48 +450,46 @@ site-search button:hover {
 }
 
 .sl-markdown-content pre {
-  border: 1px solid #1f232c;
-  border-radius: 10px;
+  border: 1px solid #2a2c2e;
+  border-radius: 0;
   padding: 0.95rem 1.1rem;
   font-size: 0.9rem;
   line-height: 1.65;
-  background: #161922 !important;
+  background: #23262f !important;
 }
 
 .sl-markdown-content :not(pre) > code {
   font-size: 0.88em;
   padding: 0.15rem 0.45rem;
-  border-radius: 5px;
-  border: 1px solid #1f232c;
-  background: #1a1d24;
-  color: #7dd3fc;
+  border-radius: 4px;
+  border: 1px solid #2a2c2e;
+  background: #2a2c2e;
+  color: #d6deeb;
   font-weight: 500;
 }
 
-/* Expressive Code frame polish */
+/* Expressive Code frame — Paper-like flat chrome */
 .expressive-code {
   background: transparent !important;
-  border-radius: 10px;
   margin: 1.1rem 0;
 }
 
 .expressive-code .frame {
   box-shadow: none !important;
-  border-radius: 10px;
+  border-radius: 0;
   overflow: hidden;
-  border: 1px solid var(--sl-color-hairline);
+  border: 1px solid #2a2c2e;
 }
 
 .expressive-code .frame.has-title:not(.is-terminal) .header {
-  background: #1a1d24 !important;
-  border-bottom: 1px solid #1f232c;
+  background: #111111 !important;
+  border-bottom: 1px solid #2a2c2e;
 }
 
 .expressive-code .frame.has-title:not(.is-terminal) .title {
-  background: #161922 !important;
-  color: #e5e9f0 !important;
+  background: #181a1b !important;
+  color: #d6deeb !important;
   border: none !important;
-  border-right: 1px solid #1f232c !important;
   padding: 0.55rem 1rem !important;
   font-size: 0.82rem !important;
   font-family: var(--sl-font-mono) !important;
@@ -499,14 +497,9 @@ site-search button:hover {
   letter-spacing: 0;
 }
 
-.expressive-code .frame.has-title:not(.is-terminal) .title::after {
-  display: none !important;
-  background: none !important;
-}
-
 .expressive-code .frame .copy button {
-  border-radius: 6px !important;
-  border-color: var(--sl-color-hairline) !important;
+  border-radius: 4px !important;
+  border-color: #2a2c2e !important;
 }
 
 
