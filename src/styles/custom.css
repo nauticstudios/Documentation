@@ -65,11 +65,7 @@ body {
 :root[data-theme="dark"] body,
 body {
   background-color: var(--sl-color-bg);
-  background-image:
-    linear-gradient(var(--grid-line-color) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
-  background-size: 48px 48px;
-  background-position: -1px -1px;
+  background-image: none;
 }
 
 :root[data-theme="light"] {
@@ -274,8 +270,14 @@ site-search button:hover {
   padding-right: 2rem;
 }
 
+/* Spacing under the page H1 — the divider between title-panel and body-panel */
 .main-pane .content-panel + .content-panel {
-  padding-top: 0;
+  padding-top: 1.75rem !important;
+  margin-top: 1.5rem !important;
+}
+
+.main-pane .content-panel:first-child {
+  padding-bottom: 1.5rem;
 }
 
 .sl-markdown-content {
