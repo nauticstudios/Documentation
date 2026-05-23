@@ -37,9 +37,9 @@ body {
   --sl-color-gray-6: #181a1b;
   --sl-color-black: #111111;
 
-  --sl-color-accent-low: #1e3a8a;
-  --sl-color-accent: #2563eb;
-  --sl-color-accent-high: #60a5fa;
+  --sl-color-accent-low: #00345f;
+  --sl-color-accent: #0088ff;
+  --sl-color-accent-high: #66bbff;
 
   --sl-color-bg: #111111;
   --sl-color-bg-nav: #181a1b;
@@ -466,6 +466,13 @@ site-search button:hover {
   background: #2a2c2e;
   color: #d6deeb;
   font-weight: 500;
+}
+
+/* Kill italics across all syntax tokens (Paper does not italicize keywords) */
+.expressive-code .ec-line span,
+.expressive-code pre code span,
+.sl-markdown-content pre code span {
+  font-style: normal !important;
 }
 
 /* Expressive Code frame — Paper-like flat chrome */
