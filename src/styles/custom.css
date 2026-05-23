@@ -417,20 +417,20 @@ site-search button:hover {
 }
 
 .sl-markdown-content pre {
-  border: 1px solid var(--sl-color-hairline);
+  border: 1px solid #1f232c;
   border-radius: 10px;
   padding: 0.95rem 1.1rem;
   font-size: 0.9rem;
-  line-height: 1.6;
-  background: #0b0d12 !important;
+  line-height: 1.65;
+  background: #161922 !important;
 }
 
 .sl-markdown-content :not(pre) > code {
   font-size: 0.88em;
   padding: 0.15rem 0.45rem;
   border-radius: 5px;
-  border: 1px solid var(--sl-color-hairline);
-  background: #14171f;
+  border: 1px solid #1f232c;
+  background: #1a1d24;
   color: #7dd3fc;
   font-weight: 500;
 }
@@ -450,15 +450,15 @@ site-search button:hover {
 }
 
 .expressive-code .frame.has-title:not(.is-terminal) .header {
-  background: #0b0d12 !important;
-  border-bottom: 1px solid var(--sl-color-hairline);
+  background: #1a1d24 !important;
+  border-bottom: 1px solid #1f232c;
 }
 
 .expressive-code .frame.has-title:not(.is-terminal) .title {
-  background: #14171f !important;
+  background: #161922 !important;
   color: #e5e9f0 !important;
   border: none !important;
-  border-right: 1px solid var(--sl-color-hairline) !important;
+  border-right: 1px solid #1f232c !important;
   padding: 0.55rem 1rem !important;
   font-size: 0.82rem !important;
   font-family: var(--sl-font-mono) !important;
@@ -476,18 +476,47 @@ site-search button:hover {
   border-color: var(--sl-color-hairline) !important;
 }
 
-/* Collapsible sections — match the dark frame */
-.expressive-code details.collapsible-code summary {
-  background: #0b0d12 !important;
-  color: var(--sl-color-gray-2) !important;
-  border-color: var(--sl-color-hairline) !important;
-  font-family: var(--sl-font-mono);
-  font-size: 0.8rem;
+/* Collapsible sections — fix disappearing summary, Paper-style row */
+.expressive-code .collapse {
+  display: block !important;
 }
 
-.expressive-code details.collapsible-code summary:hover {
-  background: #14171f !important;
+.expressive-code .collapse > summary {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  background: #1a1d24 !important;
+  color: var(--sl-color-gray-2) !important;
+  border-top: 1px solid var(--sl-color-hairline) !important;
+  border-bottom: 1px solid var(--sl-color-hairline) !important;
+  padding: 0.4rem 1rem !important;
+  font-family: var(--sl-font-mono);
+  font-size: 0.78rem;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.expressive-code .collapse > summary::-webkit-details-marker {
+  display: none;
+}
+
+.expressive-code .collapse > summary::before {
+  content: '⇕';
+  display: inline-block;
+  font-size: 0.85rem;
+  color: var(--sl-color-gray-3);
+  width: 1rem;
+  text-align: center;
+}
+
+.expressive-code .collapse > summary:hover {
+  background: #232730 !important;
   color: var(--sl-color-white) !important;
+}
+
+.expressive-code .collapse[open] > summary::before {
+  content: '⇳';
 }
 
 .sl-markdown-content table {
@@ -542,19 +571,66 @@ site-search button:hover {
   white-space: nowrap;
 }
 
+/* ===== Paper-style asides (filled tint + bold left bar + big header) ===== */
 .sl-markdown-content .starlight-aside {
-  border-radius: 8px;
-  border: 1px solid var(--sl-color-hairline);
-  border-left-width: 3px;
-  padding: 0.9rem 1rem;
-  background-color: var(--sl-color-bg-nav);
+  border-radius: 10px;
+  border: 1px solid transparent;
+  border-left-width: 4px;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
 }
 
-/* Color the left bar per variant; keep the rest of the border subtle */
-.sl-markdown-content .starlight-aside--note    { border-left-color: #3b82f6; }
-.sl-markdown-content .starlight-aside--tip     { border-left-color: #22c55e; }
-.sl-markdown-content .starlight-aside--caution { border-left-color: #eab308; }
-.sl-markdown-content .starlight-aside--danger  { border-left-color: #f43f5e; }
+.sl-markdown-content .starlight-aside__title {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sl-markdown-content .starlight-aside__icon {
+  font-size: 1.1rem;
+}
+
+.sl-markdown-content .starlight-aside p,
+.sl-markdown-content .starlight-aside li {
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+/* NOTE — blue */
+.sl-markdown-content .starlight-aside--note {
+  background: rgba(59, 130, 246, 0.09);
+  border-color: rgba(59, 130, 246, 0.25);
+  border-left-color: #3b82f6;
+}
+.sl-markdown-content .starlight-aside--note .starlight-aside__title { color: #93c5fd; }
+
+/* TIP — green */
+.sl-markdown-content .starlight-aside--tip {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.22);
+  border-left-color: #22c55e;
+}
+.sl-markdown-content .starlight-aside--tip .starlight-aside__title { color: #86efac; }
+
+/* CAUTION — amber */
+.sl-markdown-content .starlight-aside--caution {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.25);
+  border-left-color: #f59e0b;
+}
+.sl-markdown-content .starlight-aside--caution .starlight-aside__title { color: #fcd34d; }
+
+/* DANGER — red, deeper Paper-style fill */
+.sl-markdown-content .starlight-aside--danger {
+  background: rgba(239, 68, 68, 0.10);
+  border-color: rgba(239, 68, 68, 0.28);
+  border-left-color: #ef4444;
+}
+.sl-markdown-content .starlight-aside--danger .starlight-aside__title { color: #fca5a5; }
 
 .expressive-code {
   background: var(--sl-color-bg-inline-code);
