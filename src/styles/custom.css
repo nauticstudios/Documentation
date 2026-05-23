@@ -308,12 +308,15 @@ site-search button:hover {
 .sl-link-card,
 .sl-link-card * {
   border-top: none !important;
-  padding-top: 0;
 }
 
+.sl-link-card .link-title,
 .sl-link-card .title,
-.card .title {
-  border: none !important;
+.card .title,
+.card .title-wrapper {
+  border-bottom: none !important;
+  border-top: none !important;
+  text-decoration: none !important;
 }
 
 .sl-markdown-content p,
