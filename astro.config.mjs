@@ -20,6 +20,15 @@ export default defineConfig({
 
       customCss: ['./src/styles/custom.css'],
 
+      expressiveCode: {
+        themes: ['github-dark'],
+        styleOverrides: {
+          borderRadius: '8px',
+          borderColor: '#181b21',
+          codeBackground: '#0a0d14',
+        },
+      },
+
       lastUpdated: false,
 
       editLink: {
