@@ -69,13 +69,6 @@ export default defineConfig({
           ],
         },
         {
-          label: 'Common features',
-          items: [
-            { label: 'Colors Utils', link: '/common/colors/' },
-            { label: 'Discord webhook builder', link: '/common/discord-webhook-builder/' },
-          ],
-        },
-        {
           label: 'Libraries',
           items: [
             {

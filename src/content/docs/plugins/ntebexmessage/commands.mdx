@@ -1,34 +1,47 @@
 ---
 title: Commands
-description: Complete command and permission reference for NTebexMessage.
+description: Complete command, alias and permission reference for NTebexMessage.
 ---
+
+## Base command
+
+The plugin registers a single root command with multiple aliases. Use whichever feels natural.
+
+| Form | Notes |
+| --- | --- |
+| `/ntb` | Recommended. |
+| `/ntebex` `/ntebexmessage` | Long form. |
+| `/tebexmessage` `/tbxmsg` `/tbxm` `/tbmsg` `/tb` | Short / legacy aliases. |
+
+All examples on this page use `/ntb`. Any alias works identically.
 
 ## Command reference
 
 | Command | Permission | Default | Description |
 | --- | --- | --- | --- |
-| `/tebexmessage help` | `tebexmessage.help` | everyone | Display the help menu. |
-| `/tebexmessage reload` | `tebexmessage.reload` | OP | Reload all configuration files. |
-| `/tebexmessage args` | `tebexmessage.args` | OP | List all configured custom arguments. |
-| `/tebexmessage <template> arg(value)…` | console only | console | Broadcast a purchase using the given template. |
+| `/ntb` | — | everyone | Show plugin info. Console gets the usage block. |
+| `/ntb help` | `tebexmessage.help` | OP | Display the help menu. |
+| `/ntb reload` | `tebexmessage.reload` | OP | Reload `config.yml`, `messages.yml` and `discord.yml`. |
+| `/ntb args` | `tebexmessage.args` | OP | List every configured custom argument. |
+| `/ntb <template> arg(value)…` | console only | console | Broadcast a purchase using the given template. |
 
-Use `tebexmessage.admin` to grant access to every command.
+`tebexmessage.admin` grants access to every command above.
 
 ## Broadcast command
 
-The broadcast command runs only from console.
+The broadcast command runs **only from console**. Players cannot trigger it.
 
 ```
-/tebexmessage <template> arg(value) arg(value) …
+/ntb <template> arg(value) arg(value) …
 ```
 
 - `<template>` — name of a template defined in `config.yml`.
-- `arg(value)` — one custom argument per pair, in any order.
+- `arg(value)` — one custom argument per pair, in any order. Whitespace inside the parentheses is allowed.
 
 ### Example
 
 ```
-/tebexmessage one player(Senkex) package(VIP) price($10)
+/ntb one player(Senkex) package(VIP) price($10)
 ```
 
 | Argument | Value |
@@ -40,25 +53,44 @@ The broadcast command runs only from console.
 
 The template's chat message, title, sound, actionbar, bossbar, buttons and any enabled event will be triggered.
 
+### Multi-package values
+
+A single argument can hold several values joined by `;`. NTebexMessage renders them with `separator-symbol`.
+
+```
+/ntb multiple player(Senkex) package(VIP;MVP;ASTRO) price($45)
+```
+
+With `separator-symbol: "&7•"` the placeholder `{package}` resolves to `VIP • MVP • ASTRO`.
+
 ## Custom arguments
 
 Arguments are declared in `config.yml`:
 
-```yaml
+```yaml title="config.yml"
 customs-args:
   - player
   - package
   - price
 ```
 
-Every argument listed here becomes a placeholder that can be used inside templates, messages, titles, actionbars, bossbars and Discord webhooks.
+Every entry becomes a placeholder usable inside templates, chat messages, titles, actionbars, bossbars and Discord webhooks. Reference them with curly braces:
 
 ```
-{player}
-{package}
-{price}
+{player}  {package}  {price}
 ```
+
+You can add any custom key — `{rank}`, `{coupon}`, `{server}` — as long as it's listed under `customs-args`.
 
 :::caution
-If an argument used in the command is not declared in `customs-args`, the command returns an error.
+If the command supplies an argument that is not declared in `customs-args`, the broadcast is rejected and the console receives a clear error pointing at the offending key.
 :::
+
+## Error handling
+
+| Situation | Console message |
+| --- | --- |
+| Missing `arg(value)` syntax | `Missing '(' or ')' in arguments.` |
+| Unknown argument | `Argument does not exist: <arg>` |
+| Argument required by template not supplied | `Missing required argument: <arg>` |
+| Player tries to run the broadcast | `This command can only be executed from console.` |

@@ -1,11 +1,13 @@
 ---
 title: Introduction
-description: Welcome to the official Nautic Studios documentation.
+description: Welcome to the official Nautic Studios documentation — plugins, libraries and APIs maintained by the studio.
 ---
 
 import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-This site is the official source of documentation for every plugin and shared system developed by **Nautic Studios**. All content is maintained alongside the source code so that what you read here matches what ships.
+Welcome to the official **Nautic Studios** documentation. This site is the single source of truth for every plugin, library and API maintained by the studio. All content is versioned alongside the source code, so what you read here matches what ships.
+
+Nautic Studios builds production-grade tools for Minecraft servers: lightweight, async by default, and designed to play nicely with other plugins. You'll find both end-user documentation for our plugins and developer references for the libraries and APIs you can build on top of.
 
 :::note
 If a feature is not documented on this site, treat it as unofficial until this page is updated.
@@ -15,9 +17,14 @@ If a feature is not documented on this site, treat it as unofficial until this p
 
 <CardGrid>
   <LinkCard
-    title="Common features"
-    description="Systems shared by every plugin: multilingual engine, color formats and Discord embeds."
-    href="/common/atlaslang/"
+    title="Libraries"
+    description="Reusable Java libraries published on JitPack — drop-in, async and shadeable."
+    href="/libraries/headrender/"
+  />
+  <LinkCard
+    title="API"
+    description="Public developer APIs exposed by our plugins. Build addons against a stable contract."
+    href="/api/atlaslang/"
   />
   <LinkCard
     title="Plugins"
@@ -35,13 +42,40 @@ If a feature is not documented on this site, treat it as unofficial until this p
 
 If something is unclear or behaves unexpectedly:
 
-1. Read the relevant plugin page on this site.
+1. Read the relevant plugin, library or API page on this site.
 2. Compare your configuration against the examples shown on the page.
-3. Ask on the official Discord if the issue persists.
+3. Ask on the official Discord if the issue persists — staff and community devs are active there.
 
-:::tip
-Join the Discord server at [discord.gg/cdT5g5xsVq](https://discord.gg/cdT5g5xsVq).
-:::
+## Community
+
+The fastest way to get answers, report bugs, request features or just hang out is through our Discord server.
+
+<div class="discord-widget-wrapper">
+  <iframe
+    src="https://discord.com/widget?id=746600371199148143&theme=dark"
+    width="350"
+    height="500"
+    allowtransparency="true"
+    frameborder="0"
+    sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+    title="Nautic Studios Discord"
+    loading="lazy"
+  ></iframe>
+
+  <div class="discord-widget-info">
+    <h3>Nautic Studios</h3>
+    <p>Get help, suggest features, report bugs and stay in the loop with every release.</p>
+    <ul>
+      <li>Plugin support channels</li>
+      <li>Library &amp; API developer chat</li>
+      <li>Sneak peeks of work in progress</li>
+      <li>Direct contact with the team</li>
+    </ul>
+    <a class="discord-cta" href="https://discord.gg/cdT5g5xsVq" target="_blank" rel="noopener">
+      Join the server →
+    </a>
+  </div>
+</div>
 
 ## Useful links
 

@@ -1,6 +1,6 @@
 ---
 title: Reward event
-description: Chat participation event that rewards players who type a configured word.
+description: Chat participation event that rewards players who type a configured word — with bossbar, actionbar, cooldown and per-player reward commands.
 ---
 
 import { Steps } from '@astrojs/starlight/components';
@@ -12,11 +12,11 @@ The reward event lets players participate in a short chat challenge after a broa
 <Steps>
 1. A template with `events.reward-event: true` is broadcasted.
 
-2. The reward event starts and listens for chat messages.
+2. The reward event starts and listens for chat messages. A bossbar and an actionbar countdown show progress to every player.
 
-3. Players type any of the configured words. Each unique player counts once.
+3. Players type any of the configured words. Each unique player counts once, with an optional per-player cooldown to prevent spam.
 
-4. When the player limit is reached or the cooldown expires, the event ends.
+4. When the player limit is reached **or** the cooldown expires, the event ends.
 
 5. The configured reward commands run for every player who participated, and a final message is broadcasted.
 </Steps>
@@ -25,29 +25,60 @@ The reward event lets players participate in a short chat challenge after a broa
 
 In the template that should trigger it:
 
-```yaml
+```yaml title="config.yml"
 events:
   reward-event: true
 ```
 
-## Configured words
+## Full configuration
 
-Any of these words counts as a valid entry.
+```yaml title="config.yml"
+reward-event:
+  words:
+    - "gg"
+
+  players-write-word: 30
+  ignore-case: true
+
+  cooldown:
+    enabled: true
+    time: 10
+
+  bossbar:
+    enabled: true
+    text: "&#FFE264Type 'gg' to get rewarded &7(%write_now%/%write_total%)"
+    color: GREEN
+    style: SOLID
+
+  actionbar:
+    enabled: true
+    text: "&aWrite GG in chat! &7(%write_now%/%write_total%)"
+
+  null-players: "&cNo players participated"
+
+  players-rewards-commands:
+    - "give %player% minecraft:diamond 1"
+
+  final-message:
+    enabled: true
+    message:
+      - "<empty>"
+      - "<center>&#1BFF7E&lREWARD EVENT 🎉</center>"
+      - "<empty>"
+      - "<center>&#FFD41B - Players Rewarded - </center>"
+      - "<center>&#FFE264👑 &f%players_reward_claimed%</center>"
+      - "<empty>"
+```
+
+## Words
+
+Any of these words counts as a valid entry. Use a single word per entry.
 
 ```yaml
 reward-event:
   words:
-    - gg
-    - hype
-```
-
-## Player limit
-
-The maximum number of players that can be rewarded. The event ends automatically when this number is reached.
-
-```yaml
-reward-event:
-  players-write-word: 5
+    - "gg"
+    - "hype"
 ```
 
 ## Case sensitivity
@@ -59,18 +90,65 @@ reward-event:
 
 When `true`, `gg`, `GG` and `Gg` all count as the same word.
 
-## Timeout
+## Player limit
 
-The cooldown defines how long the event stays open before automatically ending if the player limit is not reached.
+The maximum number of unique players that can be rewarded. The event ends automatically once this number is reached.
+
+```yaml
+reward-event:
+  players-write-word: 30
+```
+
+## Cooldown
+
+Defines how long the event stays open before automatically ending if the player limit is not reached.
 
 ```yaml
 reward-event:
   cooldown:
     enabled: true
-    time: 15
+    time: 10
 ```
 
 `time` is in seconds.
+
+## Live progress UI
+
+### BossBar
+
+A bossbar shown to every online player while the event is running. The bar visually empties as the time runs out.
+
+```yaml
+reward-event:
+  bossbar:
+    enabled: true
+    text: "&#FFE264Type 'gg' to get rewarded &7(%write_now%/%write_total%)"
+    color: GREEN
+    style: SOLID
+```
+
+| Field | Accepted values |
+| --- | --- |
+| `color` | `PINK`, `BLUE`, `RED`, `GREEN`, `YELLOW`, `PURPLE`, `WHITE` |
+| `style` | `SOLID`, `SEGMENTED_6`, `SEGMENTED_10`, `SEGMENTED_12`, `SEGMENTED_20` |
+
+### ActionBar
+
+Shown above the hotbar of every online player.
+
+```yaml
+reward-event:
+  actionbar:
+    enabled: true
+    text: "&aWrite GG in chat! &7(%write_now%/%write_total%)"
+```
+
+### Progress placeholders
+
+| Placeholder | Replaces with |
+| --- | --- |
+| `%write_now%` | Players who have written so far. |
+| `%write_total%` | Configured `players-write-word` cap. |
 
 ## Reward commands
 
@@ -79,9 +157,11 @@ Commands executed once per participating player. `%player%` is replaced with the
 ```yaml
 reward-event:
   players-rewards-commands:
-    - "give %player% diamond 1"
+    - "give %player% minecraft:diamond 1"
     - "eco give %player% 500"
 ```
+
+Commands run from console, so any console-level command is valid.
 
 ## Final message
 
@@ -92,10 +172,21 @@ reward-event:
   final-message:
     enabled: true
     message:
-      - "<center>&aReward event finished!</center>"
-      - "%players_reward_claimed%"
+      - "<empty>"
+      - "<center>&#1BFF7E&lREWARD EVENT 🎉</center>"
+      - "<center>&#FFE264👑 &f%players_reward_claimed%</center>"
+      - "<empty>"
 ```
 
 | Placeholder | Replaces with |
 | --- | --- |
-| `%players_reward_claimed%` | The list of players who received rewards. |
+| `%players_reward_claimed%` | Comma-separated list of players who received rewards. |
+
+## No participants
+
+If nobody wrote in time, `null-players` is broadcast instead of the participants list.
+
+```yaml
+reward-event:
+  null-players: "&cNo players participated"
+```

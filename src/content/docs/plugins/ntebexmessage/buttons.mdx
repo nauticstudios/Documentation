@@ -12,7 +12,7 @@ Buttons are clickable chat components used inside broadcast messages. They are t
 | `%buttons%` | All configured buttons. |
 | `%button_<id>%` | A single button by id. |
 
-```yaml
+```yaml title="config.yml"
 message:
   - "<center>&aNew purchase!</center>"
   - "<empty>"
@@ -24,7 +24,7 @@ message:
 
 `center` defines how many leading spaces are added before the buttons line.
 
-```yaml
+```yaml title="config.yml"
 buttons:
   center: 20
 ```
@@ -33,7 +33,7 @@ buttons:
 
 Buttons live in `buttons.list` and are keyed by id. The id is what `%button_<id>%` references.
 
-```yaml
+```yaml title="config.yml"
 buttons:
   center: 20
 
@@ -47,7 +47,7 @@ buttons:
     discord:
       text: "<gradient:#72C0FF:#1750EA>[ Join Discord ]</gradient>"
       hover: "<gradient:#72C0FF:#1750EA>Click to join the community</gradient>"
-      open_url: "https://discord.gg/example"
+      open_url: "https://discord.gg/cdT5g5xsVq"
 ```
 
 ## Button fields

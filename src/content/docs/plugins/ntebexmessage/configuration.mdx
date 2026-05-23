@@ -1,29 +1,30 @@
 ---
 title: Configuration
-description: Reference for the NTebexMessage configuration files.
+description: Reference for the NTebexMessage configuration files — config.yml, messages.yml and discord.yml.
 ---
 
 import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-NTebexMessage uses two configuration files.
+NTebexMessage ships with three configuration files. All of them live under `/plugins/NTebexMessage/`.
 
 | File | Purpose |
 | --- | --- |
-| `config.yml` | Main configuration: custom arguments, templates, buttons and reward event. |
-| `discord.yml` | Discord webhook configuration: bot identity, content message and embed. |
+| `config.yml` | Main configuration — custom arguments, templates, buttons and reward event. |
+| `messages.yml` | UI strings used by `/ntb help`, `/ntb args`, error messages and console output. |
+| `discord.yml` | Discord webhook configuration — bot identity, filters and the active mode (classic or Components V2). |
 
-After editing either file, reload the plugin:
+After editing any of them, reload the plugin:
 
 ```
-/tebexmessage reload
+/ntb reload
 ```
 
-## Top-level structure
+## `config.yml` — top-level structure
 
-```yaml
+```yaml title="config.yml"
 customs-args: []        # custom argument names
 
-separator-symbol: "&7•"  # joins multiple packages
+separator-symbol: "&7•" # joins multiple packages
 
 broadcast:
   templates:
@@ -39,14 +40,70 @@ buttons:
 
 reward-event:
   words: []
-  players-write-word: 5
+  players-write-word: 30
   ignore-case: true
-  cooldown:    { enabled, time }
+  cooldown:                { enabled, time }
+  bossbar:                 { enabled, text, color, style }
+  actionbar:               { enabled, text }
+  null-players: "..."
   players-rewards-commands: []
-  final-message: { enabled, message }
+  final-message:           { enabled, message }
 ```
 
-Each section has its own dedicated page with field reference and examples:
+## `messages.yml` — UI strings
+
+Customise every player-facing and console-facing string.
+
+```yaml title="messages.yml"
+help: [ ... ]            # /ntb help output
+args:                    # /ntb args output
+  header: [ ... ]
+  empty: "..."
+  format: "..."
+  footer: [ ... ]
+
+console:
+  usage: [ ... ]
+  invalid-format: "..."
+  unknown-arg: "..."
+  available-args: "..."
+  missing-parenthesis: "..."
+
+reload: "..."
+no-permission: "..."
+missing-arg: "..."
+console-only: "..."
+```
+
+Placeholders supported in these strings:
+
+| Placeholder | Replaces with |
+| --- | --- |
+| `{command}` | The label the player used (`ntb`, `tb`, `tebexmessage`, ...). |
+| `{arg}` | The offending argument name (in error messages). |
+| `{args}` | Comma-separated list of available custom arguments. |
+| `{usage}` | Auto-built usage line for the console. |
+
+## `discord.yml` — Discord webhook
+
+Full reference and per-mode examples on the [Discord webhook](/plugins/ntebexmessage/webhook/) page.
+
+```yaml title="discord.yml"
+webhook:
+  enabled: false
+  url: "INSERT-WEBHOOK-URL"
+  username: "Nautic Studios"
+  avatar: "https://i.imgur.com/ip1xV13.png"
+  mode: components-v2   # or: classic
+
+  filters:              { strip-words, replace, multi-package }
+  classic:              { content, embed, buttons }
+  components-v2:        { accent, layout }
+```
+
+## Detailed reference
+
+Each section has its own page with full field reference and examples:
 
 <CardGrid>
   <LinkCard
@@ -67,12 +124,12 @@ Each section has its own dedicated page with field reference and examples:
   <LinkCard
     title="Reward event"
     href="/plugins/ntebexmessage/reward/"
-    description="Chat participation event with automatic rewards."
+    description="Chat participation event with bossbar, actionbar and per-player rewards."
   />
   <LinkCard
     title="Discord webhook"
     href="/plugins/ntebexmessage/webhook/"
-    description="Embed-rich Discord notifications in discord.yml."
+    description="Classic embeds or Components V2 layout."
   />
 </CardGrid>
 
@@ -80,7 +137,16 @@ Each section has its own dedicated page with field reference and examples:
 
 | Permission | Description | Default |
 | --- | --- | --- |
-| `tebexmessage.help` | Display the help menu. | everyone |
-| `tebexmessage.reload` | Reload the configuration. | OP |
+| `tebexmessage.help` | Display `/ntb help`. | OP |
+| `tebexmessage.reload` | Reload all configuration. | OP |
 | `tebexmessage.args` | List custom arguments. | OP |
 | `tebexmessage.admin` | Bypasses every permission check. | OP |
+
+## Compatibility
+
+| | |
+| --- | --- |
+| **Bukkit API** | `1.16+` |
+| **Folia** | Supported |
+| **Soft-depend** | PlaceholderAPI (optional) |
+| **Java** | 17+ |
