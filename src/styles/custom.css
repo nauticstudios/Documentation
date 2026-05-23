@@ -304,18 +304,26 @@ site-search button:hover {
   color: var(--sl-color-white);
 }
 
-/* Card / LinkCard internal titles inherit no markdown header styling */
+/* Card / LinkCard — no leaked markdown header / link styles */
 .sl-link-card,
-.sl-link-card * {
+.sl-link-card *,
+.card,
+.card * {
   border-top: none !important;
 }
 
-.sl-link-card .link-title,
+.sl-link-card a,
 .sl-link-card .title,
 .card .title,
-.card .title-wrapper {
+.card a {
   border-bottom: none !important;
-  border-top: none !important;
+  text-decoration: none !important;
+  color: var(--sl-color-white) !important;
+}
+
+.sl-link-card a:hover,
+.card a:hover {
+  border-bottom: none !important;
   text-decoration: none !important;
 }
 
@@ -590,6 +598,22 @@ site-search button:hover {
 }
 
 /* ---- Discord widget on introduction ---- */
+
+.discord-widget-only {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0 0;
+}
+
+.discord-widget-only iframe {
+  width: 100%;
+  max-width: 480px;
+  height: 500px;
+  border: 1px solid var(--sl-color-hairline) !important;
+  border-radius: 10px;
+  background: #36393f;
+  box-shadow: 0 8px 30px -16px rgba(88, 101, 242, 0.35);
+}
 
 .discord-widget-wrapper {
   display: grid;
