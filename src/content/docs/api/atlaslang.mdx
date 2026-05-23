@@ -141,7 +141,7 @@ String lang = AtlasAPI.getLanguage(player);
 
 ### Version gating
 
-```java title="MyPlugin.java" collapse={1-7}
+```java title="MyPlugin.java"
 package com.example.myplugin;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -261,7 +261,7 @@ Cancellable. New language can be rewritten with `setNewLanguage(...)`.
 | `setNewLanguage(String)` | `void` |
 | `isCancelled()` / `setCancelled(boolean)` | — |
 
-```java title="LanguageGuard.java" collapse={1-10}
+```java title="LanguageGuard.java"
 package com.example.plugin.listener;
 
 import org.bukkit.event.EventHandler;
@@ -292,7 +292,7 @@ public final class LanguageGuard implements Listener {
 
 ## Full plugin example
 
-```java title="WelcomePlugin.java" collapse={1-13}
+```java title="WelcomePlugin.java"
 package com.example.welcome;
 
 import org.bukkit.command.Command;

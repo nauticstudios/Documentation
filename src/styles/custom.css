@@ -476,48 +476,6 @@ site-search button:hover {
   border-color: var(--sl-color-hairline) !important;
 }
 
-/* Collapsible sections — fix disappearing summary, Paper-style row */
-.expressive-code .collapse {
-  display: block !important;
-}
-
-.expressive-code .collapse > summary {
-  display: flex !important;
-  align-items: center;
-  gap: 0.5rem;
-  background: #1a1d24 !important;
-  color: var(--sl-color-gray-2) !important;
-  border-top: 1px solid var(--sl-color-hairline) !important;
-  border-bottom: 1px solid var(--sl-color-hairline) !important;
-  padding: 0.4rem 1rem !important;
-  font-family: var(--sl-font-mono);
-  font-size: 0.78rem;
-  list-style: none;
-  cursor: pointer;
-  user-select: none;
-}
-
-.expressive-code .collapse > summary::-webkit-details-marker {
-  display: none;
-}
-
-.expressive-code .collapse > summary::before {
-  content: '⇕';
-  display: inline-block;
-  font-size: 0.85rem;
-  color: var(--sl-color-gray-3);
-  width: 1rem;
-  text-align: center;
-}
-
-.expressive-code .collapse > summary:hover {
-  background: #232730 !important;
-  color: var(--sl-color-white) !important;
-}
-
-.expressive-code .collapse[open] > summary::before {
-  content: '⇳';
-}
 
 .sl-markdown-content table {
   font-size: 0.95rem;

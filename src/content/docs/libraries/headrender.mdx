@@ -165,7 +165,7 @@ HeadRender.use(DefaultHeadRenderService.builder()
 
 ## Custom SkinProvider
 
-```java title="MojangSkinProvider.java" collapse={1-9}
+```java title="MojangSkinProvider.java"
 package com.example.plugin.skin;
 
 import com.github.senkex.headrender.api.SkinProvider;
@@ -225,7 +225,7 @@ HeadRender.render("UnknownPlayer123").whenComplete((lines, error) -> {
 
 ## Example: welcome banner
 
-```java title="WelcomeListener.java" collapse={1-12}
+```java title="WelcomeListener.java"
 package com.example.plugin.listener;
 
 import org.bukkit.Bukkit;
@@ -265,7 +265,7 @@ public final class WelcomeListener implements Listener {
 
 ## Example: plugin bootstrap
 
-```java title="MyPlugin.java" collapse={1-9}
+```java title="MyPlugin.java"
 package com.example.plugin;
 
 import org.bukkit.plugin.java.JavaPlugin;

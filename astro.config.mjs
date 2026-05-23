@@ -1,6 +1,5 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-sections';
 import nauticLogo from './src/assets/nautic.webp';
 
 export default defineConfig({
@@ -23,7 +22,6 @@ export default defineConfig({
 
       expressiveCode: {
         themes: ['one-dark-pro'],
-        plugins: [pluginCollapsibleSections()],
         styleOverrides: {
           borderRadius: '10px',
           borderColor: '#1f232c',
