@@ -4,7 +4,7 @@
   --sl-font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --sl-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --sl-content-width: 60rem;
+  --sl-content-width: 75rem;
   --sl-sidebar-width: 19rem;
   --sl-text-base: 1rem;
 
@@ -264,6 +264,30 @@ site-search button:hover {
 
 .main-frame .main-pane {
   width: 100%;
+}
+
+/* Paper-style content alignment — push content to the left, no centered max-width */
+.main-pane .content-panel {
+  max-width: none !important;
+  margin-inline: 0 !important;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.main-pane .content-panel + .content-panel {
+  padding-top: 0;
+}
+
+.sl-markdown-content {
+  max-width: 68rem;
+  margin-inline: 0 !important;
+}
+
+@media (max-width: 72rem) {
+  .main-pane .content-panel {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
 }
 
 .sl-markdown-content {
