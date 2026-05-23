@@ -227,36 +227,35 @@ site-search button:hover {
   line-height: 1.4;
 }
 
-.sidebar-content .badge[data-variant="default"],
-.sidebar-content .badge:not([data-variant]) {
-  background: rgba(244, 63, 94, 0.12);
-  color: #fb7185;
-  border: 1px solid rgba(244, 63, 94, 0.3);
+/* Library — teal/cyan */
+.sidebar-content .badge[data-variant="tip"],
+.sidebar-content .badge[data-variant="note"] {
+  background: rgba(20, 184, 166, 0.12);
+  color: #2dd4bf;
+  border: 1px solid rgba(20, 184, 166, 0.32);
 }
 
+/* API — violet */
+.sidebar-content .badge[data-variant="caution"] {
+  background: rgba(139, 92, 246, 0.14);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+}
+
+/* Experimental — amber */
+.sidebar-content .badge[data-variant="danger"],
+.sidebar-content .badge[data-variant="default"],
+.sidebar-content .badge:not([data-variant]) {
+  background: rgba(245, 158, 11, 0.14);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.38);
+}
+
+/* Success — kept green */
 .sidebar-content .badge[data-variant="success"] {
   background: rgba(34, 197, 94, 0.12);
   color: #4ade80;
   border: 1px solid rgba(34, 197, 94, 0.3);
-}
-
-.sidebar-content .badge[data-variant="caution"] {
-  background: rgba(234, 179, 8, 0.14);
-  color: #facc15;
-  border: 1px solid rgba(234, 179, 8, 0.3);
-}
-
-.sidebar-content .badge[data-variant="tip"],
-.sidebar-content .badge[data-variant="note"] {
-  background: rgba(59, 130, 246, 0.14);
-  color: var(--sl-color-accent-high);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-}
-
-.sidebar-content .badge[data-variant="danger"] {
-  background: rgba(244, 63, 94, 0.14);
-  color: #fb7185;
-  border: 1px solid rgba(244, 63, 94, 0.35);
 }
 
 .right-sidebar {
@@ -268,8 +267,8 @@ site-search button:hover {
 }
 
 .sl-markdown-content {
-  font-size: 1rem;
-  line-height: 1.65;
+  font-size: 1.0625rem;
+  line-height: 1.7;
 }
 
 .sl-markdown-content :is(h1, h2, h3, h4) {
@@ -304,7 +303,8 @@ site-search button:hover {
   color: var(--sl-color-white);
 }
 
-/* Card / LinkCard — no leaked markdown header / link styles */
+/* ===== LinkCard / Card — flat modern design ===== */
+
 .sl-link-card,
 .sl-link-card *,
 .card,
@@ -327,9 +327,72 @@ site-search button:hover {
   text-decoration: none !important;
 }
 
+/* Flat link card with subtle background, no harsh border */
+.sl-link-card {
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  padding: 1.1rem 1.25rem !important;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--sl-color-bg-nav) 92%, white 2%),
+      var(--sl-color-bg-nav)) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset !important;
+  transition: border-color 0.18s ease, transform 0.18s ease,
+              background 0.18s ease;
+}
+
+.sl-link-card:hover {
+  border-color: color-mix(in srgb, var(--sl-color-accent) 55%, transparent) !important;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--sl-color-accent) 8%, var(--sl-color-bg-nav)),
+      var(--sl-color-bg-nav)) !important;
+  transform: translateY(-1px);
+}
+
+.sl-link-card .title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+.sl-link-card .description {
+  color: var(--sl-color-gray-2) !important;
+  font-size: 0.92rem;
+  margin-top: 0.35rem;
+}
+
+.sl-link-card .icon {
+  color: var(--sl-color-gray-3) !important;
+  transition: color 0.18s ease, transform 0.18s ease;
+}
+
+.sl-link-card:hover .icon {
+  color: var(--sl-color-accent-high) !important;
+  transform: translateX(2px);
+}
+
+/* Card (non-link) — same flat treatment */
+.card {
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  background: var(--sl-color-bg-nav) !important;
+  padding: 1.1rem 1.25rem !important;
+}
+
+.card .title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Tighter card grid gap */
+.card-grid {
+  gap: 0.85rem !important;
+}
+
 .sl-markdown-content p,
 .sl-markdown-content li {
-  font-size: 1rem;
+  font-size: 1.0625rem;
   color: var(--sl-color-gray-1);
 }
 
@@ -612,7 +675,7 @@ site-search button:hover {
   border: 1px solid var(--sl-color-hairline) !important;
   border-radius: 10px;
   background: #36393f;
-  box-shadow: 0 8px 30px -16px rgba(88, 101, 242, 0.35);
+  box-shadow: none;
 }
 
 .discord-widget-wrapper {
