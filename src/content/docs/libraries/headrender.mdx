@@ -242,23 +242,42 @@ HeadRender.use(service);
 
 Implement `SkinProvider` if you need a different skin source (Mojang directly, a local cache of skins on disk, a CDN, a proxy, etc.).
 
-```java
+```java title="MojangSkinProvider.java" collapse={1-10}
+package com.example.plugin.skin;
+
+import com.github.senkex.headrender.api.SkinProvider;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.UUID;
+
 public final class MojangSkinProvider implements SkinProvider {
 
     @Override
-    public BufferedImage fetch(String target, int size, boolean includeHelmet) throws IOException {
+    public BufferedImage fetch(final String target, final int size,
+                               final boolean includeHelmet) throws IOException {
         // 1. Resolve UUID from name if needed
         // 2. GET https://sessionserver.mojang.com/session/minecraft/profile/<uuid>
-        // 3. Decode the textures property, fetch the skin PNG
-        // 4. Crop 8x8 head (and 8x8 overlay if includeHelmet) and return it
-        return ...;
+        // 3. Decode the "textures" property and fetch the skin PNG
+        // 4. Crop the 8x8 head (and 8x8 overlay if includeHelmet)
+        // 5. Return a scaled BufferedImage of the requested size
+
+        try (var stream = new URL("https://example.com/skin.png").openStream()) {
+            final BufferedImage image = ImageIO.read(stream);
+            if (image == null) {
+                throw new IOException("Unable to decode skin for " + target);
+            }
+            return image;
+        }
     }
 }
 ```
 
-Then install it:
+Install it through the service builder:
 
-```java
+```java title="install.java"
 HeadRender.use(DefaultHeadRenderService.builder()
         .provider(new MojangSkinProvider())
         .build());
@@ -338,45 +357,108 @@ Common causes:
 
 ### Welcome banner on join
 
-```java
-@EventHandler
-public void onJoin(PlayerJoinEvent event) {
-    Player player = event.getPlayer();
-    HeadRender.render(player.getUniqueId()).thenAccept(lines -> {
-        Bukkit.getScheduler().runTask(plugin, () -> {
-            player.sendMessage("§7§m──────────────────────");
-            lines.forEach(player::sendMessage);
-            player.sendMessage("§aWelcome back, §f" + player.getName() + "§a!");
-            player.sendMessage("§7§m──────────────────────");
+A drop-in listener that prints the player's head when they connect. Imports are collapsed for clarity — click to expand.
+
+```java title="WelcomeListener.java" collapse={1-12}
+package com.example.plugin.listener;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.senkex.headrender.HeadRender;
+
+import java.util.List;
+
+public final class WelcomeListener implements Listener {
+
+    private final JavaPlugin plugin;
+
+    public WelcomeListener(final JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    @EventHandler
+    public void onJoin(final PlayerJoinEvent event) {
+        final Player player = event.getPlayer();
+
+        HeadRender.render(player.getUniqueId()).thenAccept(lines -> {
+            // Render runs on a worker thread. Hop back to the main thread
+            // before touching the Bukkit world or sending messages.
+            Bukkit.getScheduler().runTask(plugin, () -> sendBanner(player, lines));
         });
-    });
+    }
+
+    private void sendBanner(final Player player, final List<String> lines) {
+        player.sendMessage("§7§m──────────────────────");
+        lines.forEach(player::sendMessage);
+        player.sendMessage("§aWelcome back, §f" + player.getName() + "§a!");
+        player.sendMessage("§7§m──────────────────────");
+    }
 }
 ```
 
 ### Side-by-side profile (head + info)
 
-```java
-RenderOptions opts = RenderOptions.builder().size(8).build();
+Renders the head and stitches a info block next to each pixel row.
 
-HeadRender.render(target.getName(), opts).thenAccept(lines -> {
-    String[] info = {
-        "§b" + target.getName(),
-        "§7Rank: §f" + rank,
-        "§7Playtime: §f" + playtime,
-        "§7Last seen: §f" + lastSeen,
-        "§7Balance: §f$" + balance,
-    };
-    int n = Math.min(lines.size(), info.length);
-    for (int i = 0; i < lines.size(); i++) {
-        String right = i < info.length ? "  " + info[i] : "";
-        viewer.sendMessage(lines.get(i) + right);
+```java title="ProfileCommand.java" collapse={1-13}
+package com.example.plugin.command;
+
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import com.github.senkex.headrender.HeadRender;
+import com.github.senkex.headrender.model.RenderOptions;
+
+import java.util.List;
+import java.util.Objects;
+
+public final class ProfileCommand implements CommandExecutor {
+
+    private static final RenderOptions OPTIONS = RenderOptions.builder()
+            .size(8)
+            .helmetLayer(true)
+            .build();
+
+    @Override
+    public boolean onCommand(final CommandSender sender, final Command command,
+                             final String label, final String[] args) {
+        if (!(sender instanceof Player viewer) || args.length == 0) {
+            return false;
+        }
+
+        final String target = args[0];
+
+        HeadRender.render(target, OPTIONS).thenAccept(lines -> renderCard(viewer, target, lines));
+        return true;
     }
-});
+
+    private void renderCard(final Player viewer, final String target, final List<String> lines) {
+        final String[] info = {
+            "§b" + target,
+            "§7Rank: §fMember",
+            "§7Playtime: §f12h 30m",
+            "§7Last seen: §fjust now",
+            "§7Balance: §f$1,250",
+        };
+
+        for (int i = 0; i < lines.size(); i++) {
+            final String right = i < info.length ? "  " + info[i] : "";
+            viewer.sendMessage(lines.get(i) + right);
+        }
+    }
+}
 ```
 
 ### Bigger head with a different character
 
-```java
+```java title="BigHead.java"
 RenderOptions big = RenderOptions.builder()
         .size(16)
         .character("⬛")
@@ -387,6 +469,44 @@ HeadRender.render("Senkex", big)
         .thenAccept(lines -> lines.forEach(player::sendMessage));
 ```
 
+### Bootstrapping a custom service in `onEnable`
+
+Set the service once and let the static facade do the rest.
+
+```java title="MyPlugin.java" collapse={1-14}
+package com.example.plugin;
+
+import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.senkex.headrender.HeadRender;
+import com.github.senkex.headrender.cache.InMemorySkinCache;
+import com.github.senkex.headrender.provider.MinotarSkinProvider;
+import com.github.senkex.headrender.service.DefaultHeadRenderService;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+public final class MyPlugin extends JavaPlugin {
+
+    @Override
+    public void onEnable() {
+        HeadRender.use(DefaultHeadRenderService.builder()
+                .provider(new MinotarSkinProvider(3000))
+                .cache(new InMemorySkinCache(512, TimeUnit.MINUTES.toMillis(30)))
+                .executor(Executors.newFixedThreadPool(4))
+                .build());
+
+        getServer().getPluginManager().registerEvents(new WelcomeListener(this), this);
+    }
+
+    @Override
+    public void onDisable() {
+        // Releases the executor and clears the active service.
+        HeadRender.shutdown();
+    }
+}
+```
+
 ## Tips
 
 - Keep `size` between **6 and 12** for chat. Anything larger overflows most clients' chat width.
@@ -394,29 +514,3 @@ HeadRender.render("Senkex", big)
 - HTTP fetches go through a small async pool, so calling `render(...)` from the main thread is safe.
 - Skins are cached by **target + size + helmet flag**. Toggling the helmet allocates a separate entry.
 - For extreme throughput (mass `/list` rendering, web dashboards) install a custom executor with a bounded queue.
-
-## Package layout
-
-```
-com.github.senkex.headrender
- ├── HeadRender                  — static facade
- ├── api/
- │   ├── HeadRenderService       — service contract
- │   ├── SkinProvider            — skin source contract
- │   └── SkinCache               — cache contract
- ├── service/
- │   └── DefaultHeadRenderService
- ├── provider/
- │   └── MinotarSkinProvider     — default provider
- ├── cache/
- │   └── InMemorySkinCache       — default LRU/TTL cache
- ├── image/
- │   ├── ImageScaler
- │   └── PixelRenderer
- ├── color/
- │   └── HexColorConverter       — RGB → §x§r§r§g§g§b§b
- ├── model/
- │   └── RenderOptions
- └── exception/
-     └── HeadRenderException
-```
