@@ -193,13 +193,13 @@ AtlasAPI.api().compatibleLanguages(List.of("en_US", "fr_FR", "es_ES"));
 
 | Method | Returns |
 | --- | --- |
-| `message(Player|UUID, [namespace,] path)` | `String` |
+| `message(Player / UUID, [namespace,] path)` | `String` |
 | `messageInLang(langInput, [namespace,] path)` | `String` |
 | `messageOrDefault(UUID, namespace, path, fallback)` | `String` |
 | `has(langInput, [namespace,] path)` | `boolean` |
-| `setPlayerLanguage(Player|UUID, langInput)` | `boolean` |
+| `setPlayerLanguage(Player / UUID, langInput)` | `boolean` |
 | `setPlayerLanguageAsync(UUID, langInput)` | `CompletableFuture<Boolean>` |
-| `getPlayerLanguage(Player|UUID)` | `String` |
+| `getPlayerLanguage(Player / UUID)` | `String` |
 | `isLanguageRegistered(langInput)` / `supports(langInput)` | `boolean` |
 | `getRegisteredLanguages()` / `getRegisteredLocales()` | `Set<String>` |
 | `getDefaultLanguage()` | `String` |
