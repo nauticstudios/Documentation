@@ -1,23 +1,47 @@
 ---
 title: HeadRender
-description: Lightweight library to render Minecraft player heads as map images, GUI textures and chat previews.
+description: Render a Minecraft player skin head directly into chat as colored HEX pixels. Async, cached, zero-config.
 ---
 
-HeadRender is a lightweight Java library that renders Minecraft player skins as in‑game textures. It can project a head onto a map, build GUI item icons from a UUID or skin URL, and cache results to avoid repeated Mojang lookups.
+**HeadRender** is a lightweight Java library that fetches a player's skin, downscales it, and turns every pixel into a HEX-colored chat line so you can print a clean avatar next to whatever info you want to show — welcome messages, `/seen`, profile cards, login notifications and so on.
 
-GitHub: [github.com/senkex/HeadRender](https://github.com/senkex/HeadRender)
+The library is intentionally minimal: one static facade, async by default and a builder for the rare cases where you actually need to tweak something. There's no plugin instance, no `onEnable` call, and no config files.
+
+GitHub: [github.com/senkex/HeadRender](https://github.com/senkex/HeadRender) · JitPack: [jitpack.io/#senkex/HeadRender](https://jitpack.io/#senkex/HeadRender)
+
+:::caution
+HeadRender requires **Minecraft 1.16 or newer**. It relies on HEX colors (`§x§r§r§g§g§b§b`), so anything older won't display the pixels correctly.
+:::
+
+:::danger
+If you ship HeadRender inside a plugin you **must** relocate (shade) it. Two plugins on the same server depending on different versions of the same package will eventually break someone's day. See [Shading](#shading) below.
+:::
 
 ## Features
 
-- Render any player head from name, UUID or skin URL
-- Async fetch with safe fallbacks (never blocks the main thread)
-- In‑memory cache with configurable TTL
-- Output to `MapCanvas`, `BufferedImage` or base64 textures
-- Drop‑in helpers for GUI items and chat hover previews
+- Single static facade — `HeadRender.render(...)` and you're done.
+- Fully asynchronous: every IO operation returns a `CompletableFuture`. Safe to call from the main thread.
+- Built-in LRU cache with a per-entry TTL (defaults: 256 entries / 10 min).
+- Pluggable `SkinProvider`, `SkinCache` and `ExecutorService` — swap any piece without touching the rest.
+- Immutable `RenderOptions` with a fluent builder.
+- Helmet (overlay) layer toggle.
+- Per-pixel alpha threshold so transparent areas render as a space, not a square.
+- Targets Java 17 and Spigot-API 1.20.4 (works on every Paper/Spigot fork ≥ 1.16).
+
+## Requirements
+
+| Requirement | Value |
+| --- | --- |
+| Minecraft | 1.16+ |
+| Java | 17+ |
+| Server platform | Bukkit / Spigot / Paper (any fork) |
+| Dependency | None — `spigot-api` is `compileOnly` |
 
 ## Installation
 
-Add the dependency to your build file. The library is published on JitPack.
+Latest version is published on JitPack. Replace `VERSION` with the [latest release](https://jitpack.io/#senkex/HeadRender) (e.g. `1.0.1`).
+
+### Gradle (Kotlin DSL)
 
 ```kotlin
 repositories {
@@ -25,41 +49,374 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.senkex:HeadRender:main-SNAPSHOT")
+    implementation("com.github.senkex:HeadRender:VERSION")
 }
+```
+
+### Gradle (Groovy)
+
+```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.senkex:HeadRender:VERSION'
+}
+```
+
+### Maven
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.github.senkex</groupId>
+    <artifactId>HeadRender</artifactId>
+    <version>VERSION</version>
+</dependency>
+```
+
+## Shading
+
+You **must** relocate the `com.github.senkex.headrender` package into your own plugin namespace before publishing.
+
+### Gradle Shadow (Kotlin DSL)
+
+```kotlin
+plugins {
+    id("com.gradleup.shadow") version "8.3.5"
+}
+
+tasks {
+    shadowJar {
+        relocate("com.github.senkex.headrender", "my.plugin.libs.headrender")
+    }
+}
+```
+
+### Gradle Shadow (Groovy)
+
+```groovy
+plugins {
+    id 'com.gradleup.shadow' version '8.3.5'
+}
+
+tasks {
+    shadowJar {
+        relocate 'com.github.senkex.headrender', 'my.plugin.libs.headrender'
+    }
+}
+```
+
+### Maven Shade Plugin
+
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-shade-plugin</artifactId>
+    <version>3.6.0</version>
+    <configuration>
+        <relocations>
+            <relocation>
+                <pattern>com.github.senkex.headrender</pattern>
+                <shadedPattern>my.plugin.libs.headrender</shadedPattern>
+            </relocation>
+        </relocations>
+    </configuration>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>shade</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
 ```
 
 ## Quick start
 
+The simplest case is just a player name. The future resolves with one chat line per pixel row — iterate and send them.
+
 ```java
-HeadRender.of("Senkex").thenAccept(head -> {
-    ItemStack icon = head.asItem();
-    player.getInventory().addItem(icon);
+HeadRender.render("Senkex").thenAccept(lines -> {
+    for (String line : lines) {
+        player.sendMessage(line);
+    }
 });
 ```
 
+UUIDs work the same way:
+
 ```java
-HeadRender.of(uuid)
-    .size(64)
-    .async()
-    .thenAccept(head -> head.renderTo(mapCanvas, 0, 0));
+HeadRender.render(player.getUniqueId()).thenAccept(lines ->
+    lines.forEach(player::sendMessage));
 ```
 
 :::note
-All network calls are asynchronous. The returned `CompletableFuture` resolves on the calling thread of `thenAccept` — use `Bukkit.getScheduler()` if you need to touch the world.
+The returned future completes on the internal worker thread. If you need to touch the Bukkit world, schedule a sync task with `Bukkit.getScheduler().runTask(plugin, () -> ...)` inside the callback.
 :::
 
-## API surface
+## RenderOptions
+
+Pass a `RenderOptions` instance to tweak how the head is rendered. Every field is optional and has a sensible default.
+
+```java
+RenderOptions options = RenderOptions.builder()
+        .size(10)              // resolution (pixels per side)
+        .character("⬛")        // pixel character
+        .helmetLayer(true)     // include the helmet/hat overlay
+        .alphaThreshold(20)    // transparency cutoff (0–255)
+        .useCache(true)        // hit and update the shared cache
+        .build();
+
+HeadRender.render("Senkex", options)
+        .thenAccept(lines -> lines.forEach(player::sendMessage));
+```
+
+### Defaults
+
+| Option | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `size` | `int` | `8` | Output resolution in pixels per side. Must be > 0. |
+| `character` | `String` | `█` | The character drawn for every opaque pixel. |
+| `helmetLayer` | `boolean` | `true` | Render the second skin layer (hat / overlay). |
+| `useCache` | `boolean` | `true` | Read from / write to the shared `SkinCache`. |
+| `alphaThreshold` | `int` | `10` | Pixels with alpha ≤ threshold render as a blank space. Range `[0, 255]`. |
+
+`RenderOptions` is immutable. Use `options.toBuilder()` to create a tweaked copy without mutating the original.
+
+```java
+RenderOptions bigger = options.toBuilder().size(16).build();
+```
+
+### Shortcut factories
+
+| Factory | Returns |
+| --- | --- |
+| `RenderOptions.defaults()` | All defaults. |
+| `RenderOptions.of(int size)` | Defaults with a custom size. |
+| `RenderOptions.builder()` | A fresh builder. |
+
+## Facade reference
+
+`HeadRender` is the static entry point. The first call lazily creates a default service.
 
 | Method | Returns | Description |
 | --- | --- | --- |
-| `HeadRender.of(name)` | `CompletableFuture<Head>` | Resolve by player name (Mojang) |
-| `HeadRender.of(uuid)` | `CompletableFuture<Head>` | Resolve by UUID |
-| `HeadRender.fromUrl(url)` | `CompletableFuture<Head>` | Resolve from a raw skin URL |
-| `Head#asItem()` | `ItemStack` | Build a player head item |
-| `Head#renderTo(canvas, x, y)` | `void` | Draw onto a map canvas |
-| `Head#toImage()` | `BufferedImage` | Return the raw image |
+| `HeadRender.render(String)` | `CompletableFuture<List<String>>` | Render by name or trimmed UUID, default options. |
+| `HeadRender.render(String, RenderOptions)` | `CompletableFuture<List<String>>` | Render by name / UUID with custom options. |
+| `HeadRender.render(UUID)` | `CompletableFuture<List<String>>` | Render by `UUID`, default options. |
+| `HeadRender.render(UUID, RenderOptions)` | `CompletableFuture<List<String>>` | Render by `UUID` with custom options. |
+| `HeadRender.service()` | `HeadRenderService` | The active service (lazily created). |
+| `HeadRender.use(HeadRenderService)` | `void` | Replace the active service. Shuts the previous one down. |
+| `HeadRender.cache()` | `SkinCache` | The active cache. |
+| `HeadRender.provider()` | `SkinProvider` | The active skin provider. |
+| `HeadRender.cacheSize()` | `int` | Number of entries currently cached. |
+| `HeadRender.clearCache()` | `void` | Drops every entry from the active cache. |
+| `HeadRender.shutdown()` | `void` | Releases the executor and discards the service. Call on plugin disable. |
 
-## License
+## Custom service
 
-MIT — see the repository for full license text.
+The static facade is just a wrapper around a `HeadRenderService`. Build your own when you want a different provider, cache, executor, or all three.
+
+```java
+HeadRenderService service = DefaultHeadRenderService.builder()
+        .provider(new MinotarSkinProvider(3000))                       // 3s HTTP timeout
+        .cache(new InMemorySkinCache(512, TimeUnit.MINUTES.toMillis(30))) // 512 entries, 30 min
+        .executor(Executors.newFixedThreadPool(4))                     // pinned 4-thread pool
+        .build();
+
+HeadRender.use(service);
+```
+
+`HeadRender.use(...)` shuts down the previous service before installing the new one, so you don't leak threads.
+
+## Custom SkinProvider
+
+Implement `SkinProvider` if you need a different skin source (Mojang directly, a local cache of skins on disk, a CDN, a proxy, etc.).
+
+```java
+public final class MojangSkinProvider implements SkinProvider {
+
+    @Override
+    public BufferedImage fetch(String target, int size, boolean includeHelmet) throws IOException {
+        // 1. Resolve UUID from name if needed
+        // 2. GET https://sessionserver.mojang.com/session/minecraft/profile/<uuid>
+        // 3. Decode the textures property, fetch the skin PNG
+        // 4. Crop 8x8 head (and 8x8 overlay if includeHelmet) and return it
+        return ...;
+    }
+}
+```
+
+Then install it:
+
+```java
+HeadRender.use(DefaultHeadRenderService.builder()
+        .provider(new MojangSkinProvider())
+        .build());
+```
+
+The contract is simple:
+
+- Return a non-null `BufferedImage`.
+- Throw `IOException` on any network / decoding failure — the service wraps it in `HeadRenderException`.
+- Honor the `includeHelmet` flag.
+
+## Cache
+
+The shared cache is keyed by lowercase target + size + helmet flag, so `"Senkex"` and `"senkex"` share the same entry but two different sizes do not.
+
+```java
+HeadRender.cacheSize();              // entry count
+HeadRender.clearCache();             // wipe everything
+HeadRender.cache().invalidate("Senkex"); // drop one player
+```
+
+The default implementation is `InMemorySkinCache` — a synchronized `LinkedHashMap` with LRU eviction and a per-entry TTL. Both knobs can be changed at runtime:
+
+```java
+InMemorySkinCache cache = (InMemorySkinCache) HeadRender.cache();
+cache.setMaxSize(1024);
+cache.setTtl(1, TimeUnit.HOURS);
+```
+
+If the built-in cache isn't enough (clustered server, Redis, disk-backed), implement `SkinCache` and inject it through the builder.
+
+```java
+public final class RedisSkinCache implements SkinCache {
+    public BufferedImage get(String key)      { /* ... */ }
+    public void put(String key, BufferedImage image) { /* ... */ }
+    public void invalidate(String key)        { /* ... */ }
+    public void clear()                       { /* ... */ }
+    public int  size()                        { /* ... */ }
+}
+```
+
+## Threading
+
+- Every `render(...)` call submits work to the service's internal executor (cached thread pool by default, daemon threads named `HeadRender-Worker-N`).
+- The default pool grows on demand and shrinks when idle. For high-volume servers prefer a fixed-size pool passed via `.executor(...)`.
+- `thenAccept` / `thenApply` callbacks run on the worker thread — schedule a sync task before touching Bukkit state.
+- Call `HeadRender.shutdown()` on plugin disable to interrupt pending tasks and free the pool.
+
+```java
+@Override
+public void onDisable() {
+    HeadRender.shutdown();
+}
+```
+
+## Error handling
+
+Any failure during fetch / scale / render is wrapped into an unchecked `HeadRenderException`. Handle it through the future:
+
+```java
+HeadRender.render("UnknownPlayer123456").whenComplete((lines, error) -> {
+    if (error != null) {
+        getLogger().warning("Could not render head: " + error.getMessage());
+        return;
+    }
+    lines.forEach(player::sendMessage);
+});
+```
+
+Common causes:
+
+- Player name not resolvable on the configured skin provider.
+- HTTP timeout — bump it via `new MinotarSkinProvider(timeoutMillis)`.
+- Image decoding error — usually a bad upstream response.
+
+## Examples
+
+### Welcome banner on join
+
+```java
+@EventHandler
+public void onJoin(PlayerJoinEvent event) {
+    Player player = event.getPlayer();
+    HeadRender.render(player.getUniqueId()).thenAccept(lines -> {
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            player.sendMessage("§7§m──────────────────────");
+            lines.forEach(player::sendMessage);
+            player.sendMessage("§aWelcome back, §f" + player.getName() + "§a!");
+            player.sendMessage("§7§m──────────────────────");
+        });
+    });
+}
+```
+
+### Side-by-side profile (head + info)
+
+```java
+RenderOptions opts = RenderOptions.builder().size(8).build();
+
+HeadRender.render(target.getName(), opts).thenAccept(lines -> {
+    String[] info = {
+        "§b" + target.getName(),
+        "§7Rank: §f" + rank,
+        "§7Playtime: §f" + playtime,
+        "§7Last seen: §f" + lastSeen,
+        "§7Balance: §f$" + balance,
+    };
+    int n = Math.min(lines.size(), info.length);
+    for (int i = 0; i < lines.size(); i++) {
+        String right = i < info.length ? "  " + info[i] : "";
+        viewer.sendMessage(lines.get(i) + right);
+    }
+});
+```
+
+### Bigger head with a different character
+
+```java
+RenderOptions big = RenderOptions.builder()
+        .size(16)
+        .character("⬛")
+        .alphaThreshold(40)
+        .build();
+
+HeadRender.render("Senkex", big)
+        .thenAccept(lines -> lines.forEach(player::sendMessage));
+```
+
+## Tips
+
+- Keep `size` between **6 and 12** for chat. Anything larger overflows most clients' chat width.
+- The cache is shared across every call against the same service — there's no need to keep a local copy.
+- HTTP fetches go through a small async pool, so calling `render(...)` from the main thread is safe.
+- Skins are cached by **target + size + helmet flag**. Toggling the helmet allocates a separate entry.
+- For extreme throughput (mass `/list` rendering, web dashboards) install a custom executor with a bounded queue.
+
+## Package layout
+
+```
+com.github.senkex.headrender
+ ├── HeadRender                  — static facade
+ ├── api/
+ │   ├── HeadRenderService       — service contract
+ │   ├── SkinProvider            — skin source contract
+ │   └── SkinCache               — cache contract
+ ├── service/
+ │   └── DefaultHeadRenderService
+ ├── provider/
+ │   └── MinotarSkinProvider     — default provider
+ ├── cache/
+ │   └── InMemorySkinCache       — default LRU/TTL cache
+ ├── image/
+ │   ├── ImageScaler
+ │   └── PixelRenderer
+ ├── color/
+ │   └── HexColorConverter       — RGB → §x§r§r§g§g§b§b
+ ├── model/
+ │   └── RenderOptions
+ └── exception/
+     └── HeadRenderException
+```
