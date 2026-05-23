@@ -3,17 +3,23 @@ title: Configuration
 description: config.yml, messages.yml and discord.yml reference.
 ---
 
+Three files under `/plugins/NTebexMessage/`.
+
 | File | Purpose |
 | --- | --- |
 | `config.yml` | Custom args, templates, buttons, reward event. |
 | `messages.yml` | UI strings — help, args, errors, console output. |
 | `discord.yml` | Webhook bot identity, filters, classic / Components V2 layout. |
 
-Reload after editing:
+Reload after editing any of them:
 
 ```
 /ntb reload
 ```
+
+:::tip
+Reload is hot — no need to restart the server. Templates, buttons and webhook layouts are re-read in place.
+:::
 
 ## `config.yml`
 
@@ -80,6 +86,10 @@ webhook:
   classic:       { content, embed, buttons }
   components-v2: { accent, layout }
 ```
+
+:::danger
+`discord.yml` holds your webhook URL. Anyone with that URL can post in the channel. Keep it out of public repos and rotate it if exposed.
+:::
 
 ## Permissions
 

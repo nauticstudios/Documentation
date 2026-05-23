@@ -5,7 +5,14 @@ description: Send purchases to Discord — classic embed or Components V2.
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Configuration file: `discord.yml`. Two modes: `classic` (embed + buttons) or `components-v2` (native container layout).
+Configuration file: `discord.yml`. Two rendering modes:
+
+- **`classic`** — traditional embed plus link buttons. Universally supported.
+- **`components-v2`** — native Discord Components V2 layout (containers, sections, thumbnails, separators, media galleries, buttons). Strongly recommended for new setups.
+
+:::tip
+Switching modes is a one-line change (`mode:`). Set up both, A/B test which your community prefers, and roll back instantly if needed.
+:::
 
 ## Setup
 
@@ -19,9 +26,13 @@ webhook:
   mode: components-v2   # or: classic
 ```
 
+:::danger
+Webhook URLs **grant write access** to the channel they belong to. Never commit `discord.yml` to a public repo and rotate the URL immediately if it leaks.
+:::
+
 ## Filters
 
-Applied **only to substituted placeholders** (`{player}`, `{package}`, …). Literal text is untouched.
+Applied **only to substituted placeholders** (`{player}`, `{package}`, …). Literal text in the file is never touched.
 
 ```yaml title="discord.yml"
 filters:
@@ -45,6 +56,10 @@ filters:
 | `strip-words` | Removes the listed words (case-insensitive). `Kit ASTRO` → `ASTRO`. |
 | `replace` | Maps raw input → display string. |
 | `multi-package.multiline` | `true` = one per line with `bullet`. `false` = inline with `inline-separator`. |
+
+:::tip
+Use `replace` to fix capitalization once instead of renaming every SKU in your Tebex panel. Keeps Tebex IDs stable while the embed stays polished.
+:::
 
 ## Placeholders
 
@@ -81,7 +96,7 @@ classic:
     thumbnail: "https://mc-heads.net/avatar/{player}"
 
   buttons:
-    - { label: "Visit Store", url: "https://store.example.com" }
+    - { label: "Visit Store",  url: "https://store.example.com" }
     - { label: "Join Discord", url: "https://discord.gg/example" }
 ```
 
@@ -92,6 +107,10 @@ classic:
 | `fields[].inline` | `true` lays fields side by side. |
 | `thumbnail` | Top-right image. Use `mc-heads.net/avatar/{player}` for the buyer's head. |
 | `buttons` | Up to **5** link buttons. |
+
+:::tip
+Need to ping a role? Put `<@&ROLE_ID>` in `content` and the role gets pinged above the embed.
+:::
 
 ## Mode: components-v2
 
@@ -194,3 +213,7 @@ components-v2:
 
 </TabItem>
 </Tabs>
+
+:::tip
+A `section` with the buyer's head as `thumbnail`, followed by a `separator` and a `buttons` row, gives you a clean store-card layout in 3 nodes.
+:::

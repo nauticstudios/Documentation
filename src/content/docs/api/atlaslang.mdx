@@ -3,7 +3,9 @@ title: AtlasLang
 description: Multilingual engine + developer API. Per-player languages, namespaces, locale aliases, async writes and a cancellable language-change event.
 ---
 
-Multilingual engine used by every Nautic Studios plugin. Stores each player's language in a database, loads per-language YAML files and exposes the **AtlasAPI v2** for other plugins.
+Multilingual engine used by every Nautic Studios plugin. Stores each player's language in a database, loads per-language YAML files and exposes the **AtlasAPI v2** so any plugin can translate messages without owning the data.
+
+Reads are cached in memory, writes are async — every API method is safe to call from the main thread.
 
 GitHub: [nauticstudios/AtlasLang](https://github.com/nauticstudios/AtlasLang) · API source: [`api/`](https://github.com/nauticstudios/AtlasLang/tree/master/api/src/main/java/com/github/nautic/api)
 
@@ -30,6 +32,14 @@ languages/
  └── spanish/
      └── ...
 ```
+
+:::tip
+Use one **namespace per addon** (`myclans`, `mycrates`, `welcome`) so two plugins translating into the same language never collide on the same key.
+:::
+
+:::caution
+Malformed or missing language files never crash the server — a safe fallback string is returned instead. Watch the console on `/atlaslang reload` to catch silent YAML errors early.
+:::
 
 ## Placeholders
 
@@ -95,6 +105,10 @@ dependencies {
 ```yaml title="plugin.yml"
 depend: [AtlasLang]      # or: softdepend: [AtlasLang]
 ```
+
+:::tip
+Use **`softdepend`** if your plugin can still function without translations, and gate calls with `AtlasAPI.isAvailable()`. Use **`depend`** if AtlasLang is mandatory — the server will refuse to load your plugin if AtlasLang is missing.
+:::
 
 ### Quick start
 
@@ -176,6 +190,12 @@ AtlasAPI.setLanguageAsync(uuid, "spanish").thenAccept(success -> {
 });
 ```
 
+Both forms fire `PlayerLanguageChangeEvent` and persist asynchronously. The sync form returns `true` if the language was resolved and the event was not cancelled; the async form completes once the DB row is committed.
+
+:::caution
+`setLanguage(...)` returns `false` silently if a listener cancels the event or `langInput` is not registered. Always check the return value before sending a "language updated" message.
+:::
+
 ### Read
 
 ```java
@@ -188,6 +208,10 @@ String      fallback = AtlasAPI.getDefault();
 
 AtlasAPI.api().compatibleLanguages(List.of("en_US", "fr_FR", "es_ES"));
 ```
+
+:::tip
+Use `compatibleLanguages(...)` when negotiating against a client's `Player#locale()` — feeding it the player's locale plus a few fallbacks gives you the best match AtlasLang actually has.
+:::
 
 ### Method reference
 
@@ -345,3 +369,11 @@ github:
 ```
 
 Trigger manually with `/atlaslang github sync`.
+
+:::tip
+Store your language files in a separate, public-readable repo. Translators can open pull requests without ever touching the server — `/atlaslang github sync` pulls the latest copy into `/plugins/AtlasLang/languages/` and (optionally) reloads in place.
+:::
+
+:::danger
+`overwrite-existing: true` **replaces** local edits with whatever is in the remote repo. If staff occasionally edit files directly on the server, set it to `false` or you'll silently lose those edits on the next sync.
+:::

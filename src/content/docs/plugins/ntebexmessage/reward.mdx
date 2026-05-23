@@ -3,7 +3,7 @@ title: Reward event
 description: Type-a-word chat event with bossbar, actionbar and per-player rewards.
 ---
 
-Triggered by templates with `events.reward-event: true`. Players type a configured word in chat; the first N receive the reward commands.
+Triggered by templates with `events.reward-event: true`. Players type a configured word in chat; the first N receive the reward commands. A bossbar + actionbar countdown keeps the event visible.
 
 ## Configuration
 
@@ -63,3 +63,23 @@ reward-event:
 | `%write_now%` | Players who wrote so far. |
 | `%write_total%` | Configured `players-write-word`. |
 | `%players_reward_claimed%` | Comma-separated list of rewarded players. |
+
+:::tip
+For big public events lower `players-write-word` and shorten `cooldown.time` so the event feels snappy. For small servers, raise both so everyone online has a real chance.
+:::
+
+:::danger
+`players-rewards-commands` runs from console for **every** participant. A typo like `op %player%` will hand out OP to the entire chat. Test on a staging server before going live.
+:::
+
+## Reward ideas
+
+Pair the event with whatever your economy plugin exposes — these all run as console commands:
+
+```yaml
+players-rewards-commands:
+  - "give %player% minecraft:diamond 1"          # vanilla
+  - "eco give %player% 500"                      # EssentialsX
+  - "lp user %player% permission settemp vip 1h" # LuckPerms timed perk
+  - "crate give %player% common 1"               # ExcellentCrates
+```

@@ -3,7 +3,7 @@ title: HeadRender
 description: Render a Minecraft player skin head into chat as HEX-colored pixels. Async, cached, zero-config.
 ---
 
-Fetches a player's skin, downscales it and turns each pixel into a HEX-colored chat line. One static facade, async by default.
+Fetches a player's skin, downscales it and turns each pixel into a HEX-colored chat line — drop a Minecraft head straight into chat, action messages, profile cards or join banners. One static facade, async by default, with an in-memory LRU cache so repeated lookups are free.
 
 GitHub: [senkex/HeadRender](https://github.com/senkex/HeadRender) · JitPack: [jitpack.io/#senkex/HeadRender](https://jitpack.io/#senkex/HeadRender)
 
@@ -107,6 +107,10 @@ HeadRender.render(player.getUniqueId()).thenAccept(lines ->
 Callbacks run on a worker thread. Use `Bukkit.getScheduler().runTask(...)` before touching the world.
 :::
 
+:::tip
+Prefer the `UUID` overload over the name overload. Names can change; UUIDs don't. Caching by UUID also avoids the extra name → UUID resolution roundtrip.
+:::
+
 ## RenderOptions
 
 ```java
@@ -131,6 +135,10 @@ HeadRender.render("Senkex", options)
 | `alphaThreshold` | `int` | `10` | Pixels ≤ threshold render as a space. |
 
 Shortcuts: `RenderOptions.defaults()`, `RenderOptions.of(int size)`, `options.toBuilder()`.
+
+:::tip
+Keep `size` between **6 and 12** for chat. Anything above ~16 overflows the default client chat width and breaks centering. For end-game profile screens (using a book GUI or similar) you can push it higher.
+:::
 
 ## Facade reference
 
@@ -195,11 +203,15 @@ cache.setMaxSize(1024);
 cache.setTtl(1, TimeUnit.HOURS);
 ```
 
-For a clustered cache, implement `SkinCache` and inject through the builder.
+For a clustered cache (Redis, disk-backed, shared across servers), implement `SkinCache` and inject through the builder.
+
+:::tip
+On high-traffic servers raise `maxSize` to **1024+** so popular skins stay hot. A skin is ~4 KB in memory — even 4096 entries only costs ~16 MB.
+:::
 
 ## Error handling
 
-Failures are wrapped in `HeadRenderException`:
+Failures are wrapped in `HeadRenderException`. Common causes: unknown player name, HTTP timeout from the upstream skin provider, or a decoding error.
 
 ```java
 HeadRender.render("UnknownPlayer123").whenComplete((lines, error) -> {
@@ -283,3 +295,7 @@ public final class MyPlugin extends JavaPlugin {
     }
 }
 ```
+
+:::danger
+Always call `HeadRender.shutdown()` in `onDisable`. Skipping it leaks the worker thread pool — fine for a single reload, but on a /reload-happy server it adds up fast.
+:::

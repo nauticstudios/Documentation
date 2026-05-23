@@ -5,7 +5,7 @@ description: Broadcast templates — structure, events, message tags and field r
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Templates live in `config.yml` under `broadcast.templates`. The console picks one by name.
+Templates live in `config.yml` under `broadcast.templates`. The console picks one by name. You can define as many as you want — one per tier, per event, per server.
 
 ## Structure
 
@@ -115,6 +115,10 @@ broadcast:
 </TabItem>
 </Tabs>
 
+:::tip
+Make one template per tier (`vip`, `mvp`, `bundle`) and let your Tebex command pick the right one. Each tier can have its own colors, sound, bossbar and Discord embed.
+:::
+
 ## Message tags
 
 | Tag | Description |
@@ -132,6 +136,10 @@ broadcast:
 | `reward-event` | Start the chat reward event. |
 | `discord-webhook` | Send the purchase to the webhook. |
 
+:::note
+Events are per-template. A "stealth" template can disable every event and still send a Discord notification, for example.
+:::
+
 ## Title
 
 ```yaml
@@ -140,6 +148,8 @@ title:
   up: "&#FFD700{player}"
   down: "&fPurchased &#38FF35{package} &7({price})"
 ```
+
+Broadcast to every online player.
 
 ## Sound
 
@@ -151,6 +161,10 @@ sound:
 
 `id` is any valid Bukkit sound enum.
 
+:::tip
+Use `UI_TOAST_CHALLENGE_COMPLETE` for an "achievement" feel, or `BLOCK_NOTE_BLOCK_PLING` for something less intrusive.
+:::
+
 ## ActionBar
 
 ```yaml
@@ -158,6 +172,10 @@ actionbar:
   enabled: true
   message: "&#7CFF5A{player} &fpurchased &#00FFAA{package}"
 ```
+
+:::caution
+ActionBars are a single line. Long messages get truncated by the client, not wrapped.
+:::
 
 ## BossBar
 

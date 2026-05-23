@@ -3,12 +3,21 @@ title: Buttons
 description: Clickable chat components.
 ---
 
+Interactive chat components that open URLs — store, Discord, voting sites, anything. Drop them into any template via `%buttons%` (all) or `%button_<id>%` (one).
+
 ## Placeholders
 
 | Placeholder | Renders |
 | --- | --- |
-| `%buttons%` | All configured buttons. |
+| `%buttons%` | All configured buttons on one line. |
 | `%button_<id>%` | A single button by id. |
+
+```yaml title="config.yml"
+message:
+  - "<center>&aNew purchase!</center>"
+  - "<empty>"
+  - "%button_shop% %button_discord%"
+```
 
 ## Configuration
 
@@ -30,7 +39,28 @@ buttons:
 
 | Field | Description |
 | --- | --- |
-| `center` | Leading spaces before the buttons line. |
+| `center` | Leading spaces before the buttons line. Tune until centered for your server's default chat width. |
 | `text` | Button label. HEX and MiniMessage gradients supported. |
-| `hover` | Tooltip on hover. |
+| `hover` | Tooltip shown on hover. |
 | `open_url` | URL opened on click. |
+
+:::tip
+Use one button per call-to-action and group them with a space, e.g. `%button_shop% %button_vote% %button_discord%`. Keeping `text` short (3–4 words) prevents the line from breaking on smaller resolutions.
+:::
+
+## Custom button
+
+```yaml title="config.yml"
+buttons:
+  list:
+    vote:
+      text:  "&e[ Vote ]"
+      hover: "&fClick to vote for the server"
+      open_url: "https://example.com/vote"
+```
+
+Use it anywhere:
+
+```
+%button_vote%
+```

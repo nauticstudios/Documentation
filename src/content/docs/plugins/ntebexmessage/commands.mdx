@@ -7,6 +7,8 @@ description: Commands, aliases and permissions.
 
 `/ntb` · `/ntebex` · `/ntebexmessage` · `/tb` · `/tbmsg` · `/tbxm` · `/tbxmsg` · `/tebexmessage`
 
+All aliases behave identically. Examples on this site use `/ntb`.
+
 ## Reference
 
 | Command | Permission | Description |
@@ -21,23 +23,29 @@ description: Commands, aliases and permissions.
 
 ## Broadcast
 
-Console only.
+Console only — players never get to run this.
 
 ```
 /ntb <template> arg(value) arg(value) …
 ```
 
-Example:
-
 ```
 /ntb one player(Senkex) package(VIP) price($10)
 ```
 
-Multi-value arguments are joined by `;` and rendered with `separator-symbol`:
+Argument order doesn't matter. Whitespace inside parentheses is allowed.
+
+### Multi-value arguments
+
+Join values with `;`. They render with `separator-symbol` from `config.yml`.
 
 ```
 /ntb multiple player(Senkex) package(VIP;MVP;ASTRO) price($45)
 ```
+
+:::tip
+Pair multi-value broadcasts with the `multiple` template and `actionbar` / `bossbar` enabled for maximum visibility on big orders.
+:::
 
 ## Custom arguments
 
@@ -48,7 +56,11 @@ customs-args:
   - price
 ```
 
-Reference them with `{key}` in any template, message or webhook field. Any key not listed here is rejected.
+Reference them with `{key}` in any template, message or webhook field. Add as many as you want — `{rank}`, `{coupon}`, `{server}`, anything.
+
+:::danger
+If the command supplies an argument not listed under `customs-args`, the broadcast is **rejected** and the console gets an `Argument does not exist` error. Add the key first, then reload.
+:::
 
 ## Errors
 

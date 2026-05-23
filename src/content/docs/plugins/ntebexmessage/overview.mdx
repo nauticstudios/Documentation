@@ -5,7 +5,7 @@ description: Broadcast system for Tebex purchases — titles, sounds, bossbars, 
 
 import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-Turns Tebex store purchases into rich in-game broadcasts driven by `config.yml`.
+Turns Tebex store purchases into rich in-game broadcasts driven by `config.yml`. Each purchase fires whatever the chosen template has enabled — chat, title, sound, actionbar, bossbar, buttons, a chat reward event, the buyer's head and a Discord webhook.
 
 | | |
 | --- | --- |
@@ -21,7 +21,18 @@ Turns Tebex store purchases into rich in-game broadcasts driven by `config.yml`.
 /ntb one player(Senkex) package(VIP) price($10)
 ```
 
-Runs the `one` template, substitutes `{player}`, `{package}`, `{price}` and dispatches whatever the template has enabled — chat, title, sound, actionbar, bossbar, buttons, reward event, Discord webhook and the buyer's head.
+Runs the `one` template, substitutes `{player}`, `{package}`, `{price}` and dispatches whatever the template has enabled.
+
+:::tip
+Hook this command up to your Tebex "command sender" or Tebex's command queue so every real purchase fires the broadcast automatically. The plugin doesn't poll Tebex — it only reacts to the console command.
+:::
+
+## What you can build
+
+- **Hype announcements** with title, sound and bossbar so nobody misses a purchase.
+- **Multi-tier templates** — `vip`, `mvp`, `bundle` — each with its own chat layout, color and Discord embed.
+- **Chat reward events** where the community types a word to claim free items after a sale.
+- **Discord notifications** with the buyer's head, package list and link buttons to your store.
 
 ## Sections
 
