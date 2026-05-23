@@ -1,78 +1,36 @@
 ---
 title: Buttons
-description: Interactive clickable chat components inside broadcast messages.
+description: Clickable chat components.
 ---
 
-Buttons are clickable chat components used inside broadcast messages. They are typically used to open the store, a Discord invite or any external URL.
-
-## Using buttons in a message
+## Placeholders
 
 | Placeholder | Renders |
 | --- | --- |
 | `%buttons%` | All configured buttons. |
 | `%button_<id>%` | A single button by id. |
 
-```yaml title="config.yml"
-message:
-  - "<center>&aNew purchase!</center>"
-  - "<empty>"
-  - "%button_shop%"
-  - "%button_discord%"
-```
-
-## Centering buttons
-
-`center` defines how many leading spaces are added before the buttons line.
-
-```yaml title="config.yml"
-buttons:
-  center: 20
-```
-
-## Defining buttons
-
-Buttons live in `buttons.list` and are keyed by id. The id is what `%button_<id>%` references.
+## Configuration
 
 ```yaml title="config.yml"
 buttons:
   center: 20
 
   list:
-
     shop:
-      text: "<gradient:#72FF76:#17EA25>[ Open Shop ]</gradient>"
+      text:  "<gradient:#72FF76:#17EA25>[ Open Shop ]</gradient>"
       hover: "<gradient:#72FF76:#17EA25>Click to open the store</gradient>"
       open_url: "https://shop.yourserver.com/"
 
     discord:
-      text: "<gradient:#72C0FF:#1750EA>[ Join Discord ]</gradient>"
+      text:  "<gradient:#72C0FF:#1750EA>[ Join Discord ]</gradient>"
       hover: "<gradient:#72C0FF:#1750EA>Click to join the community</gradient>"
       open_url: "https://discord.gg/cdT5g5xsVq"
 ```
 
-## Button fields
-
 | Field | Description |
 | --- | --- |
-| `text` | The text displayed in chat. Supports HEX, MiniMessage gradients and formatting. |
-| `hover` | Tooltip shown when the player hovers the button. |
-| `open_url` | URL opened when the player clicks the button. |
-
-You can define as many buttons as you need — there is no built-in limit.
-
-## Creating a custom button
-
-```yaml
-buttons:
-  list:
-    website:
-      text: "&e[ Visit Website ]"
-      hover: "&fClick to open the website"
-      open_url: "https://example.com"
-```
-
-Reference it from any template message:
-
-```
-%button_website%
-```
+| `center` | Leading spaces before the buttons line. |
+| `text` | Button label. HEX and MiniMessage gradients supported. |
+| `hover` | Tooltip on hover. |
+| `open_url` | URL opened on click. |

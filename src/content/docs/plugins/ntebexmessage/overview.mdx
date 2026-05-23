@@ -1,74 +1,35 @@
 ---
 title: Overview
-description: Broadcast system for Tebex purchases — titles, sounds, bossbars, interactive buttons, reward events and dual-mode Discord webhooks (classic embeds or Components V2).
+description: Broadcast system for Tebex purchases — titles, sounds, bossbars, buttons, reward events and Discord webhooks.
 ---
 
-import { Card, CardGrid, LinkCard, Steps } from '@astrojs/starlight/components';
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-**NTebexMessage** turns Tebex store purchases into rich in-game broadcasts. Each purchase can trigger a chat message, title, actionbar, bossbar, sound, interactive buttons, the buyer's head, a chat reward event and a Discord webhook — all driven from configuration files, with hot reload and Folia support.
+Turns Tebex store purchases into rich in-game broadcasts driven by `config.yml`.
 
 | | |
 | --- | --- |
 | **Base command** | `/ntb` |
 | **Aliases** | `ntebex`, `ntebexmessage`, `tb`, `tbmsg`, `tbxm`, `tbxmsg`, `tebexmessage` |
+| **API** | Bukkit `1.16+`, Java `17+` |
 | **Folia** | Supported |
-| **Min. API** | Bukkit `1.16` |
 | **Soft-depend** | PlaceholderAPI |
 
-## At a glance
-
-<CardGrid>
-  <Card title="Templates" icon="document">
-    Multiple broadcast layouts. The console picks one by name when announcing a purchase, with as many custom args as you want.
-  </Card>
-  <Card title="Interactive buttons" icon="cursor">
-    Clickable chat components that open the store, Discord or any URL. Reference one (`%button_id%`) or all (`%buttons%`).
-  </Card>
-  <Card title="Reward event" icon="rocket">
-    Players type a configured word in chat to receive automatic rewards. Bossbar + actionbar countdown built-in.
-  </Card>
-  <Card title="Discord webhook" icon="discord">
-    Two modes — **classic** embed or **Components V2** layout with containers, sections, thumbnails and buttons.
-  </Card>
-  <Card title="Player head" icon="seti:html">
-    Optional in-chat avatar of the buyer, powered by the [HeadRender](/libraries/headrender/) library.
-  </Card>
-  <Card title="Folia ready" icon="seti:folder">
-    Built on a region-aware scheduler — runs on Paper, Spigot and Folia without forks.
-  </Card>
-</CardGrid>
-
-## Quick example
-
-A purchase is announced from console:
+## Example
 
 ```
 /ntb one player(Senkex) package(VIP) price($10)
 ```
 
-This runs the `one` template defined in `config.yml`, replaces `{player}`, `{package}` and `{price}`, and broadcasts everything the template has enabled — chat lines, title, sound, actionbar, bossbar, buttons and any optional event.
+Runs the `one` template, substitutes `{player}`, `{package}`, `{price}` and dispatches whatever the template has enabled — chat, title, sound, actionbar, bossbar, buttons, reward event, Discord webhook and the buyer's head.
 
-## How it fits together
-
-<Steps>
-1. The Tebex plugin (or a CSP) runs `/ntb <template> arg(value) …` from console after a purchase.
-
-2. NTebexMessage looks up the template by name in `config.yml`.
-
-3. Custom arguments are replaced into placeholders (`{player}`, `{package}`, `{price}` and any custom keys you declare).
-
-4. The configured chat message, titles, sounds and bars are dispatched to players.
-
-5. Optional events fire: reward event, Discord webhook, buyer's head display.
-</Steps>
-
-## Continue reading
+## Sections
 
 <CardGrid>
-  <LinkCard title="Commands" href="/plugins/ntebexmessage/commands/" description="Full command reference, aliases and argument syntax." />
-  <LinkCard title="Templates" href="/plugins/ntebexmessage/templates/" description="Template structure, events and message tags." />
-  <LinkCard title="Buttons" href="/plugins/ntebexmessage/buttons/" description="Interactive clickable chat components." />
-  <LinkCard title="Reward event" href="/plugins/ntebexmessage/reward/" description="Chat participation event with bossbar, actionbar and rewards." />
-  <LinkCard title="Discord webhook" href="/plugins/ntebexmessage/webhook/" description="Classic embeds or Components V2 — full layout reference." />
-  <LinkCard title="Configuration" href="/plugins/ntebexmessage/configuration/" description="Reference for every key in config.yml, messages.yml and discord.yml." />
+  <LinkCard title="Commands" href="/plugins/ntebexmessage/commands/" description="Aliases and argument syntax." />
+  <LinkCard title="Templates" href="/plugins/ntebexmessage/templates/" description="Structure, events and message tags." />
+  <LinkCard title="Buttons" href="/plugins/ntebexmessage/buttons/" description="Clickable chat components." />
+  <LinkCard title="Reward event" href="/plugins/ntebexmessage/reward/" description="Type-a-word event with rewards." />
+  <LinkCard title="Discord webhook" href="/plugins/ntebexmessage/webhook/" description="Classic embed or Components V2." />
+  <LinkCard title="Configuration" href="/plugins/ntebexmessage/configuration/" description="Every key across the three files." />
 </CardGrid>

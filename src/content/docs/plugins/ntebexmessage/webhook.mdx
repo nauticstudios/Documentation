@@ -1,22 +1,13 @@
 ---
 title: Discord webhook
-description: Send purchase notifications to Discord. Two modes — classic embed or native Components V2 with containers, sections, thumbnails and link buttons.
+description: Send purchases to Discord — classic embed or Components V2.
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-NTebexMessage can post a Discord webhook every time a template is broadcasted, so your community sees live store activity without being in-game. Two rendering modes are supported:
+Configuration file: `discord.yml`. Two modes: `classic` (embed + buttons) or `components-v2` (native container layout).
 
-- **`classic`** — traditional embed plus link buttons. Works on every Discord client and webhook URL.
-- **`components-v2`** — native Discord Components V2 layout with containers, sections, separators, thumbnails, media galleries and buttons. Strongly recommended for new setups.
-
-Configuration file:
-
-```
-discord.yml
-```
-
-## Enable
+## Setup
 
 ```yaml title="discord.yml"
 webhook:
@@ -25,191 +16,126 @@ webhook:
   username: "Nautic Studios"
   avatar: "https://i.imgur.com/ip1xV13.png"
 
-  mode: components-v2     # or: classic
+  mode: components-v2   # or: classic
 ```
-
-| Field | Description |
-| --- | --- |
-| `enabled` | `true` to send a webhook for every triggering broadcast. |
-| `url` | The Discord webhook URL. |
-| `username` | Display name of the webhook bot. |
-| `avatar` | Image shown as the bot avatar. |
-| `mode` | `classic` or `components-v2`. |
 
 ## Filters
 
-Filters apply **only to substituted placeholder values** (`{player}`, `{package}`, …). Literal text in the file is never touched — labels like `name: "Package"` stay intact.
+Applied **only to substituted placeholders** (`{player}`, `{package}`, …). Literal text is untouched.
 
 ```yaml title="discord.yml"
-webhook:
-  filters:
-    strip-words:
-      - kit
-      - rank
-      - package
+filters:
+  strip-words:
+    - kit
+    - rank
+    - package
 
-    replace:
-      vip: "VIP"
-      mvp: "MVP"
-      astro: "ASTRO"
+  replace:
+    vip: "VIP"
+    mvp: "MVP"
 
-    multi-package:
-      multiline: true
-      bullet: "• "
-      inline-separator: " • "
+  multi-package:
+    multiline: true
+    bullet: "• "
+    inline-separator: " • "
 ```
 
 | Filter | Behavior |
 | --- | --- |
-| `strip-words` | Removes the listed words (case-insensitive) from incoming values. `Kit ASTRO` → `ASTRO`. |
-| `replace` | Maps a raw input to a display string. `vip` → `VIP`. |
-| `multi-package.multiline` | `true` renders one item per line with `bullet`; `false` joins with `inline-separator`. |
+| `strip-words` | Removes the listed words (case-insensitive). `Kit ASTRO` → `ASTRO`. |
+| `replace` | Maps raw input → display string. |
+| `multi-package.multiline` | `true` = one per line with `bullet`. `false` = inline with `inline-separator`. |
 
 ## Placeholders
 
 | Placeholder | Replaces with |
 | --- | --- |
 | `{player}` | Buyer name |
-| `{package}` | Purchased package(s) — formatted by `filters.multi-package` |
+| `{package}` | Purchased package(s) |
 | `{price}` | Purchase price |
-| Any `customs-args` key | Whatever you declared |
+| Any `customs-args` key | Its value |
 
 ## Mode: classic
 
-Traditional embed with optional link buttons.
-
 ```yaml title="discord.yml"
-webhook:
-  mode: classic
+classic:
+  content: ""
 
-  classic:
-    content: ""
+  embed:
+    enabled: true
+    title: "🛒 New Purchase"
+    url: ""
+    color: "#00FFAA"
 
-    embed:
-      enabled: true
-      title: "🛒 New Purchase"
-      url: ""
-      color: "#00FFAA"
+    description:
+      - "**{player}** purchased **{package}**"
 
-      description:
-        - "**{player}** purchased **{package}**"
+    fields:
+      - { name: "Player",  value: "{player}",  inline: true }
+      - { name: "Package", value: "{package}", inline: true }
+      - { name: "Price",   value: "{price}",   inline: true }
 
-      fields:
-        - name: "Player"
-          value: "{player}"
-          inline: true
-        - name: "Package"
-          value: "{package}"
-          inline: true
-        - name: "Price"
-          value: "{price}"
-          inline: true
+    author:    { name: "Server Store", url: "", icon: "" }
+    footer:    { text: "Powered by Nautic Studios", icon: "" }
+    image:     ""
+    thumbnail: "https://mc-heads.net/avatar/{player}"
 
-      author:
-        name: "Server Store"
-        url: ""
-        icon: ""
-
-      footer:
-        text: "Powered by Nautic Studios"
-        icon: ""
-
-      image: ""
-      thumbnail: "https://mc-heads.net/avatar/{player}"
-
-    buttons:
-      - label: "Visit Store"
-        url: "https://store.example.com"
-
-      - label: "Join Discord"
-        url: "https://discord.gg/example"
+  buttons:
+    - { label: "Visit Store", url: "https://store.example.com" }
+    - { label: "Join Discord", url: "https://discord.gg/example" }
 ```
-
-### Embed reference
 
 | Field | Description |
 | --- | --- |
-| `content` | Plain text above the embed — useful for `@here` / `@role` mentions. |
-| `title` | Title shown at the top of the embed. |
-| `url` | Optional URL applied to the title. |
-| `color` | Vertical bar color (HEX). |
-| `description` | List of lines rendered as the embed description. |
-| `fields[]` | Structured fields. `inline: true` lays fields side by side. |
-| `author.name/url/icon` | Author block at the top. |
-| `footer.text/icon` | Footer block at the bottom. |
-| `image` | Large image rendered under the body. |
-| `thumbnail` | Small image on the top right. Use `mc-heads.net/avatar/{player}` for the buyer's head. |
-
-### Buttons
-
-Up to **5** link buttons can be attached to a classic message.
-
-```yaml
-buttons:
-  - label: "Visit Store"
-    url: "https://store.example.com"
-```
+| `content` | Plain text above the embed (mentions go here). |
+| `description` | List of lines. |
+| `fields[].inline` | `true` lays fields side by side. |
+| `thumbnail` | Top-right image. Use `mc-heads.net/avatar/{player}` for the buyer's head. |
+| `buttons` | Up to **5** link buttons. |
 
 ## Mode: components-v2
 
-Native Components V2 — a richer layout based on a list of typed nodes wrapped in a colored container.
-
 ```yaml title="discord.yml"
-webhook:
-  mode: components-v2
-
-  components-v2:
-    accent: "#00FFAA"
-
-    layout:
-
-      - type: text
-        content: "## 🛒 New Purchase"
-
-      - type: separator
-
-      - type: section
-        text:
-          - "**Player:** `{player}`"
-          - "**Package:** `{package}`"
-          - "**Price:** `{price}`"
-        thumbnail: "https://mc-heads.net/avatar/{player}/128"
-
-      - type: separator
-        spacing: 2
-
-      - type: text
-        content: "-# Powered by Nautic Studios"
-
-      - type: buttons
-        items:
-          - label: "Visit Store"
-            url: "https://store.example.com"
-
-          - label: "Join Discord"
-            url: "https://discord.gg/example"
-```
-
-### Container
-
-`accent` applies a colored bar on the left and wraps the layout in a Discord Container.
-
-```yaml
 components-v2:
   accent: "#00FFAA"
+
+  layout:
+
+    - type: text
+      content: "## 🛒 New Purchase"
+
+    - type: separator
+
+    - type: section
+      text:
+        - "**Player:** `{player}`"
+        - "**Package:** `{package}`"
+        - "**Price:** `{price}`"
+      thumbnail: "https://mc-heads.net/avatar/{player}/128"
+
+    - type: separator
+      spacing: 2
+
+    - type: text
+      content: "-# Powered by Nautic Studios"
+
+    - type: buttons
+      items:
+        - { label: "Visit Store",  url: "https://store.example.com" }
+        - { label: "Join Discord", url: "https://discord.gg/example" }
 ```
+
+`accent` colors the left bar and wraps the layout in a Discord Container.
 
 ### Node types
 
-The `layout` is a list of typed nodes rendered top to bottom.
-
-| `type` | Purpose | Fields |
-| --- | --- | --- |
-| `text` | Markdown text block. | `content` (string or list of strings). |
-| `separator` | Horizontal divider. | `divider: true|false` (default `true`), `spacing: 1|2`. |
-| `section` | Text block with a thumbnail or accessory. | `text` (list of lines), `thumbnail` (image URL). |
-| `media` | Image gallery. | `items: ["url1", "url2", ...]`. |
-| `buttons` | Up to 5 link buttons in a single row. | `items: [{ label, url }]`. |
+| `type` | Fields |
+| --- | --- |
+| `text` | `content`: string or list of strings. Markdown supported. |
+| `separator` | `divider: true|false` (default `true`), `spacing: 1|2`. |
+| `section` | `text` (list), `thumbnail` (image URL). |
+| `media` | `items: ["url", ...]` — image gallery. |
+| `buttons` | `items: [{ label, url }]` — max 5 per row. |
 
 ### Node examples
 
@@ -226,8 +152,6 @@ The `layout` is a list of typed nodes rendered top to bottom.
     - "**Package:** `{package}`"
 ```
 
-Markdown is fully supported, including `## headings`, `**bold**`, `` `code` `` and `-# small text`.
-
 </TabItem>
 <TabItem label="separator">
 
@@ -236,11 +160,6 @@ Markdown is fully supported, including `## headings`, `**bold**`, `` `code` `` a
   divider: true
   spacing: 2
 ```
-
-| Field | Description |
-| --- | --- |
-| `divider` | `true` draws a line, `false` adds only spacing. |
-| `spacing` | `1` (compact) or `2` (large). |
 
 </TabItem>
 <TabItem label="section">
@@ -253,8 +172,6 @@ Markdown is fully supported, including `## headings`, `**bold**`, `` `code` `` a
   thumbnail: "https://mc-heads.net/avatar/{player}/128"
 ```
 
-A section is a vertical text block paired with a thumbnail on the right.
-
 </TabItem>
 <TabItem label="media">
 
@@ -265,32 +182,15 @@ A section is a vertical text block paired with a thumbnail on the right.
     - "https://example.com/logo.png"
 ```
 
-A media gallery — Discord lays the URLs out side by side.
-
 </TabItem>
 <TabItem label="buttons">
 
 ```yaml
 - type: buttons
   items:
-    - label: "Visit Store"
-      url: "https://store.example.com"
-    - label: "Join Discord"
-      url: "https://discord.gg/example"
+    - { label: "Visit Store",  url: "https://store.example.com" }
+    - { label: "Join Discord", url: "https://discord.gg/example" }
 ```
-
-Each `buttons` node renders a single button row. Max **5** buttons per row.
 
 </TabItem>
 </Tabs>
-
-:::tip
-Combine `section` (text + head thumbnail) with a final `buttons` row for a clean, modern store-style notification.
-:::
-
-## Tips
-
-- The mode switch is global — every template that has `discord-webhook: true` will use the active `mode`.
-- For new servers, **`components-v2`** is the recommended default. Discord renders it natively without falling back.
-- Use `filters.replace` to keep package names tidy without renaming SKUs in your Tebex panel.
-- `mc-heads.net/avatar/{player}` is a free skin-head endpoint; works as both `thumbnail` (classic) and `section.thumbnail` (V2).

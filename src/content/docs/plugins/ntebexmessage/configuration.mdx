@@ -1,36 +1,30 @@
 ---
 title: Configuration
-description: Reference for the NTebexMessage configuration files — config.yml, messages.yml and discord.yml.
+description: config.yml, messages.yml and discord.yml reference.
 ---
-
-import { CardGrid, LinkCard } from '@astrojs/starlight/components';
-
-NTebexMessage ships with three configuration files. All of them live under `/plugins/NTebexMessage/`.
 
 | File | Purpose |
 | --- | --- |
-| `config.yml` | Main configuration — custom arguments, templates, buttons and reward event. |
-| `messages.yml` | UI strings used by `/ntb help`, `/ntb args`, error messages and console output. |
-| `discord.yml` | Discord webhook configuration — bot identity, filters and the active mode (classic or Components V2). |
+| `config.yml` | Custom args, templates, buttons, reward event. |
+| `messages.yml` | UI strings — help, args, errors, console output. |
+| `discord.yml` | Webhook bot identity, filters, classic / Components V2 layout. |
 
-After editing any of them, reload the plugin:
+Reload after editing:
 
 ```
 /ntb reload
 ```
 
-## `config.yml` — top-level structure
+## `config.yml`
 
-```yaml title="config.yml"
-customs-args: []        # custom argument names
-
-separator-symbol: "&7•" # joins multiple packages
+```yaml
+customs-args: []
+separator-symbol: "&7•"
 
 broadcast:
   templates:
     one:        { … }
     multiple:   { … }
-    # any number of additional templates
 
 buttons:
   center: 20
@@ -50,24 +44,12 @@ reward-event:
   final-message:           { enabled, message }
 ```
 
-## `messages.yml` — UI strings
+## `messages.yml`
 
-Customise every player-facing and console-facing string.
-
-```yaml title="messages.yml"
-help: [ ... ]            # /ntb help output
-args:                    # /ntb args output
-  header: [ ... ]
-  empty: "..."
-  format: "..."
-  footer: [ ... ]
-
-console:
-  usage: [ ... ]
-  invalid-format: "..."
-  unknown-arg: "..."
-  available-args: "..."
-  missing-parenthesis: "..."
+```yaml
+help:    [ ... ]
+args:    { header, empty, format, footer }
+console: { usage, invalid-format, unknown-arg, available-args, missing-parenthesis }
 
 reload: "..."
 no-permission: "..."
@@ -75,78 +57,35 @@ missing-arg: "..."
 console-only: "..."
 ```
 
-Placeholders supported in these strings:
-
 | Placeholder | Replaces with |
 | --- | --- |
-| `{command}` | The label the player used (`ntb`, `tb`, `tebexmessage`, ...). |
-| `{arg}` | The offending argument name (in error messages). |
-| `{args}` | Comma-separated list of available custom arguments. |
-| `{usage}` | Auto-built usage line for the console. |
+| `{command}` | The alias the player used. |
+| `{arg}` | Offending argument name. |
+| `{args}` | Available custom arguments. |
+| `{usage}` | Auto-built usage line. |
 
-## `discord.yml` — Discord webhook
+## `discord.yml`
 
-Full reference and per-mode examples on the [Discord webhook](/plugins/ntebexmessage/webhook/) page.
+Full reference on the [Discord webhook](/plugins/ntebexmessage/webhook/) page.
 
-```yaml title="discord.yml"
+```yaml
 webhook:
   enabled: false
   url: "INSERT-WEBHOOK-URL"
   username: "Nautic Studios"
-  avatar: "https://i.imgur.com/ip1xV13.png"
+  avatar: "..."
   mode: components-v2   # or: classic
 
-  filters:              { strip-words, replace, multi-package }
-  classic:              { content, embed, buttons }
-  components-v2:        { accent, layout }
+  filters:       { strip-words, replace, multi-package }
+  classic:       { content, embed, buttons }
+  components-v2: { accent, layout }
 ```
-
-## Detailed reference
-
-Each section has its own page with full field reference and examples:
-
-<CardGrid>
-  <LinkCard
-    title="Custom arguments"
-    href="/plugins/ntebexmessage/commands/#custom-arguments"
-    description="Declare placeholders used inside templates and messages."
-  />
-  <LinkCard
-    title="Templates"
-    href="/plugins/ntebexmessage/templates/"
-    description="Chat message, title, sound, actionbar and bossbar."
-  />
-  <LinkCard
-    title="Buttons"
-    href="/plugins/ntebexmessage/buttons/"
-    description="Interactive chat components that open URLs."
-  />
-  <LinkCard
-    title="Reward event"
-    href="/plugins/ntebexmessage/reward/"
-    description="Chat participation event with bossbar, actionbar and per-player rewards."
-  />
-  <LinkCard
-    title="Discord webhook"
-    href="/plugins/ntebexmessage/webhook/"
-    description="Classic embeds or Components V2 layout."
-  />
-</CardGrid>
 
 ## Permissions
 
-| Permission | Description | Default |
-| --- | --- | --- |
-| `tebexmessage.help` | Display `/ntb help`. | OP |
-| `tebexmessage.reload` | Reload all configuration. | OP |
-| `tebexmessage.args` | List custom arguments. | OP |
-| `tebexmessage.admin` | Bypasses every permission check. | OP |
-
-## Compatibility
-
-| | |
+| Permission | Description |
 | --- | --- |
-| **Bukkit API** | `1.16+` |
-| **Folia** | Supported |
-| **Soft-depend** | PlaceholderAPI (optional) |
-| **Java** | 17+ |
+| `tebexmessage.help` | `/ntb help`. |
+| `tebexmessage.reload` | Reload config. |
+| `tebexmessage.args` | List custom arguments. |
+| `tebexmessage.admin` | Bypasses every check. |

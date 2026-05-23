@@ -1,56 +1,13 @@
 ---
 title: Templates
-description: Broadcast templates define how purchase announcements are displayed in-game.
+description: Broadcast templates — structure, events, message tags and field reference.
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Templates control how a purchase is broadcasted to players. Each template can define a chat message, title, sound, actionbar, bossbar, buttons and optional events.
+Templates live in `config.yml` under `broadcast.templates`. The console picks one by name.
 
-All templates live in `config.yml` under `broadcast.templates`. Any number of templates can be defined — the console command picks one by name.
-
-## Custom arguments
-
-Arguments declared in `customs-args` become placeholders for use inside the template.
-
-```yaml title="config.yml"
-customs-args:
-  - player
-  - package
-  - price
-```
-
-Inside any template string:
-
-```
-{player}  {package}  {price}
-```
-
-Add as many keys as you need — `{rank}`, `{coupon}`, `{server}` — and reference them anywhere.
-
-## Separator symbol
-
-When a purchase includes multiple packages, the separator joins them in the displayed text.
-
-```yaml title="config.yml"
-separator-symbol: "&7•"
-```
-
-Input from the command:
-
-```
-package(VIP;Legend;Key)
-```
-
-Displayed output:
-
-```
-VIP • Legend • Key
-```
-
-## Template structure
-
-Every template follows the same shape:
+## Structure
 
 ```yaml
 broadcast:
@@ -67,21 +24,15 @@ broadcast:
         bossbar:   { enabled, text, color, style, duration, animated }
 
       message:
-        - "<chat line 1>"
-        - "<chat line 2>"
+        - "<chat line>"
 ```
 
-Default templates shipped with the plugin:
-
-- **one** — used for single-package purchases.
-- **multiple** — used when several packages were purchased at once.
-
-You can create as many additional templates as you like and pick the one to use in the console command.
+Default templates: `one` (single purchase) and `multiple` (multi-package).
 
 ## Examples
 
 <Tabs>
-<TabItem label="Single purchase">
+<TabItem label="Single">
 
 ```yaml title="config.yml"
 broadcast:
@@ -118,7 +69,7 @@ broadcast:
 ```
 
 </TabItem>
-<TabItem label="Multiple purchase">
+<TabItem label="Multiple">
 
 ```yaml title="config.yml"
 broadcast:
@@ -166,31 +117,20 @@ broadcast:
 
 ## Message tags
 
-Special tags can be used inside any line of `message`.
-
 | Tag | Description |
 | --- | --- |
-| `<empty>` | Insert a blank line. |
-| `<center>text</center>` | Center the text in chat (auto-padded by character width). |
-| `%buttons%` | Render every configured button on the same line. |
-| `%button_<id>%` | Render a single button by its id. |
+| `<empty>` | Blank line. |
+| `<center>text</center>` | Center the text in chat. |
+| `%buttons%` | Render every configured button. |
+| `%button_<id>%` | Render a single button by id. |
 
 ## Events
 
-Toggle optional features for the template.
-
-```yaml
-events:
-  player-head: true
-  reward-event: true
-  discord-webhook: true
-```
-
 | Key | Behavior |
 | --- | --- |
-| `player-head` | Render the buyer's head next to the chat message (via the [HeadRender](/libraries/headrender/) library). |
-| `reward-event` | Start the chat reward event after the broadcast. |
-| `discord-webhook` | Send the purchase to the configured Discord webhook. |
+| `player-head` | Render the buyer's head next to the message (via [HeadRender](/libraries/headrender/)). |
+| `reward-event` | Start the chat reward event. |
+| `discord-webhook` | Send the purchase to the webhook. |
 
 ## Title
 
@@ -201,14 +141,6 @@ title:
   down: "&fPurchased &#38FF35{package} &7({price})"
 ```
 
-| Field | Description |
-| --- | --- |
-| `enabled` | Toggle the title on or off for this template. |
-| `up` | Main title text. |
-| `down` | Subtitle text shown below. |
-
-Titles are broadcast to every online player.
-
 ## Sound
 
 ```yaml
@@ -217,7 +149,7 @@ sound:
   id: ENTITY_PLAYER_LEVELUP
 ```
 
-`id` must be a valid Bukkit sound enum value. The sound plays globally for every online player.
+`id` is any valid Bukkit sound enum.
 
 ## ActionBar
 
@@ -226,10 +158,6 @@ actionbar:
   enabled: true
   message: "&#7CFF5A{player} &fpurchased &#00FFAA{package}"
 ```
-
-:::note
-ActionBars only support a single line.
-:::
 
 ## BossBar
 
@@ -243,10 +171,9 @@ bossbar:
   animated: false
 ```
 
-`duration` is in seconds.
-
 | Field | Accepted values |
 | --- | --- |
 | `color` | `PINK`, `BLUE`, `RED`, `GREEN`, `YELLOW`, `PURPLE`, `WHITE` |
 | `style` | `SOLID`, `SEGMENTED_6`, `SEGMENTED_10`, `SEGMENTED_12`, `SEGMENTED_20` |
-| `animated` | `true` to gradually empty the bar over `duration`, `false` for a static bar. |
+| `duration` | Seconds. |
+| `animated` | `true` empties the bar over `duration`. |
