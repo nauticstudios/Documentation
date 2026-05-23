@@ -273,14 +273,14 @@ site-search button:hover {
   width: 100%;
 }
 
-/* Content layout — comfortable padding, shifted left (not centered) */
+/* Content layout — shifted right ~4 steps from the sidebar */
 :root {
   --sl-content-pad-x: 1.5rem;
 }
 
 @media (min-width: 50rem) {
   :root {
-    --sl-content-pad-x: 2rem;
+    --sl-content-pad-x: 4rem;
   }
 }
 
@@ -292,7 +292,7 @@ site-search button:hover {
   border-top: 1px solid var(--sl-color-hairline);
 }
 
-/* Pull the content container toward the left of the pane on wide screens */
+/* Container stays left-anchored but with the extra padding it sits ~4rem in */
 @media (min-width: 72rem) {
   .main-pane .sl-container {
     margin-inline: 0 auto !important;
