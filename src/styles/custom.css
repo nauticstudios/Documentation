@@ -418,20 +418,76 @@ site-search button:hover {
 
 .sl-markdown-content pre {
   border: 1px solid var(--sl-color-hairline);
-  border-radius: 8px;
-  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  padding: 0.95rem 1.1rem;
   font-size: 0.9rem;
   line-height: 1.6;
-  background: #0a0d14 !important;
+  background: #0b0d12 !important;
 }
 
 .sl-markdown-content :not(pre) > code {
   font-size: 0.88em;
   padding: 0.15rem 0.45rem;
-  border-radius: 4px;
+  border-radius: 5px;
   border: 1px solid var(--sl-color-hairline);
-  background: var(--sl-color-bg-inline-code);
+  background: #14171f;
   color: #7dd3fc;
+  font-weight: 500;
+}
+
+/* Expressive Code frame polish */
+.expressive-code {
+  background: transparent !important;
+  border-radius: 10px;
+  margin: 1.1rem 0;
+}
+
+.expressive-code .frame {
+  box-shadow: none !important;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--sl-color-hairline);
+}
+
+.expressive-code .frame.has-title:not(.is-terminal) .header {
+  background: #0b0d12 !important;
+  border-bottom: 1px solid var(--sl-color-hairline);
+}
+
+.expressive-code .frame.has-title:not(.is-terminal) .title {
+  background: #14171f !important;
+  color: #e5e9f0 !important;
+  border: none !important;
+  border-right: 1px solid var(--sl-color-hairline) !important;
+  padding: 0.55rem 1rem !important;
+  font-size: 0.82rem !important;
+  font-family: var(--sl-font-mono) !important;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.expressive-code .frame.has-title:not(.is-terminal) .title::after {
+  display: none !important;
+  background: none !important;
+}
+
+.expressive-code .frame .copy button {
+  border-radius: 6px !important;
+  border-color: var(--sl-color-hairline) !important;
+}
+
+/* Collapsible sections — match the dark frame */
+.expressive-code details.collapsible-code summary {
+  background: #0b0d12 !important;
+  color: var(--sl-color-gray-2) !important;
+  border-color: var(--sl-color-hairline) !important;
+  font-family: var(--sl-font-mono);
+  font-size: 0.8rem;
+}
+
+.expressive-code details.collapsible-code summary:hover {
+  background: #14171f !important;
+  color: var(--sl-color-white) !important;
 }
 
 .sl-markdown-content table {
