@@ -1,35 +1,43 @@
 ---
 title: AtlasLang
-description: Multilingual engine shared by every Nautic Studios plugin.
+description: Multilingual engine and developer API shared by every Nautic Studios plugin. Per-player languages, namespaces, locale aliases, async writes and a cancellable language-change event.
 ---
 
-AtlasLang is the multilingual engine used internally by every Nautic Studios plugin. It stores each player's language in a database, loads YAML message files per language, and exposes a strict PlaceholderAPI integration and a public developer API.
+**AtlasLang** is the multilingual engine used internally by every Nautic Studios plugin. It stores each player's language in a database, loads YAML message files per language and exposes a strict PlaceholderAPI integration plus a public developer API for any plugin to consume.
 
-GitHub: [github.com/nauticstudios/atlaslang](https://github.com/nauticstudios/atlaslang)
+The public **AtlasAPI v2** is a clean interface with a singleton provider, namespace-aware translation, locale aliases, async writes and a cancellable `PlayerLanguageChangeEvent`. Reads hit an in-memory cache, so it's safe to call from the main thread.
+
+GitHub: [github.com/nauticstudios/AtlasLang](https://github.com/nauticstudios/AtlasLang)
+API source: [`api/src/main/java/com/github/nautic/api`](https://github.com/nauticstudios/AtlasLang/tree/master/api/src/main/java/com/github/nautic/api)
 
 ## Features
 
-- Per-player language stored in the database
+- Per-player language stored in the database with in-memory cache
 - Recursive YAML loading per language folder
-- Strict language validation with safe fallbacks
-- PlaceholderAPI expansion
-- Public developer API
+- **Namespaces** — multiple addons share the same language folders without colliding (`addonA/messages.yml`, `addonB/messages.yml`)
+- **Locale aliases** — register `en_US:english:messages.yml` and resolve either form
+- Async writes — `setPlayerLanguageAsync(...)` never blocks the main thread
+- Cancellable `PlayerLanguageChangeEvent` with override of the target language
+- PlaceholderAPI expansion under `%alang_...%`
+- Strict language validation with safe fallbacks (server never crashes on a bad key)
 - Optional GitHub synchronization
+- Version-gated API — call `AtlasAPI.requireVersion(int)` in `onEnable` to fail fast against older builds
 
 ## Configuration
 
 Languages are declared in the main configuration file. The format is `locale:folder:defaultFile`.
 
-```yaml
+```yaml title="config.yml"
 default: english
 
 register:
   languages:
-    - en:english:messages.yml
-    - es:spanish:messages.yml
+    - en_US:english:messages.yml
+    - es_ES:spanish:messages.yml
+    - pt_BR:portuguese:messages.yml
 ```
 
-Each entry must point to an existing folder under `/plugins/AtlasLang/languages/`. The default file is created automatically if it does not exist.
+Each entry must point to an existing folder under `/plugins/AtlasLang/languages/`. The `defaultFile` is created automatically if it does not exist.
 
 Folder layout:
 
@@ -37,10 +45,12 @@ Folder layout:
 languages/
  ├── english/
  │   ├── messages.yml
- │   └── scoreboard.yml
+ │   ├── scoreboard.yml
+ │   └── atlasaddon.yml
  └── spanish/
      ├── messages.yml
-     └── scoreboard.yml
+     ├── scoreboard.yml
+     └── atlasaddon.yml
 ```
 
 :::caution
@@ -88,24 +98,385 @@ Use `atlaslang.admin` to grant access to every command.
 
 ## Developer API
 
-The public API is accessed through static methods on `AtlasAPI`.
+The public API ships as a separate Maven module: **`com.github.nautic:api`**. It contains three types — `AtlasAPI`, `AtlasProvider` and `PlayerLanguageChangeEvent` — and nothing else. All reads are cached, all writes are async-safe.
 
-```java
-AtlasAPI.get(player, "path.to.message");
-AtlasAPI.getOrDefault(player, "path.to.message", "Fallback");
-AtlasAPI.setLanguage(player, "english");
-AtlasAPI.getLanguage(player);
-AtlasAPI.has("english", "path.to.message");
-AtlasAPI.isLanguageRegistered("english");
+### Installation
+
+The API artifact follows the same version as the plugin. Replace `VERSION` with the latest tag.
+
+```xml title="pom.xml"
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.github.nauticstudios.AtlasLang</groupId>
+    <artifactId>api</artifactId>
+    <version>VERSION</version>
+    <scope>provided</scope>
+</dependency>
 ```
 
-Source: [AtlasAPI.java](https://github.com/nauticstudios/AtlasLang/blob/master/src/main/java/com/github/nautic/api/AtlasAPI.java)
+```kotlin title="build.gradle.kts"
+repositories {
+    maven("https://jitpack.io")
+}
+
+dependencies {
+    compileOnly("com.github.nauticstudios.AtlasLang:api:VERSION")
+}
+```
+
+In your `plugin.yml`:
+
+```yaml title="plugin.yml"
+name: MyPlugin
+main: com.example.MyPlugin
+version: 1.0.0
+api-version: "1.20"
+depend: [AtlasLang]      # or: softdepend: [AtlasLang]
+```
+
+### Quick start
+
+```java title="Example.java"
+import com.github.nautic.api.AtlasAPI;
+
+// Translate using the player's current language
+String msg = AtlasAPI.translate(player, "join.welcome");
+player.sendMessage(msg);
+
+// Translate with a fallback if the key is missing
+String greet = AtlasAPI.translateOrDefault(
+        player.getUniqueId(),
+        "myaddon",
+        "join.welcome",
+        "Welcome!"
+);
+
+// Change a player's language and persist it
+AtlasAPI.setLanguage(player, "spanish");
+
+// Read the player's cached language (no DB call)
+String lang = AtlasAPI.getLanguage(player);
+```
+
+### Key concepts
+
+- **Static helpers vs instance API** — `AtlasAPI.translate(...)` delegates to `AtlasAPI.api().message(...)`. Both forms are equivalent; pick whichever reads better.
+- **Player vs UUID** — every method has an overload accepting a `Player` or a `UUID`. Use the UUID variant when you don't have a live `Player` (offline players, async tasks).
+- **Namespace** — a folder name inside `languages/<lang>/`. Defaults to `atlasaddon`. Use your own namespace per addon to avoid collisions (e.g. `mycrates`, `myclans`).
+- **`langInput`** — accepts either a locale code (`en_US`) or a folder name (`english`). Both resolve to the same language.
+- **Cache** — `getPlayerLanguage(...)` reads from memory; the DB is only touched on write or login.
+
+### Constants
+
+| Constant | Type | Value | Description |
+| --- | --- | --- | --- |
+| `AtlasAPI.API_VERSION` | `int` | `2` | Bumped on every breaking change. |
+| `AtlasAPI.DEFAULT_NAMESPACE` | `String` | `"atlasaddon"` | Used when no namespace is provided. |
+
+### Provider singleton
+
+`AtlasProvider` holds the active `AtlasAPI` instance. AtlasLang registers it on enable and clears it on disable. Plugin authors never call `register` / `unregister` themselves.
+
+```java title="AtlasProvider.java"
+AtlasAPI api = AtlasProvider.get();         // throws if AtlasLang isn't enabled
+boolean ready = AtlasProvider.isRegistered();
+```
+
+Use `AtlasAPI.isAvailable()` as a friendlier alias inside soft-depend plugins.
+
+### Version gating
+
+Fail fast if your plugin needs a newer AtlasAPI than the one installed:
+
+```java title="MyPlugin.java" collapse={1-7}
+package com.example.myplugin;
+
+import org.bukkit.plugin.java.JavaPlugin;
+import com.github.nautic.api.AtlasAPI;
+
+public final class MyPlugin extends JavaPlugin {
+
+    @Override
+    public void onEnable() {
+        if (!AtlasAPI.isAvailable()) {
+            getLogger().severe("AtlasLang is not loaded. Disabling.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        try {
+            AtlasAPI.requireVersion(2);
+        } catch (IllegalStateException error) {
+            getLogger().severe(error.getMessage());
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        getLogger().info("Using AtlasAPI v" + AtlasAPI.api().getApiVersion());
+    }
+}
+```
+
+### Translating messages
+
+`message(...)` returns the translated, color-formatted string for a player's current language. Every form has a UUID variant.
+
+```java title="Translate.java"
+AtlasAPI.translate(player, "join.welcome");
+AtlasAPI.translate(player, "mycrates", "open.message");
+AtlasAPI.translate(uuid, "join.welcome");
+AtlasAPI.translate(uuid, "mycrates", "open.message");
+```
+
+`messageInLang(...)` ignores the player and forces a specific language:
+
+```java title="ForceLang.java"
+AtlasAPI.translateInLang("english", "join.welcome");
+AtlasAPI.translateInLang("es_ES", "mycrates", "open.message");
+```
+
+`messageOrDefault(...)` returns a fallback when the key is missing, instead of the system error message:
+
+```java title="OrDefault.java"
+String text = AtlasAPI.translateOrDefault(
+        uuid,
+        "mycrates",
+        "open.message",
+        "&aYour crate is opening..."
+);
+```
+
+### Checking key existence
+
+```java title="HasKey.java"
+boolean exists = AtlasAPI.exists("english", "mycrates", "open.message");
+boolean fallback = AtlasAPI.exists("es_ES", "join.welcome");
+```
+
+### Setting a player's language
+
+Synchronous form (fires `PlayerLanguageChangeEvent` then persists asynchronously):
+
+```java title="SetSync.java"
+boolean ok = AtlasAPI.setLanguage(player, "spanish");
+if (!ok) {
+    player.sendMessage("Language not registered or change was cancelled.");
+}
+```
+
+Async form (returns when the change is fully persisted):
+
+```java title="SetAsync.java"
+AtlasAPI.setLanguageAsync(uuid, "spanish").thenAccept(success -> {
+    if (success) {
+        getLogger().info("Language saved for " + uuid);
+    }
+});
+```
+
+### Reading a player's language
+
+`getPlayerLanguage(...)` is cached in memory — no DB call.
+
+```java title="Read.java"
+String folder = AtlasAPI.getLanguage(player);     // e.g. "english"
+String locale = AtlasAPI.api().getLocaleOf(folder); // e.g. "en_US" (nullable)
+```
+
+### Language registry
+
+```java title="Registry.java"
+Set<String> folders  = AtlasAPI.getRegistered();   // {"english", "spanish", ...}
+Set<String> locales  = AtlasAPI.getLocales();      // {"en_US", "es_ES", ...}
+String      fallback = AtlasAPI.getDefault();      // "english"
+
+boolean known = AtlasAPI.api().isLanguageRegistered("es_ES");
+boolean alias = AtlasAPI.api().supports("portuguese");
+```
+
+`compatibleLanguages(...)` filters a list of candidates and returns only what AtlasLang actually recognises — useful when negotiating a client locale:
+
+```java title="ClientLocale.java"
+Set<String> match = AtlasAPI.api().compatibleLanguages(
+        List.of("en_US", "fr_FR", "es_ES")
+);
+```
+
+### AtlasAPI method reference
+
+| Method | Returns | Notes |
+| --- | --- | --- |
+| `message(Player, String)` | `String` | Translate in the player's language, default namespace. |
+| `message(UUID, String)` | `String` | Same, by UUID. |
+| `message(Player, String, String)` | `String` | Player + namespace + path. |
+| `message(UUID, String, String)` | `String` | UUID + namespace + path. |
+| `messageInLang(String, String)` | `String` | Force a language, default namespace. |
+| `messageInLang(String, String, String)` | `String` | Force a language + namespace. |
+| `messageOrDefault(UUID, String, String, String)` | `String` | Returns the fallback if the key is missing. |
+| `has(String, String)` | `boolean` | Key exists in default namespace. |
+| `has(String, String, String)` | `boolean` | Key exists in a custom namespace. |
+| `setPlayerLanguage(Player, String)` | `boolean` | Fires event, persists async. |
+| `setPlayerLanguage(UUID, String)` | `boolean` | Same, by UUID. |
+| `setPlayerLanguageAsync(UUID, String)` | `CompletableFuture<Boolean>` | Completes when the row is committed. |
+| `getPlayerLanguage(Player)` | `String` | In-memory read. |
+| `getPlayerLanguage(UUID)` | `String` | In-memory read. |
+| `isLanguageRegistered(String)` | `boolean` | Locale or folder. |
+| `supports(String)` | `boolean` | Alias of the above. |
+| `getRegisteredLanguages()` | `Set<String>` | All folders. |
+| `getRegisteredLocales()` | `Set<String>` | All locale codes. |
+| `getDefaultLanguage()` | `String` | From `config.yml`. |
+| `getLocaleOf(String)` | `String?` | Locale code for a folder, or `null`. |
+| `compatibleLanguages(Collection<String>)` | `Set<String>` | Filters to registered values. |
+| `getApiVersion()` | `int` | Currently `2`. |
+
+### Static shortcuts
+
+| Static call | Delegates to |
+| --- | --- |
+| `AtlasAPI.api()` | `AtlasProvider.get()` |
+| `AtlasAPI.isAvailable()` | `AtlasProvider.isRegistered()` |
+| `AtlasAPI.requireVersion(int)` | Throws if `API_VERSION` is lower. |
+| `AtlasAPI.translate(...)` | `api().message(...)` |
+| `AtlasAPI.translateInLang(...)` | `api().messageInLang(...)` |
+| `AtlasAPI.translateOrDefault(...)` | `api().messageOrDefault(...)` |
+| `AtlasAPI.exists(...)` | `api().has(...)` |
+| `AtlasAPI.setLanguage(...)` | `api().setPlayerLanguage(...)` |
+| `AtlasAPI.setLanguageAsync(...)` | `api().setPlayerLanguageAsync(...)` |
+| `AtlasAPI.getLanguage(...)` | `api().getPlayerLanguage(...)` |
+| `AtlasAPI.getRegistered()` | `api().getRegisteredLanguages()` |
+| `AtlasAPI.getLocales()` | `api().getRegisteredLocales()` |
+| `AtlasAPI.getDefault()` | `api().getDefaultLanguage()` |
+
+## Events
+
+### `PlayerLanguageChangeEvent`
+
+Fired before the player's language is persisted. Cancellable, and the target language can be rewritten before the event finishes propagating.
+
+| Method | Returns | Description |
+| --- | --- | --- |
+| `getUniqueId()` | `UUID` | The affected player. |
+| `getPreviousLanguage()` | `String?` | Previous folder, `null` if first time. |
+| `getNewLanguage()` | `String` | Folder the player is switching to. |
+| `setNewLanguage(String)` | `void` | Override the target before the event finishes. |
+| `isCancelled()` / `setCancelled(boolean)` | — | Cancel the change entirely. |
+
+Example listener — block a specific language and override others:
+
+```java title="LanguageGuard.java" collapse={1-10}
+package com.example.plugin.listener;
+
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+
+import com.github.nautic.api.event.PlayerLanguageChangeEvent;
+
+import java.util.Set;
+
+public final class LanguageGuard implements Listener {
+
+    private static final Set<String> BLOCKED = Set.of("klingon");
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onChange(final PlayerLanguageChangeEvent event) {
+        if (BLOCKED.contains(event.getNewLanguage())) {
+            event.setCancelled(true);
+            return;
+        }
+
+        // Force every "portuguese" pick to "portuguese_br"
+        if ("portuguese".equals(event.getNewLanguage())) {
+            event.setNewLanguage("portuguese_br");
+        }
+    }
+}
+```
+
+## Full plugin example
+
+A drop-in plugin that gates against the AtlasAPI version, registers a join listener and replies to a `/welcome` command in the player's language.
+
+```java title="WelcomePlugin.java" collapse={1-16}
+package com.example.welcome;
+
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.nautic.api.AtlasAPI;
+
+import java.util.Objects;
+
+public final class WelcomePlugin extends JavaPlugin implements Listener {
+
+    private static final String NAMESPACE = "welcome";
+
+    @Override
+    public void onEnable() {
+        if (!AtlasAPI.isAvailable()) {
+            getLogger().severe("AtlasLang is required.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        try {
+            AtlasAPI.requireVersion(2);
+        } catch (IllegalStateException error) {
+            getLogger().severe(error.getMessage());
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        getServer().getPluginManager().registerEvents(this, this);
+    }
+
+    @EventHandler
+    public void onJoin(final PlayerJoinEvent event) {
+        final Player player = event.getPlayer();
+        player.sendMessage(AtlasAPI.translateOrDefault(
+                player.getUniqueId(), NAMESPACE, "join.message",
+                "&aWelcome, " + player.getName() + "!"
+        ));
+    }
+
+    @Override
+    public boolean onCommand(final CommandSender sender, final Command command,
+                             final String label, final String[] args) {
+        if (!(sender instanceof Player player)) {
+            return false;
+        }
+        player.sendMessage(AtlasAPI.translate(player, NAMESPACE, "command.welcome"));
+        return true;
+    }
+}
+```
+
+The corresponding language file would live at `plugins/AtlasLang/languages/english/welcome.yml`:
+
+```yaml title="welcome.yml"
+join:
+  message: "&aWelcome back, %player_name%!"
+
+command:
+  welcome: "&bHello from AtlasLang!"
+```
 
 ## GitHub synchronization
 
 Language files can be synced from a remote repository at runtime. Sync runs asynchronously and never blocks the main thread.
 
-```yaml
+```yaml title="config.yml"
 github:
   repository:
     name: "owner/repository"
@@ -126,4 +497,4 @@ github:
     reload-after-sync: true
 ```
 
-Optional token authentication is supported for private repositories.
+Optional token authentication is supported for private repositories. Trigger a manual sync at any time with `/atlaslang github sync` (requires `atlaslang.github`).
