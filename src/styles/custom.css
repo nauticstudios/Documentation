@@ -110,9 +110,18 @@ body {
 }
 
 header {
-  border-bottom: 1px solid var(--sl-color-hairline);
-  background: color-mix(in srgb, var(--sl-color-bg-nav) 88%, transparent);
+  border-bottom: 1px solid var(--sl-color-hairline-shade);
+  background: var(--sl-color-bg-nav);
   backdrop-filter: saturate(180%) blur(10px);
+}
+
+/* Separation between the page header (top bar) and the sidebar start */
+.sidebar-pane {
+  border-inline-end: 1px solid var(--sl-color-hairline-shade);
+}
+
+.sidebar-content {
+  padding-top: 1.25rem !important;
 }
 
 .site-title {
@@ -263,19 +272,7 @@ site-search button:hover {
   width: 100%;
 }
 
-/* Paper-style content alignment — content pushed to the left of the pane */
-@media (min-width: 72rem) {
-  [data-has-sidebar][data-has-toc] .main-pane,
-  [data-has-sidebar] .main-pane {
-    --sl-content-margin-inline: auto 0 !important;
-  }
-
-  .main-pane .sl-container {
-    margin-inline: 0 !important;
-    max-width: var(--sl-content-width);
-  }
-}
-
+/* Content layout — let Starlight center as default with comfortable padding */
 .main-pane .content-panel {
   padding: 1.5rem var(--sl-content-pad-x, 1.5rem);
 }
