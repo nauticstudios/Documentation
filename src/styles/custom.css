@@ -3,7 +3,7 @@
   --sl-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --sl-content-width: 60rem;
-  --sl-sidebar-width: 19rem;
+  --sl-sidebar-width: 21rem;
   --sl-text-base: 1.0625rem;
 
   --nautic-blue: #2563eb;
@@ -39,10 +39,10 @@ body {
   --sl-color-accent: #3b82f6;
   --sl-color-accent-high: #93c5fd;
 
-  --sl-color-bg: #03050c;
-  --sl-color-bg-nav: #050811;
-  --sl-color-bg-sidebar: #050811;
-  --sl-color-bg-inline-code: #0c1322;
+  --sl-color-bg: #02030a;
+  --sl-color-bg-nav: #03050e;
+  --sl-color-bg-sidebar: #03050e;
+  --sl-color-bg-inline-code: #0a1020;
   --sl-color-text: #d8dee8;
   --sl-color-text-accent: var(--sl-color-accent-high);
   --sl-color-hairline-light: #141a28;
@@ -530,8 +530,6 @@ site-search button:hover {
   background: var(--sl-color-accent);
   color: #ffffff;
 }
-
-/* ---- Home: projects showcase ---- */
 
 .projects-section {
   max-width: 78rem;
