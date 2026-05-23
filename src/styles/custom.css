@@ -115,13 +115,14 @@ header {
   backdrop-filter: saturate(180%) blur(10px);
 }
 
-/* Separation between the page header (top bar) and the sidebar start */
+/* Sidebar pane — Paper-exact background + visible right border */
 .sidebar-pane {
-  border-inline-end: 1px solid var(--sl-color-hairline-shade);
+  background-color: var(--sl-color-bg-sidebar) !important;
+  border-inline-end: 1px solid var(--sl-color-hairline-light);
 }
 
 .sidebar-content {
-  padding-top: 1.25rem !important;
+  padding: 1.25rem 1rem 0 !important;
 }
 
 .site-title {
@@ -272,9 +273,19 @@ site-search button:hover {
   width: 100%;
 }
 
-/* Content layout — let Starlight center as default with comfortable padding */
+/* Content layout — Paper-like padding so content breathes from the sidebar */
+:root {
+  --sl-content-pad-x: 2rem;
+}
+
+@media (min-width: 50rem) {
+  :root {
+    --sl-content-pad-x: 2.5rem;
+  }
+}
+
 .main-pane .content-panel {
-  padding: 1.5rem var(--sl-content-pad-x, 1.5rem);
+  padding: 1.5rem var(--sl-content-pad-x);
 }
 
 .main-pane .content-panel + .content-panel {
