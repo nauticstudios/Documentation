@@ -326,7 +326,8 @@ site-search button:hover {
   overflow: hidden;
   border-collapse: separate;
   border-spacing: 0;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   background: var(--sl-color-bg-nav);
 }
 
