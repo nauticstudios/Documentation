@@ -158,26 +158,26 @@ site-search button:hover {
 
 .sidebar-content > ul > li > details > summary,
 .sidebar-content > ul > li > .large {
-  font-size: 0.95rem !important;
+  font-size: 1rem !important;
   font-weight: 700 !important;
   color: var(--sl-color-white) !important;
   text-transform: none !important;
   letter-spacing: -0.005em;
-  padding: 0.25rem 0.5rem;
+  padding: 0.3rem 0.5rem;
 }
 
 .sidebar-content ul ul > li > details > summary {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--sl-color-white);
   text-transform: none;
   letter-spacing: -0.005em;
-  padding: 0.3rem 0.55rem;
+  padding: 0.35rem 0.55rem;
 }
 
 .sidebar-content a {
-  font-size: 0.88rem;
-  padding: 0.3rem 0.7rem;
+  font-size: 0.94rem;
+  padding: 0.35rem 0.7rem;
   border-radius: 4px;
   color: var(--sl-color-gray-2);
   border-left: none;
@@ -202,18 +202,17 @@ site-search button:hover {
   color: var(--sl-color-accent-high);
 }
 
-/* nested list: single subtle vertical guide, tight indent (Paper-style) */
+/* Paper-style sidebar: no vertical guide lines — tight pure indent */
 .sidebar-content ul ul {
-  border-left: 1px solid var(--sl-color-hairline);
-  margin-left: 0.55rem;
-  padding-left: 0.5rem;
+  border-left: none;
+  margin-left: 0;
+  padding-left: 0.65rem;
 }
 
-/* second-level nesting should NOT double the line — collapse it */
 .sidebar-content ul ul ul {
   border-left: none;
   margin-left: 0;
-  padding-left: 0.5rem;
+  padding-left: 0.65rem;
 }
 
 .sidebar-content .badge {
@@ -273,21 +272,19 @@ site-search button:hover {
   line-height: 1.65;
 }
 
-.sl-markdown-content h1,
-.sl-markdown-content h2,
-.sl-markdown-content h3,
-.sl-markdown-content h4 {
+.sl-markdown-content :is(h1, h2, h3, h4) {
   font-weight: 600;
   letter-spacing: -0.02em;
 }
 
-.sl-markdown-content h1 {
+.sl-markdown-content > h1 {
   font-size: 2.25rem;
   margin-bottom: 1.25rem;
   color: var(--sl-color-white);
 }
 
-.sl-markdown-content h2 {
+/* Scoped to DIRECT h2 children only — no leakage into LinkCard / Card titles */
+.sl-markdown-content > h2 {
   font-size: 1.6rem;
   margin-top: 2.5rem;
   margin-bottom: 0.75rem;
@@ -296,15 +293,27 @@ site-search button:hover {
   color: var(--sl-color-white);
 }
 
-.sl-markdown-content h2:first-of-type {
+.sl-markdown-content > h2:first-of-type {
   border-top: none;
   padding-top: 0;
 }
 
-.sl-markdown-content h3 {
+.sl-markdown-content > h3 {
   font-size: 1.2rem;
   margin-top: 1.6rem;
   color: var(--sl-color-white);
+}
+
+/* Card / LinkCard internal titles inherit no markdown header styling */
+.sl-link-card,
+.sl-link-card * {
+  border-top: none !important;
+  padding-top: 0;
+}
+
+.sl-link-card .title,
+.card .title {
+  border: none !important;
 }
 
 .sl-markdown-content p,
@@ -405,10 +414,17 @@ site-search button:hover {
 
 .sl-markdown-content .starlight-aside {
   border-radius: 8px;
+  border: 1px solid var(--sl-color-hairline);
   border-left-width: 3px;
   padding: 0.9rem 1rem;
   background-color: var(--sl-color-bg-nav);
 }
+
+/* Color the left bar per variant; keep the rest of the border subtle */
+.sl-markdown-content .starlight-aside--note    { border-left-color: #3b82f6; }
+.sl-markdown-content .starlight-aside--tip     { border-left-color: #22c55e; }
+.sl-markdown-content .starlight-aside--caution { border-left-color: #eab308; }
+.sl-markdown-content .starlight-aside--danger  { border-left-color: #f43f5e; }
 
 .expressive-code {
   background: var(--sl-color-bg-inline-code);
