@@ -729,26 +729,45 @@ site-search button:hover {
 
 /* ===== Home page (splash template) — fully centered hero ===== */
 
-/* Kill the sidebar-reserved padding ONLY for main-frame on splash
-   (scoped to .main-frame so the header layout is not touched) */
-body:has(.hero) .main-frame {
-  --sl-content-inline-start: 0 !important;
-  padding-inline-start: 0 !important;
-}
-
 /* Hide the search bar in the header on the splash page only */
 body:has(main:has(.hero)) header site-search {
   display: none !important;
 }
 
-/* Center everything on the splash, no two-column layout */
+/* Force the main-frame to span the full viewport on splash (cancel sidebar offset).
+   Scoped to body:has so it ONLY affects the splash, not internal pages. */
+@media (min-width: 50em) {
+  body:has(.hero) .main-frame {
+    --sl-content-inline-start: 0 !important;
+    padding-inline-start: 0 !important;
+    margin-inline-start: calc(-1 * var(--sl-sidebar-width)) !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+
+  body:has(.hero) .main-pane {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* Cancel the symmetric content-pad-x on splash so the hero uses pure viewport centering */
+  body:has(.hero) .content-panel,
+  body:has(.hero) .sl-container {
+    padding-inline: 0 !important;
+    max-width: none !important;
+    margin-inline: 0 !important;
+  }
+}
+
+/* Hero layout — single column, fully centered */
 .main-pane:has(.hero) .hero {
   grid-template-columns: 1fr !important;
   text-align: center;
   gap: 1.5rem;
   padding-block: clamp(3rem, calc(2rem + 8vmin), 7rem);
   max-width: 60rem;
-  margin-inline: auto;
+  margin-inline: auto !important;
+  padding-inline: 1.5rem;
 }
 
 .main-pane:has(.hero) .hero > img,
