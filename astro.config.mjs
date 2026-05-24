@@ -25,7 +25,7 @@ export default defineConfig({
         styleOverrides: {
           borderRadius: '0px',
           borderColor: '#2a2c2e',
-          codeBackground: '#23262f',
+          codeBackground: '#011627',
           codeFontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
           codeFontSize: '0.9rem',
           codeLineHeight: '1.65',
@@ -41,7 +41,7 @@ export default defineConfig({
             editorActiveTabIndicatorHeight: '2px',
             editorTabBarBorderBottomColor: '#2a2c2e',
             editorTabBorderRadius: '0px',
-            terminalBackground: '#23262f',
+            terminalBackground: '#011627',
             terminalTitlebarBackground: '#181a1b',
             terminalTitlebarForeground: '#d6deeb',
             terminalTitlebarBorderBottomColor: '#2a2c2e',
