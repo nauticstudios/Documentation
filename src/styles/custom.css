@@ -463,8 +463,8 @@ site-search button:hover {
   padding: 0.15rem 0.45rem;
   border-radius: 4px;
   border: 1px solid #2a2c2e;
-  background: #2a2c2e;
-  color: #d6deeb;
+  background: #1e2030;
+  color: #66bbff;
   font-weight: 500;
 }
 
@@ -560,6 +560,7 @@ site-search button:hover {
 
 .sl-markdown-content table code {
   white-space: nowrap;
+  color: #66bbff;
 }
 
 /* ===== Asides — Paper's exact HSL system ===== */
