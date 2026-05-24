@@ -210,7 +210,7 @@ site-search button:hover {
 .sidebar-content [aria-current="page"],
 .sidebar-content [aria-current="page"]:hover,
 .sidebar-content [aria-current="page"]:focus {
-  font-weight: 600;
+  font-weight: 400;
   color: var(--sl-color-black);
   background-color: var(--sl-color-text-accent);
 }
@@ -234,28 +234,28 @@ site-search button:hover {
   line-height: 1.4;
 }
 
-/* Library — teal/cyan */
+/* Library (note variant) — YELLOW */
 .sidebar-content .badge[data-variant="tip"],
 .sidebar-content .badge[data-variant="note"] {
-  background: rgba(20, 184, 166, 0.12);
-  color: #2dd4bf;
-  border: 1px solid rgba(20, 184, 166, 0.32);
-}
-
-/* API — violet */
-.sidebar-content .badge[data-variant="caution"] {
-  background: rgba(139, 92, 246, 0.14);
-  color: #c4b5fd;
-  border: 1px solid rgba(139, 92, 246, 0.35);
-}
-
-/* Experimental — amber */
-.sidebar-content .badge[data-variant="danger"],
-.sidebar-content .badge[data-variant="default"],
-.sidebar-content .badge:not([data-variant]) {
   background: rgba(245, 158, 11, 0.14);
   color: #fbbf24;
   border: 1px solid rgba(245, 158, 11, 0.38);
+}
+
+/* API (caution variant) — CELESTE / light blue */
+.sidebar-content .badge[data-variant="caution"] {
+  background: rgba(56, 189, 248, 0.14);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, 0.38);
+}
+
+/* Experimental (danger variant) — RED */
+.sidebar-content .badge[data-variant="danger"],
+.sidebar-content .badge[data-variant="default"],
+.sidebar-content .badge:not([data-variant]) {
+  background: rgba(239, 68, 68, 0.14);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.38);
 }
 
 /* Success — kept green */
