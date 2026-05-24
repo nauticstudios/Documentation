@@ -727,6 +727,51 @@ site-search button:hover {
   color: #ffffff;
 }
 
+/* ===== Home page (splash template) — fully centered hero ===== */
+
+/* Center everything on the splash, no two-column layout */
+.main-pane:has(.hero) .hero {
+  grid-template-columns: 1fr !important;
+  text-align: center;
+  gap: 1.5rem;
+  padding-block: clamp(3rem, calc(2rem + 8vmin), 7rem);
+}
+
+.main-pane:has(.hero) .hero > img,
+.main-pane:has(.hero) .hero > .hero-html {
+  order: -1;
+  width: min(60%, 16rem) !important;
+  height: auto;
+  margin: 0 auto;
+}
+
+.main-pane:has(.hero) .hero .stack {
+  align-items: center;
+  text-align: center;
+  margin-inline: auto;
+}
+
+.main-pane:has(.hero) .hero .copy {
+  align-items: center;
+  text-align: center;
+  margin-inline: auto;
+}
+
+.main-pane:has(.hero) .hero .copy > * {
+  max-width: 42rem;
+}
+
+.main-pane:has(.hero) .hero .actions {
+  justify-content: center;
+}
+
+/* Hide footer clutter on the home (Last updated, Edit page, pagination, footer credit) */
+.main-pane:has(.hero) footer,
+.main-pane:has(.hero) .nautic-git-meta,
+.main-pane:has(.hero) .nautic-legal {
+  display: none !important;
+}
+
 /* ---- Discord widget on introduction ---- */
 
 .discord-widget-only {
