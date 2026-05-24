@@ -729,12 +729,29 @@ site-search button:hover {
 
 /* ===== Home page (splash template) — fully centered hero ===== */
 
+/* Kill the sidebar-reserved padding so the hero centers on the whole viewport */
+body:has(.hero) {
+  --sl-content-inline-start: 0 !important;
+}
+
+body:has(.hero) .main-frame {
+  padding-inline-start: 0 !important;
+}
+
+/* Hide the search bar in the header on the splash page only */
+body:has(.hero) header site-search,
+body:has(.hero) header .right-group site-search {
+  display: none !important;
+}
+
 /* Center everything on the splash, no two-column layout */
 .main-pane:has(.hero) .hero {
   grid-template-columns: 1fr !important;
   text-align: center;
   gap: 1.5rem;
   padding-block: clamp(3rem, calc(2rem + 8vmin), 7rem);
+  max-width: 60rem;
+  margin-inline: auto;
 }
 
 .main-pane:has(.hero) .hero > img,
