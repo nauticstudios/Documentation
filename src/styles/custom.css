@@ -729,18 +729,15 @@ site-search button:hover {
 
 /* ===== Home page (splash template) — fully centered hero ===== */
 
-/* Kill the sidebar-reserved padding so the hero centers on the whole viewport */
-body:has(.hero) {
-  --sl-content-inline-start: 0 !important;
-}
-
+/* Kill the sidebar-reserved padding ONLY for main-frame on splash
+   (scoped to .main-frame so the header layout is not touched) */
 body:has(.hero) .main-frame {
+  --sl-content-inline-start: 0 !important;
   padding-inline-start: 0 !important;
 }
 
 /* Hide the search bar in the header on the splash page only */
-body:has(.hero) header site-search,
-body:has(.hero) header .right-group site-search {
+body:has(main:has(.hero)) header site-search {
   display: none !important;
 }
 
