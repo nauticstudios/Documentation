@@ -455,7 +455,7 @@ site-search button:hover {
   padding: 0.95rem 1.1rem;
   font-size: 0.9rem;
   line-height: 1.65;
-  background: #23262f !important;
+  background: #1e2030 !important;
 }
 
 .sl-markdown-content :not(pre) > code {

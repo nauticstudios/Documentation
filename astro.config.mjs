@@ -21,11 +21,11 @@ export default defineConfig({
       customCss: ['./src/styles/custom.css'],
 
       expressiveCode: {
-        themes: ['night-owl'],
+        themes: ['material-theme-palenight'],
         styleOverrides: {
           borderRadius: '0px',
           borderColor: '#2a2c2e',
-          codeBackground: '#23262f',
+          codeBackground: '#1e2030',
           codeFontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
           codeFontSize: '0.9rem',
           codeLineHeight: '1.65',
