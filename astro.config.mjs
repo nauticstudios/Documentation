@@ -18,7 +18,12 @@ export default defineConfig({
 
       favicon: '/favicon.svg',
 
-      customCss: ['./src/styles/custom.css'],
+      customCss: [
+        '@fontsource/poppins/400.css',
+        '@fontsource/jetbrains-mono/400.css',
+        '@fontsource/jetbrains-mono/600.css',
+        './src/styles/custom.css',
+      ],
 
       expressiveCode: {
         themes: ['night-owl'],
