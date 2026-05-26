@@ -97,6 +97,11 @@ export default defineConfig({
               link: '/libraries/headrender/',
               badge: { text: 'Library', variant: 'note' },
             },
+            {
+              label: 'CenterMessage',
+              link: '/libraries/centermessage/',
+              badge: { text: 'Library', variant: 'note' },
+            },
           ],
         },
         {

@@ -1,0 +1,260 @@
+---
+title: CenterMessage
+description: Adventure-powered library to center chat messages in Minecraft. Mix legacy, hex and MiniMessage in a single pipeline — color codes never push the text off-center.
+---
+
+Centers chat messages by measuring the rendered pixel width of the visible glyphs only, so color codes never break the alignment. Accepts legacy `&` / `§`, BungeeCord hex `&#RRGGBB`, Spigot hex `§x§R§R§G§G§B§B` and MiniMessage tags (`<color>`, `<gradient>`, `<bold>`, …) in the same string and parses through a single Adventure-based pipeline.
+
+GitHub: [senkex/CenterMessage](https://github.com/senkex/CenterMessage) · JitPack: [jitpack.io/#senkex/CenterMessage](https://jitpack.io/#senkex/CenterMessage)
+
+| | |
+| --- | --- |
+| **MC** | 1.16+ (hex colors required) |
+| **Java** | 8+ |
+| **Platform** | Bukkit / Spigot / Paper (any fork) |
+| **Requires** | Adventure at runtime (Paper ships it; Spigot must shade `adventure-platform-bukkit`) |
+
+:::danger
+If you ship CenterMessage inside a plugin you **must** relocate it. See [Shading](#shading).
+:::
+
+## Installation
+
+Replace `VERSION` with the [latest release](https://jitpack.io/#senkex/CenterMessage).
+
+```kotlin title="build.gradle.kts"
+repositories {
+    maven("https://jitpack.io")
+}
+
+dependencies {
+    implementation("com.github.senkex:CenterMessage:VERSION")
+}
+```
+
+```groovy title="build.gradle"
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.senkex:CenterMessage:VERSION'
+}
+```
+
+```xml title="pom.xml"
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.github.senkex</groupId>
+    <artifactId>CenterMessage</artifactId>
+    <version>VERSION</version>
+</dependency>
+```
+
+## Shading
+
+Relocate `com.github.senkex.centermessage` into your own namespace.
+
+```kotlin title="build.gradle.kts"
+plugins {
+    id("com.gradleup.shadow") version "8.3.5"
+}
+
+tasks {
+    shadowJar {
+        relocate("com.github.senkex.centermessage", "my.plugin.libs.centermessage")
+    }
+}
+```
+
+```xml title="pom.xml"
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-shade-plugin</artifactId>
+    <version>3.6.0</version>
+    <configuration>
+        <relocations>
+            <relocation>
+                <pattern>com.github.senkex.centermessage</pattern>
+                <shadedPattern>my.plugin.libs.centermessage</shadedPattern>
+            </relocation>
+        </relocations>
+    </configuration>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals><goal>shade</goal></goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+## Quick start
+
+```java
+CenterMessage.send(player, "&aHello &b<bold>World</bold>");
+
+String line = CenterMessage.center("&#FF55AA Centered &ltext");
+player.sendMessage(line);
+```
+
+Adventure `Component` output for Paper / Adventure-native senders:
+
+```java
+Component comp = CenterMessage.centerComponent("<gradient:#f00:#0f0>Hi</gradient>");
+player.sendMessage(comp);
+
+Component custom = Component.text("Hello").color(NamedTextColor.AQUA);
+player.sendMessage(CenterMessage.centerComponent(custom));
+```
+
+:::tip
+`send(CommandSender, String)` picks the right path automatically: it uses Adventure when the sender supports it (Paper) and falls back to legacy `sendMessage(String)` otherwise. You almost never need to think about which API to call.
+:::
+
+## Mixed formats
+
+Every supported color format is unified into MiniMessage internally and parsed once, so you can mix them in the same string:
+
+```java
+CenterMessage.send(player,
+    "&6[&aPrefix&6] &#FF55AAhex <bold>+ mini</bold> &land bold");
+```
+
+Pipeline order: **PlaceholderAPI → `&#RRGGBB` → `&x` → legacy-to-MiniMessage → MiniMessage parse**.
+
+:::note
+MiniMessage tags take precedence when the same effect is expressed twice. A `<reset>` clears both legacy and MiniMessage state.
+:::
+
+## CenterOptions
+
+```java
+CenterOptions opts = CenterOptions.builder()
+        .centerPx(80)
+        .parseMiniMessage(false)
+        .parsePlaceholders(true)
+        .build();
+
+CenterMessage.send(player, "&aTitle", opts);
+```
+
+| Option | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `centerPx` | `int` | `154` | Half-width in pixels (chat = 154). |
+| `parseLegacyAmp` | `boolean` | `true` | Translate `&x` to `§x`. |
+| `parseHexAmp` | `boolean` | `true` | Translate `&#RRGGBB` to Spigot hex. |
+| `parseMiniMessage` | `boolean` | `true` | Parse MiniMessage tags through Adventure. |
+| `parsePlaceholders` | `boolean` | `true` | Expand PlaceholderAPI when a target is given. |
+
+Prefabs: `CenterOptions.CHAT` (154 px), `CenterOptions.SIGN` (45 px), `CenterOptions.BOOK` (57 px), `CenterOptions.ANVIL` (50 px).
+
+## Multi-line and `<center>` blocks
+
+`centerLines` centers every line independently:
+
+```java
+String motd =
+    "&6&lWelcome\n" +
+    "&7Use /help for commands.\n" +
+    "&8Powered by CenterMessage";
+
+CenterMessage.sendBlock(player, motd);
+```
+
+`<center>...</center>` lets you center only the lines you want — anything outside the block is sent verbatim:
+
+```java
+CenterMessage.sendBlock(player,
+    "<center>&6&lWelcome</center>\n" +
+    "Not centered, sent as-is.\n" +
+    "<center>&7Have fun.</center>");
+```
+
+## PlaceholderAPI
+
+When PlaceholderAPI is installed, every method that receives a `Player` or `OfflinePlayer` expands placeholders against that target before parsing:
+
+```java
+CenterMessage.send(player, "&6Balance: &a%vault_eco_balance%");
+```
+
+:::note
+The integration is hooked through `Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")` — if PAPI isn't loaded the call short-circuits, no reflection, no errors.
+:::
+
+## Facade reference
+
+| Method | Returns |
+| --- | --- |
+| `center(String, [CenterOptions], [OfflinePlayer])` | `String` |
+| `center(String, int centerPx)` | `String` |
+| `centerComponent(String / Component, [CenterOptions], [OfflinePlayer])` | `Component` |
+| `centerLines(String, [CenterOptions], [OfflinePlayer])` | `String` |
+| `processCenterTags(String, [CenterOptions], [OfflinePlayer])` | `String` |
+| `send(CommandSender / Audience, String / Component, [CenterOptions])` | `void` |
+| `sendBlock(CommandSender, String, [CenterOptions])` | `void` |
+| `broadcast(String, [CenterOptions])` | `void` |
+| `colorize(String)` | `String` — drop-in for `ChatColor.translateAlternateColorCodes` |
+| `parse(String, [CenterOptions], [OfflinePlayer])` | `Component` |
+| `translateAmpHex(String)` | `String` — `&#RRGGBB` → `§x§R§R§G§G§B§B` |
+
+## Custom font widths
+
+Width is measured against the vanilla Minecraft font. Custom resource packs that ship a different font can override individual characters at runtime:
+
+```java
+FontInfo.registerWidth('►', 6);
+FontInfo.registerWidth('⬛', 8);
+```
+
+## Example: welcome banner
+
+```java title="WelcomeListener.java"
+package com.example.plugin.listener;
+
+import com.github.senkex.centermessage.CenterMessage;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+
+public final class WelcomeListener implements Listener {
+
+    private static final String[] BANNER = {
+        "&8&m                                        ",
+        "<gradient:#ff55aa:#55aaff><bold>Nautic Network</bold></gradient>",
+        "&7Welcome back, &f%player_name%&7.",
+        "&7Online: &f%server_online%",
+        "&8&m                                        ",
+    };
+
+    @EventHandler
+    public void onJoin(final PlayerJoinEvent event) {
+        final Player player = event.getPlayer();
+        for (String line : BANNER) {
+            CenterMessage.send(player, line);
+        }
+    }
+}
+```
+
+## Example: scoreboard title
+
+```java
+String title = CenterMessage.center(
+        "&6&l" + Bukkit.getServer().getName(),
+        CenterOptions.builder().centerPx(40).build());
+
+scoreboard.getObjective("display").setDisplayName(title);
+```
+
+:::tip
+Use a tighter `centerPx` (around 40–60) for scoreboard titles, sign lines or BossBars. The default 154 is tuned for the chat box width.
+:::
