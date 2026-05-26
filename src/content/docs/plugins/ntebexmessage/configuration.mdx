@@ -24,43 +24,265 @@ Reload is hot — no need to restart the server. Templates, buttons and webhook 
 ## `config.yml`
 
 ```yaml
-customs-args: []
+# custom arguments accepted by every template and the discord webhook
+# each name listed here becomes a {key} / %key% placeholder you can use anywhere
+# add or remove freely — must be lowercase, letters / digits / underscore only
+# changes here require /tb reload
+customs-args:
+  - player
+  - package
+  - price
+
+# symbol used to join multi-package values when a single purchase has more than one item
+# example: package(VIP;MVP;ASTRO)  ->  VIP • MVP • ASTRO
+# supports color codes (&7, &#FF00FF, <gradient:...>)
 separator-symbol: "&7•"
 
+# broadcast templates
+# each top-level key (one, multiple, ...) is a template selectable via:
+#   /tb <template> player(Senkex) package(VIP) price($10)
+# you can define as many templates as you want
 broadcast:
   templates:
-    one:        { … }
-    multiple:   { … }
 
+    # template used for single-package purchases (default tebex route)
+    one:
+
+      # per-template event toggles
+      # everything in here is optional — omitted blocks are skipped
+      events:
+
+        # should the player head be rendered next to the broadcast message
+        # uses Minotar in the background, fully async, never blocks the server
+        # only renders if the {player} argument is provided
+        player-head: true
+
+        # should this broadcast start the reward event (configured at the bottom)
+        # players will type the word in chat to claim rewards
+        reward-event: true
+
+        # should this broadcast also post to the discord webhook
+        discord-webhook: true
+
+        # title shown on the screen for every online player
+        # set enabled: false to skip
+        title:
+          enabled: true
+          up: "&#FFD700{player}"
+          down: "&fPurchased &#38FF35{package} &7({price})"
+
+        # sound played to every online player when the broadcast fires
+        # id must be a valid Bukkit Sound (see: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html)
+        # invalid ids are skipped with a warning, not a crash
+        sound:
+          enabled: true
+          id: ENTITY_PLAYER_LEVELUP
+
+        # one-line message shown above the hotbar
+        # newlines are converted to spaces (actionbars can't be multi-line)
+        actionbar:
+          enabled: true
+          message: "&#7CFF5A{player} &fpurchased &#00FFAA{package}"
+
+        # bossbar shown for X seconds at the top of the screen
+        # color: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE
+        # style: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
+        # animated true = bar drains smoothly across "duration" seconds
+        # animated false = static bar that disappears after "duration" seconds
+        bossbar:
+          enabled: false
+          text: "&fPurchased &#38FF35{package} &7({price})"
+          color: GREEN
+          style: SOLID
+          duration: 5
+          animated: false
+
+      # main chat broadcast
+      # supported tags:
+      #   <empty>             -> blank line
+      #   <center>text</center> -> auto-centered line
+      #   %buttons%           -> renders ALL buttons defined below
+      #   %button_<id>%       -> renders ONE button by its id (e.g. %button_shop%)
+      # placeholders ({player}, {package}, {price}, ...) work in every line
+      # PlaceholderAPI placeholders (%player_name%, ...) also work if PAPI is installed
+      message:
+        - "                  &#1BFF20&lGG IN THE CHAT! 🛒"
+        - "<empty>"
+        - "       &#1BFF3D@{player} &fhas purchased &#00FFAA{package}&f!"
+        - "         &fVisit our store &#FCFF1Bstore.server.com"
+        - "<empty>"
+        - "&7&o   (( Thank you for supporting the server ))"
+
+    # template used when tebex routes multi-package purchases
+    multiple:
+      events:
+        player-head: false
+        reward-event: false
+        discord-webhook: true
+
+        title:
+          enabled: true
+          up: "&#FFD700{player}"
+          down: "&fPurchased &7({price})"
+
+        sound:
+          enabled: true
+          id: ENTITY_PLAYER_LEVELUP
+
+        actionbar:
+          enabled: true
+          message: "&#7CFF5A{player} &fpurchased &#00FFAA{package}"
+
+        bossbar:
+          enabled: true
+          text: "&#00FFAA✨ NEW STORE PURCHASE ✨"
+          color: GREEN
+          style: SOLID
+          duration: 5
+          animated: false
+
+      message:
+        - "<center>&#1BFF3D&lNew purchase 🎉</center>"
+        - "<empty>"
+        - "<center>&#E9FF1B{player} &fjust purchased!</center>"
+        - "<center>&7(List of all purchases)</center>"
+        - "<empty>"
+        - "<center>{package}</center>"
+        - "<empty>"
+        - "%buttons%"
+
+# clickable buttons that can be embedded in any template message
+# reference them with:
+#   %buttons%        -> all buttons in a single line
+#   %button_<id>%    -> a specific button by its yaml key (e.g. %button_shop%)
+# each button supports:
+#   text     -> the visible label (legacy + hex + MiniMessage gradients supported)
+#   hover    -> tooltip shown when the cursor is over the button
+#   open_url -> destination url (must start with http:// or https://)
 buttons:
-  center: 20
-  list:
-    shop:     { … }
-    discord:  { … }
 
+  # how many spaces are added before %buttons% to roughly center the row
+  # set to 0 to disable centering
+  center: 20
+
+  list:
+    shop:
+      text: "<gradient:#72FF76:#17EA25>[ Open Shop ]</gradient>"
+      hover: "<gradient:#72FF76:#17EA25>Click to open the store</gradient>"
+      open_url: "https://shop.yourserver.com/"
+
+    discord:
+      text: "<gradient:#72C0FF:#1750EA>[ Join Discord ]</gradient>"
+      hover: "<gradient:#72C0FF:#1750EA>Click to join the community</gradient>"
+      open_url: "https://discord.gg/cdT5g5xsVq"
+
+# triggered when a broadcast template has events.reward-event = true
+# during the event window, players who type one of the trigger words in chat
+# are added to the participation list and execute the reward commands at the end
 reward-event:
-  words: []
+
+  # list of trigger words. players type any of these in chat to participate
+  # multiple words allowed, e.g.  - "gg"  - "wp"  - "wow"
+  words:
+    - "gg"
+
+  # how many participants are needed before the event ends early
+  # set this to a high number if you want the event to always run the full cooldown
   players-write-word: 30
+
+  # true  = "gg" / "GG" / "Gg" all count as the trigger word
+  # false = the chat message must match exactly the entries in "words"
   ignore-case: true
-  cooldown:                { enabled, time }
-  bossbar:                 { enabled, text, color, style }
-  actionbar:               { enabled, text }
-  null-players: "..."
-  players-rewards-commands: []
-  final-message:           { enabled, message }
+
+  # if enabled, the event runs for "time" seconds before ending automatically
+  # if disabled, the event only ends when "players-write-word" is reached
+  cooldown:
+    enabled: true
+    time: 10
+
+  # bossbar shown to every online player during the event
+  # placeholders available:
+  #   %write_now%   -> participants so far
+  #   %write_total% -> the players-write-word value
+  #   %write_left%  -> how many more are needed
+  # color: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE
+  # style: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
+  bossbar:
+    enabled: true
+    text: "&#FFE264Type 'gg' to get rewarded &7(%write_now%/%write_total%)"
+    color: GREEN
+    style: SOLID
+
+  # actionbar refreshed every second during the event countdown
+  # same placeholders as the bossbar
+  actionbar:
+    enabled: true
+    text: "&aWrite GG in chat! &7(%write_now%/%write_total%)"
+
+  # message shown in the final broadcast when no one participated
+  null-players: "&cNo players participated"
+
+  # commands executed once per participant when the event ends
+  # %player% is replaced with each participant's name
+  # commands run from the console, so they have full permissions
+  players-rewards-commands:
+    - "give %player% minecraft:diamond 1"
+
+  # broadcast posted to chat when the event ends
+  # placeholders available:
+  #   %players_reward_claimed% -> newline-separated list of participants
+  #                               (or the "null-players" message if empty)
+  final-message:
+    enabled: true
+    message:
+      - "<empty>"
+      - "<center>&#1BFF7E&lREWARD EVENT 🎉</center>"
+      - "<empty>"
+      - "<center>&#FFD41B - Players Rewarded - </center>"
+      - "<center>&#FFE264👑 &f%players_reward_claimed%</center>"
+      - "<empty>"
 ```
 
 ## `messages.yml`
 
 ```yaml
-help:    [ ... ]
-args:    { header, empty, format, footer }
-console: { usage, invalid-format, unknown-arg, available-args, missing-parenthesis }
+help:
+  - ""
+  - "   &#3BFF48&lTebexMessage &#CDCDCD- &fCommands"
+  - ""
+  - "   &#38FF35/{command} help &#BDBDBD- &#EAEAEAShow help"
+  - "   &#38FF35/{command} reload &#BDBDBD- &#EAEAEAReload configuration"
+  - "   &#38FF35/{command} args &#BDBDBD- &#EAEAEAShow custom arguments"
+  - ""
+  - "   &#38FF35/{command} <template> arg(value) &#BDBDBD- &#EAEAEASend purchase broadcast"
+  - ""
 
-reload: "..."
-no-permission: "..."
-missing-arg: "..."
-console-only: "..."
+args:
+  header:
+    - ""
+    - "   &#3BFF48&lTebexMessage &#CDCDCD- &fConfigured Custom Arguments"
+    - ""
+  empty: "   &cNo custom arguments configured."
+  format: "   &#38FF35- &#EAEAEA{arg}"
+  footer:
+    - ""
+
+console:
+  usage:
+    - ""
+    - "   &#3BFF48&lTebexMessage &#CDCDCD- &fConsole Usage"
+    - ""
+    - "   &#38FF35/{command} <template> {usage}"
+    - ""
+  invalid-format: "&#3BFF48&lTebexMessage &#CDCDCD» &cInvalid argument format. Use key(value)."
+  unknown-arg: "&#3BFF48&lTebexMessage &#CDCDCD» &cArgument does not exist: &#FF5555{arg}"
+  available-args: "&#3BFF48&lTebexMessage &#CDCDCD» &fArgs available: &#38FF35{args}"
+  missing-parenthesis: "&#3BFF48&lTebexMessage &#CDCDCD» &cMissing '(' or ')' in arguments."
+
+reload: "&#3BFF48&lTebexMessage &#CDCDCD» &#38FF35Configuration reloaded successfully."
+no-permission: "&#3BFF48&lTebexMessage &#CDCDCD» &cYou don't have permission."
+missing-arg: "&#3BFF48&lTebexMessage &#CDCDCD» &cMissing required argument: &#FF5555{arg}"
+console-only: "&#3BFF48&lTebexMessage &#CDCDCD» &cThis command can only be executed from console."
 ```
 
 | Placeholder | Replaces with |
@@ -82,9 +304,23 @@ webhook:
   avatar: "..."
   mode: components-v2   # or: classic
 
-  filters:       { strip-words, replace, multi-package }
-  classic:       { content, embed, buttons }
-  components-v2: { accent, layout }
+  filters:
+    strip-words: []
+    replace: {}
+    multi-package:
+      enabled: true
+      separator: ", "
+
+  classic:
+    content: ""
+    embed:
+      title: "New Purchase"
+      color: "#5865F2"
+    buttons: []
+
+  components-v2:
+    accent: "#5865F2"
+    layout: []
 ```
 
 :::danger
