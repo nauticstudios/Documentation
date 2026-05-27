@@ -18,10 +18,26 @@ broadcast:
         reward-event: true|false
         discord-webhook: true|false
 
-        title:     { enabled, up, down }
-        sound:     { enabled, id }
-        actionbar: { enabled, message }
-        bossbar:   { enabled, text, color, style, duration, animated }
+        title:
+          enabled: true
+          up: "&#FFD700{player}"
+          down: "&fPurchased &#38FF35{package} &7({price})"
+
+        sound:
+          enabled: true
+          id: ENTITY_PLAYER_LEVELUP
+
+        actionbar:
+          enabled: true
+          message: "&#7CFF5A{player} &fpurchased &#00FFAA{package}"
+
+        bossbar:
+          enabled: true
+          text: "&fPurchased &#38FF35{package} &7({price})"
+          color: GREEN
+          style: SOLID
+          duration: 5
+          animated: false
 
       message:
         - "<chat line>"
